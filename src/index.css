@@ -1,0 +1,30 @@
+:root {
+  color: #f5f5f5;
+  font-family: Geist, system-ui, sans-serif;
+  text-rendering: optimizeLegibility;
+  background-color: #121212;
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-block-size: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: #121212;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
