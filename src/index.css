@@ -16,11 +16,17 @@ html,
 body,
 #root {
   min-block-size: 100%;
+  block-size: 100%;
 }
 
 body {
   margin: 0;
   background-color: #121212;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
 }
 
 button,

@@ -1,8 +1,8 @@
 .header {
   padding: 32px 64px;
-  border-block-end: 2px solid #292929;
 }
 
 .logo {
+  display: block;
   user-select: none;
 }
