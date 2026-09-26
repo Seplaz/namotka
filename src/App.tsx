@@ -1,11 +1,11 @@
 import { Header } from '@/components/Header/Header';
-import { Dashboard } from '@/pages/Dashboard/Dashboard';
+import { Login } from '@/pages/Login/Login';
 
 function App() {
   return (
     <>
       <Header />
-      <Dashboard />
+      <Login />
     </>
   );
 }
