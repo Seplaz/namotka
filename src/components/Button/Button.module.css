@@ -1,0 +1,28 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 12px;
+  background-color: #e5e5e5;
+  color: #171717;
+  font-size: 16px;
+  font-weight: 500;
+  transition: background-color 150ms ease;
+  min-block-size: 45px;
+}
+
+.button:hover {
+  background-color: #fafafa;
+}
+
+.button:active {
+  background-color: #d4d4d4;
+}
+
+.button:disabled {
+  background-color: #262626;
+  color: #737373;
+  cursor: not-allowed;
+}

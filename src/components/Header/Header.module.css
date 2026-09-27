@@ -6,3 +6,9 @@
   display: block;
   user-select: none;
 }
+
+@media (max-width: 768px) {
+  .header {
+    padding: 24px;
+  }
+}
