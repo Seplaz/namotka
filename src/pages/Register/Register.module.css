@@ -15,7 +15,7 @@
   padding: 24px;
   border-radius: 24px;
   background-color: #1c1c1c;
-  inline-size: min(345px, 100%);
+  inline-size: min(390px, 100%);
 }
 
 @media (max-width: 768px) {
