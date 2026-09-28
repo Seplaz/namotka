@@ -6,9 +6,9 @@ import { Link } from '@/components/Link/Link';
 
 export function Login() {
   return (
-    <div className={styles.page}>
+    <div className={styles.login}>
       <Title className={styles.title}>Добро пожаловать в NAMOTKA</Title>
-      <div className={styles.login}>
+      <div className={styles.form}>
         <Input
           type="text"
           name="login"
