@@ -8,7 +8,7 @@ import { Link } from '@/components/Link/Link';
 export function Login() {
   return (
     <div className={styles.login}>
-      <Title className={styles.title}>Добро пожаловать в NAMOTKA</Title>
+      <Title className={styles.title}>Добро пожаловать</Title>
       <form className={styles.form}>
         <FormField label="Логин" htmlFor="login">
           <Input id="login" type="text" name="login" autoComplete="username" />
@@ -22,9 +22,7 @@ export function Login() {
           />
         </FormField>
 
-        <Button type="submit">
-          Войти
-        </Button>
+        <Button type="submit">Войти</Button>
         <Link href="/register">Зарегистрироваться</Link>
       </form>
     </div>
