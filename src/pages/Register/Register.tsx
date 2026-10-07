@@ -8,7 +8,7 @@ import { Link } from '@/components/Link/Link';
 export function Register() {
   return (
     <div className={styles.register}>
-      <Title className={styles.title}>Регистрация в NAMOTKA</Title>
+      <Title className={styles.title}>Регистрация</Title>
       <form className={styles.form}>
         <FormField label="Имя" htmlFor="name">
           <Input
@@ -38,7 +38,9 @@ export function Register() {
           />
         </FormField>
 
-        <Button type="submit">Зарегистрироваться</Button>
+        <Button type="submit">
+          Зарегистрироваться
+        </Button>
         <Link href="/login">Войти</Link>
       </form>
     </div>

@@ -2,7 +2,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 6px 12px;
+  padding: 12px 24px;
   border: none;
   border-radius: 12px;
   background-color: #e5e5e5;
@@ -11,6 +11,8 @@
   font-weight: 500;
   transition: background-color 150ms ease;
   min-block-size: 45px;
+  block-size: min-content;
+  inline-size: 100%;
 }
 
 .button:hover {

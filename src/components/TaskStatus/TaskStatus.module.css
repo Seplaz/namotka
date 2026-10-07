@@ -1,0 +1,44 @@
+.status {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px 6px 6px;
+  border-radius: 24px;
+  font-size: 12px;
+}
+
+.status svg {
+  inline-size: 16px;
+  block-size: 16px;
+}
+
+.new {
+  color: #60a5fa;
+  background-color: #172554;
+}
+
+.waiting {
+  color: #d8b4fe;
+  background-color: #3b0764;
+}
+
+.in_progress {
+  color: #fbbf24;
+  background-color: #422006;
+}
+
+.completed {
+  color: #4ade80;
+  background-color: #052e16;
+}
+
+.in_progress svg {
+  animation: spin 1.5s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

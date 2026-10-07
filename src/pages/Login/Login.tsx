@@ -22,7 +22,9 @@ export function Login() {
           />
         </FormField>
 
-        <Button type="submit">Войти</Button>
+        <Button type="submit">
+          Войти
+        </Button>
         <Link href="/register">Зарегистрироваться</Link>
       </form>
     </div>
