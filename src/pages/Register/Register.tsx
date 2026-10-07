@@ -15,7 +15,7 @@ export function Register() {
             id="name"
             type="text"
             name="name"
-            placeholder="Мамут Рахал"
+            // placeholder="Мамут Рахал"
             autoComplete="name"
           />
         </FormField>
@@ -24,7 +24,7 @@ export function Register() {
             id="login"
             type="text"
             name="login"
-            placeholder="mamut_rahal"
+            // placeholder="mamut_rahal"
             autoComplete="username"
           />
         </FormField>
@@ -33,14 +33,12 @@ export function Register() {
             id="password"
             type="password"
             name="password"
-            placeholder="••••••••"
+            // placeholder="••••••••"
             autoComplete="new-password"
           />
         </FormField>
 
-        <Button type="submit">
-          Зарегистрироваться
-        </Button>
+        <Button type="submit">Зарегистрироваться</Button>
         <Link href="/login">Войти</Link>
       </form>
     </div>
