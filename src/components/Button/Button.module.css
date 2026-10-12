@@ -13,6 +13,7 @@
   min-block-size: 45px;
   block-size: min-content;
   inline-size: 100%;
+  gap: 6px;
 }
 
 .button:hover {

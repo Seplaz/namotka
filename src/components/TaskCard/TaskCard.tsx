@@ -73,7 +73,9 @@ export function TaskCard({
                   type="button"
                   icon={<Undo2 size={20} />}
                   onClick={() => {}}
-                />
+                >
+                  Вернуть
+                </Button>
 
                 <Button type="button" onClick={() => {}}>
                   Завершить
