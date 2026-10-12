@@ -9,7 +9,7 @@ export function TaskColumn({ title, children }: TaskColumnProps) {
   return (
     <section className={styles.column}>
       <h2 className={styles.title}>{title}</h2>
-      <div>{children}</div>
+      <div className={styles.content}>{children}</div>
     </section>
   );
 }

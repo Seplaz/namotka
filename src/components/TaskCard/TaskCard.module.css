@@ -1,0 +1,74 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px;
+  border-radius: 24px;
+  background-color: #1c1c1c;
+  inline-size: 100%;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0;
+  border: none;
+  background: none;
+  text-align: start;
+  cursor: pointer;
+}
+
+.id {
+  color: #f5f5f5;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.preview {
+  overflow: hidden;
+  color: #a3a3a3;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.description {
+  font-size: 16px;
+  color: #a3a3a3;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.value {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #a3a3a3;
+}
+
+.actions {
+  display: flex;
+  gap: 24px;
+}
