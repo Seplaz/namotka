@@ -1,6 +1,6 @@
 import styles from '@/components/TaskCard/TaskCard.module.css';
 import { useState } from 'react';
-import { Copy, Undo2 } from 'lucide-react';
+import { Check, Copy, Undo2 } from 'lucide-react';
 import { Button } from '../Button/Button';
 import { TaskStatus } from '../TaskStatus/TaskStatus';
 
@@ -22,9 +22,23 @@ export function TaskCard({
   status,
 }: TaskCardProps) {
   const [expanded, setExpanded] = useState(false);
+  const [copiedField, setCopiedField] = useState<'inn' | 'phone' | null>(null);
 
   const isNew = status === 'new';
   const isInProgress = status === 'in_progress';
+
+  const handleCopy = async (value: string, field: 'inn' | 'phone') => {
+    try {
+      await navigator.clipboard.writeText(value);
+      setCopiedField(field);
+
+      window.setTimeout(() => {
+        setCopiedField(null);
+      }, 1500);
+    } catch {
+      setCopiedField(null);
+    }
+  };
 
   return (
     <article className={styles.card}>
@@ -45,18 +59,46 @@ export function TaskCard({
           <div className={styles.info}>
             <div className={styles.field}>
               <span className={styles.label}>ИНН</span>
-              <span className={styles.value}>
-                {inn}
-                <Copy size={16} />
-              </span>
+
+              <div className={styles.value}>
+                <span>{inn}</span>
+
+                <button
+                  type="button"
+                  className={styles.copy}
+                  onClick={() => handleCopy(inn, 'inn')}
+                  aria-label="Скопировать ИНН"
+                  title="Скопировать ИНН"
+                >
+                  {copiedField === 'inn' ? (
+                    <Check size={16} />
+                  ) : (
+                    <Copy size={16} />
+                  )}
+                </button>
+              </div>
             </div>
 
             <div className={styles.field}>
               <span className={styles.label}>Номер телефона</span>
-              <span className={styles.value}>
-                {phone}
-                <Copy size={16} />
-              </span>
+
+              <div className={styles.value}>
+                <span>{phone}</span>
+
+                <button
+                  type="button"
+                  className={styles.copy}
+                  onClick={() => handleCopy(phone, 'phone')}
+                  aria-label="Скопировать номер телефона"
+                  title="Скопировать номер телефона"
+                >
+                  {copiedField === 'phone' ? (
+                    <Check size={16} />
+                  ) : (
+                    <Copy size={16} />
+                  )}
+                </button>
+              </div>
             </div>
           </div>
 
@@ -71,7 +113,7 @@ export function TaskCard({
               <>
                 <Button
                   type="button"
-                  icon={<Undo2 size={20} />}
+                  icon={<Undo2 size={16} />}
                   onClick={() => {}}
                 >
                   Вернуть

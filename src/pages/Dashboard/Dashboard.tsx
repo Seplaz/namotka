@@ -34,7 +34,7 @@ export function Dashboard() {
       <TaskColumn title="В работе">
         <TaskCard
           id={228}
-          description="Помочь с регистрацией в Диадоке"
+          description="Помочь с регистрацией в Диадоке, сделать МЧД на сотрудника для ЭДО и Логистики"
           inn="6658497833"
           phone="88005000899"
           status="in_progress"
