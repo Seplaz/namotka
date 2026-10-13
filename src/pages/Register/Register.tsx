@@ -1,4 +1,6 @@
 import styles from '@/pages/Register/Register.module.css';
+import { useState } from 'react';
+import { Eye, EyeOff } from 'lucide-react';
 import { Title } from '@/components/Title/Title';
 import { FormField } from '@/components/FormField/FormField';
 import { Input } from '@/components/Input/Input';
@@ -6,6 +8,8 @@ import { Button } from '@/components/Button/Button';
 import { Link } from '@/components/Link/Link';
 
 export function Register() {
+  const [showPassword, setShowPassword] = useState(false);
+
   return (
     <div className={styles.register}>
       <Title className={styles.title}>Регистрация</Title>
@@ -15,7 +19,7 @@ export function Register() {
             id="name"
             type="text"
             name="name"
-            // placeholder="Мамут Рахал"
+            placeholder="Ваше имя"
             autoComplete="name"
           />
         </FormField>
@@ -24,18 +28,32 @@ export function Register() {
             id="login"
             type="text"
             name="login"
-            // placeholder="mamut_rahal"
+            placeholder="Придумайте логин"
             autoComplete="username"
           />
         </FormField>
         <FormField label="Пароль" htmlFor="password">
-          <Input
-            id="password"
-            type="password"
-            name="password"
-            // placeholder="••••••••"
-            autoComplete="new-password"
-          />
+          <div className={styles.password}>
+            <Input
+              id="password"
+              type={showPassword ? 'text' : 'password'}
+              name="password"
+              placeholder="Минимум 8 символов"
+              autoComplete="new-password"
+              required
+            />
+
+            <button
+              type="button"
+              className={styles.eye}
+              onClick={() => setShowPassword((prev) => !prev)}
+              aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'}
+              aria-pressed={showPassword}
+            >
+              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+            </button>
+          </div>
+          {/* <p className={styles.hint}>Не менее 8 символов</p> */}
         </FormField>
 
         <Button type="submit">Зарегистрироваться</Button>

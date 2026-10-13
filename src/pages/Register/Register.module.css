@@ -18,6 +18,35 @@
   inline-size: min(390px, 100%);
 }
 
+.password {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password input {
+  inline-size: 100%;
+  padding-inline-end: 36px;
+}
+
+.eye {
+  position: absolute;
+  right: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: #737373;
+  padding: 0;
+}
+
+/* .hint {
+  color: #737373;
+  font-size: 12px;
+} */
+
 @media (max-width: 768px) {
   .register {
     padding: 24px;
