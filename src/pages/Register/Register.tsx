@@ -53,7 +53,6 @@ export function Register() {
               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </button>
           </div>
-          {/* <p className={styles.hint}>Не менее 8 символов</p> */}
         </FormField>
 
         <Button type="submit">Зарегистрироваться</Button>
