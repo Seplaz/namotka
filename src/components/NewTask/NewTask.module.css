@@ -33,10 +33,83 @@
   border-radius: 999px;
   padding: 6px;
   color: #171717;
+  transition: background-color 150ms ease;
+}
+
+.close:hover {
+  background-color: #fafafa;
+}
+
+.close:active {
+  background-color: #d4d4d4;
+}
+
+.schedule {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 16px;
+  color: #e5e5e5;
+  font-weight: 600;
+}
+
+.schedule input {
+  background-color: #171717;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: -1px;
+  padding: 0;
+  cursor: pointer;
+  position: absolute;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: none;
+}
+
+.checkbox {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border: 2px solid #292929;
+  border-radius: 5px;
+  background-color: #141414;
+  color: #e5e5e5;
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.schedule:hover .checkbox {
+  border-color: #3f3f46;
+}
+
+.schedule input:checked + .checkbox {
+  background-color: #8b5cf6;
+  border-color: #8b5cf6;
+}
+
+.schedule input:focus-visible + .checkbox {
+  outline: 2px solid #a78bfa;
+  outline-offset: 3px;
+}
+
+.schedule input:disabled + .checkbox {
+  opacity: 0.5;
+}
+
+.schedule:has(.schedule input:disabled) {
+  cursor: not-allowed;
+  opacity: 0.5;
 }
 
 .datetime {
   display: flex;
+  inline-size: 100%;
   gap: 24px;
 }
 

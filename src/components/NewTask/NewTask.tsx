@@ -1,6 +1,6 @@
 import styles from '@/components/NewTask/NewTask.module.css';
 import { useState, type FormEvent } from 'react';
-import { X } from 'lucide-react';
+import { X, Check } from 'lucide-react';
 import { FormField } from '@/components/FormField/FormField';
 import { Input } from '@/components/Input/Input';
 import { Textarea } from '../Textarea/Textarea';
@@ -14,6 +14,7 @@ export function NewTask({ onClose }: NewTaskProps) {
   const [inn, setInn] = useState('');
   const [phone, setPhone] = useState('');
   const [description, setDescription] = useState('');
+  const [scheduleCall, setScheduleCall] = useState(false);
   const [scheduledDate, setScheduledDate] = useState('');
   const [scheduledTime, setScheduledTime] = useState('');
 
@@ -101,34 +102,55 @@ export function NewTask({ onClose }: NewTaskProps) {
           />
         </FormField>
 
-        <FormField
-          label="Когда позвонить? (необязательно)"
-          htmlFor="scheduledDate"
-        >
-          <div className={styles.datetime}>
-            <Input
-              className={styles.date}
-              id="scheduledDate"
-              type="date"
-              name="scheduledDate"
-              value={scheduledDate}
-              min={getLocalDate()}
-              onChange={(event) => handleDateChange(event.target.value)}
-              aria-label="Дата звонка"
-            />
+        <label className={styles.schedule}>
+          <input
+            type="checkbox"
+            checked={scheduleCall}
+            onChange={(event) => {
+              const checked = event.target.checked;
+              setScheduleCall(checked);
 
-            <Input
-              className={styles.time}
-              id="scheduledTime"
-              type="time"
-              name="scheduledTime"
-              value={scheduledTime}
-              onChange={(event) => setScheduledTime(event.target.value)}
-              disabled={!scheduledDate}
-              aria-label="Время звонка"
-            />
-          </div>
-        </FormField>
+              if (!checked) {
+                setScheduledDate('');
+                setScheduledTime('');
+              }
+            }}
+          />
+
+          <span className={styles.checkbox} aria-hidden="true">
+            {scheduleCall && <Check size={16} />}
+          </span>
+
+          <span>Запланировать звонок</span>
+        </label>
+
+        {scheduleCall && (
+          <FormField label="Дата звонка" htmlFor="scheduledDate">
+            <div className={styles.datetime}>
+              <Input
+                className={styles.date}
+                id="scheduledDate"
+                type="date"
+                name="scheduledDate"
+                value={scheduledDate}
+                min={getLocalDate()}
+                onChange={(event) => handleDateChange(event.target.value)}
+                aria-label="Дата звонка"
+              />
+
+              <Input
+                className={styles.time}
+                id="scheduledTime"
+                type="time"
+                name="scheduledTime"
+                value={scheduledTime}
+                onChange={(event) => setScheduledTime(event.target.value)}
+                disabled={!scheduledDate}
+                aria-label="Время звонка"
+              />
+            </div>
+          </FormField>
+        )}
 
         <Button type="submit" disabled={!isFormValid}>
           Намотать

@@ -25,3 +25,19 @@
 .input:focus {
   border-color: #8b5cf6;
 }
+
+.input[type='date'] {
+  color: #737373;
+}
+
+.input[type='date']:valid {
+  color: #e5e5e5;
+}
+
+.input[type='time'] {
+  color: #737373;
+}
+
+.input[type='time']:valid {
+  color: #e5e5e5;
+}
