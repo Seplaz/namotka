@@ -1,9 +1,9 @@
-import styles from '@/pages/Dashboard/Dashboard.module.css';
+import styles from '@/pages/DashboardPage/DashboardPage.module.css';
 import { TaskColumn } from '@/components/TaskColumn/TaskColumn';
 import { Button } from '@/components/Button/Button';
 import { TaskCard } from '@/components/TaskCard/TaskCard';
 
-export function Dashboard() {
+export function DashboardPage() {
   return (
     <main className={styles.dashboard}>
       <TaskColumn title="Новые">

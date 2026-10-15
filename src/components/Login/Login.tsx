@@ -1,4 +1,4 @@
-import styles from '@/pages/Register/Register.module.css';
+import styles from '@/components/Login/Login.module.css';
 import { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 import { Title } from '@/components/Title/Title';
@@ -7,29 +7,20 @@ import { Input } from '@/components/Input/Input';
 import { Button } from '@/components/Button/Button';
 import { Link } from '@/components/Link/Link';
 
-export function Register() {
+export function Login() {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <div className={styles.register}>
-      <Title className={styles.title}>Регистрация</Title>
+    <div className={styles.login}>
+      <Title className={styles.title}>Добро пожаловать</Title>
       <form className={styles.form}>
-        <FormField label="Имя" htmlFor="name">
-          <Input
-            id="name"
-            type="text"
-            name="name"
-            placeholder="Ваше имя"
-            autoComplete="name"
-          />
-        </FormField>
         <FormField label="Логин" htmlFor="login">
           <Input
             id="login"
             type="text"
             name="login"
-            placeholder="Придумайте логин"
             autoComplete="username"
+            placeholder="Введите логин"
           />
         </FormField>
         <FormField label="Пароль" htmlFor="password">
@@ -38,8 +29,8 @@ export function Register() {
               id="password"
               type={showPassword ? 'text' : 'password'}
               name="password"
-              placeholder="Минимум 8 символов"
-              autoComplete="new-password"
+              autoComplete="current-password"
+              placeholder="Введите пароль"
               required
             />
 
@@ -55,8 +46,8 @@ export function Register() {
           </div>
         </FormField>
 
-        <Button type="submit">Зарегистрироваться</Button>
-        <Link href="/login">Войти</Link>
+        <Button type="submit">Войти</Button>
+        <Link href="/register">Зарегистрироваться</Link>
       </form>
     </div>
   );
