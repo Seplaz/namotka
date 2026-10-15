@@ -1,0 +1,29 @@
+.textarea {
+  padding: 12px;
+  border: 2px solid #292929;
+  border-radius: 12px;
+  background-color: #141414;
+  color: #e5e5e5;
+  font-size: 16px;
+  outline: none;
+  resize: none;
+  inline-size: 100%;
+  min-inline-size: 0;
+  min-block-size: 96px;
+  transition:
+    border-color 150ms ease,
+    background-color 150ms ease;
+}
+
+.textarea::placeholder {
+  color: #737373;
+  font-size: 16px;
+}
+
+.textarea:hover {
+  border-color: #3f3f46;
+}
+
+.textarea:focus {
+  border-color: #8b5cf6;
+}

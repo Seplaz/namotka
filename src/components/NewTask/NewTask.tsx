@@ -1,9 +1,9 @@
 import styles from '@/components/NewTask/NewTask.module.css';
 import { useState, type FormEvent } from 'react';
 import { X } from 'lucide-react';
-import { Title } from '@/components/Title/Title';
 import { FormField } from '@/components/FormField/FormField';
 import { Input } from '@/components/Input/Input';
+import { Textarea } from '../Textarea/Textarea';
 import { Button } from '@/components/Button/Button';
 
 type NewTaskProps = {
@@ -57,7 +57,7 @@ export function NewTask({ onClose }: NewTaskProps) {
     <div className={styles.new}>
       <form className={styles.form} onSubmit={handleSubmit}>
         <div className={styles.header}>
-          <Title className={styles.title}>Новая намотка</Title>
+          <h2 className={styles.title}>Новая намотка</h2>
           <button type="button" className={styles.close} onClick={onClose}>
             <X size={16} />
           </button>
@@ -89,13 +89,14 @@ export function NewTask({ onClose }: NewTaskProps) {
         </FormField>
 
         <FormField label="Суть намотки" htmlFor="description">
-          <Input
+          <Textarea
             id="description"
-            type="text"
             name="description"
             placeholder="Кратко опишите задачу"
             value={description}
             onChange={(event) => setDescription(event.target.value)}
+            rows={3}
+            maxLength={1000}
             required
           />
         </FormField>
@@ -127,28 +128,7 @@ export function NewTask({ onClose }: NewTaskProps) {
               aria-label="Время звонка"
             />
           </div>
-          <div className={styles.actions}>
-            <Button
-              type="button"
-              className={styles.quickDate}
-              onClick={() => handleDateChange(getLocalDate())}
-            >
-              Сегодня
-            </Button>
-
-            <Button
-              type="button"
-              className={styles.quickDate}
-              onClick={() => handleDateChange(getLocalDate(1))}
-            >
-              Завтра
-            </Button>
-          </div>
         </FormField>
-
-        <p className={styles.hint}>
-          Можно оставить пустым, если звонок не запланирован.
-        </p>
 
         <Button type="submit" disabled={!isFormValid}>
           Намотать
