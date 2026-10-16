@@ -1,7 +1,7 @@
 import { Header } from '@/components/Header/Header';
 // import { LoginPage } from './pages/LoginPage/LoginPage';
-// import { RegisterPage } from './pages/RegisterPage/RegisterPage';
-import { DashboardPage } from './pages/DashboardPage/DashboardPage';
+import { RegisterPage } from './pages/RegisterPage/RegisterPage';
+// import { DashboardPage } from './pages/DashboardPage/DashboardPage';
 // import { NewTask } from '@/components/NewTask/NewTask';
 
 function App() {
@@ -9,8 +9,8 @@ function App() {
     <>
       <Header />
       {/* <LoginPage /> */}
-      {/* <RegisterPage /> */}
-      <DashboardPage />
+      <RegisterPage />
+      {/* <DashboardPage /> */}
       {/* <NewTask onClose={() => {}} /> */}
     </>
   );

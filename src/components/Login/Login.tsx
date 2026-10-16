@@ -1,6 +1,6 @@
 import styles from '@/components/Login/Login.module.css';
 import { useState } from 'react';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeClosed } from 'lucide-react';
 import { Title } from '@/components/Title/Title';
 import { FormField } from '@/components/FormField/FormField';
 import { Input } from '@/components/Input/Input';
@@ -41,7 +41,7 @@ export function Login() {
               aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'}
               aria-pressed={showPassword}
             >
-              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              {showPassword ? <Eye size={20} /> : <EyeClosed size={20} />}
             </button>
           </div>
         </FormField>
