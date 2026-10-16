@@ -15,7 +15,13 @@ export function Login() {
       <Title className={styles.title}>Добро пожаловать</Title>
       <form className={styles.form}>
         <FormField label="Логин" htmlFor="login">
-          <Input id="login" type="text" name="login" autoComplete="username" />
+          <Input
+            id="login"
+            type="text"
+            name="login"
+            autoComplete="username"
+            required
+          />
         </FormField>
         <FormField label="Пароль" htmlFor="password">
           <div className={styles.password}>
@@ -25,6 +31,7 @@ export function Login() {
               name="password"
               autoComplete="current-password"
               required
+              minLength={8}
             />
 
             <button

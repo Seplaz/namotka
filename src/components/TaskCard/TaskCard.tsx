@@ -25,7 +25,9 @@ export function TaskCard({
   const [copiedField, setCopiedField] = useState<'inn' | 'phone' | null>(null);
 
   const isNew = status === 'new';
+  const isWaiting = status === 'waiting';
   const isInProgress = status === 'in_progress';
+  const hasActions = isNew || isWaiting || isInProgress;
 
   const handleCopy = async (value: string, field: 'inn' | 'phone') => {
     try {
@@ -102,29 +104,31 @@ export function TaskCard({
             </div>
           </div>
 
-          <div className={styles.actions}>
-            {isNew && (
-              <Button type="button" onClick={() => {}}>
-                Начать
-              </Button>
-            )}
-
-            {isInProgress && (
-              <>
-                <Button
-                  type="button"
-                  icon={<Undo2 size={16} />}
-                  onClick={() => {}}
-                >
-                  Вернуть
-                </Button>
-
+          {hasActions && (
+            <div className={styles.actions}>
+              {(isNew || isWaiting) && (
                 <Button type="button" onClick={() => {}}>
-                  Завершить
+                  Начать
                 </Button>
-              </>
-            )}
-          </div>
+              )}
+
+              {isInProgress && (
+                <>
+                  <Button
+                    type="button"
+                    icon={<Undo2 size={16} />}
+                    onClick={() => {}}
+                  >
+                    Вернуть
+                  </Button>
+
+                  <Button type="button" onClick={() => {}}>
+                    Завершить
+                  </Button>
+                </>
+              )}
+            </div>
+          )}
         </div>
       )}
     </article>
