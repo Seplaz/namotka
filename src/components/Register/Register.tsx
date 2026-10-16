@@ -21,8 +21,14 @@ export function Register() {
             name="name"
             autoComplete="name"
             required
+            minLength={2}
+            maxLength={60}
+            pattern="[A-Za-zА-Яа-яЁё][A-Za-zА-Яа-яЁё '\u002D]{1,59}"
+            title="Допустимы только кириллица или латиница, пробелы, дефис и апостроф"
           />
-          <span className={styles.hint}>Кириллица или латиница</span>
+          <span className={styles.hint}>
+            Кириллица или латиница, пробелы, дефис и апостроф
+          </span>
         </FormField>
         <FormField label="Логин" htmlFor="login">
           <Input
@@ -31,8 +37,14 @@ export function Register() {
             name="login"
             autoComplete="username"
             required
+            minLength={3}
+            maxLength={30}
+            pattern="[A-Za-z0-9_]{3,30}"
+            title="От 3 до 30 символов: латинские буквы, цифры и _"
           />
-          <span className={styles.hint}>Только латинские буквы и цифры</span>
+          <span className={styles.hint}>
+            От 3 до 30 символов: латинские буквы, цифры и _
+          </span>
         </FormField>
         <FormField label="Пароль" htmlFor="password">
           <div className={styles.password}>
@@ -43,6 +55,7 @@ export function Register() {
               autoComplete="new-password"
               required
               minLength={8}
+              maxLength={128}
             />
 
             <button

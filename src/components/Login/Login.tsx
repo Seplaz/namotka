@@ -31,7 +31,6 @@ export function Login() {
               name="password"
               autoComplete="current-password"
               required
-              minLength={8}
             />
 
             <button
