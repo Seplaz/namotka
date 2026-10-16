@@ -93,7 +93,7 @@ export function NewTask({ onClose }: NewTaskProps) {
           <Textarea
             id="description"
             name="description"
-            placeholder="Кратко опишите задачу"
+            placeholder="Что нужно сделать?"
             value={description}
             onChange={(event) => setDescription(event.target.value)}
             rows={3}

@@ -1,5 +1,5 @@
 import styles from '@/components/TaskStatus/TaskStatus.module.css';
-import { Circle, CircleCheck, CircleDot, LoaderCircle } from 'lucide-react';
+import { Circle, CircleCheck, CircleDashed, LoaderCircle } from 'lucide-react';
 
 type TaskStatusValue = 'new' | 'waiting' | 'in_progress' | 'completed';
 
@@ -14,7 +14,7 @@ const statusConfig = {
   },
   waiting: {
     label: 'Ожидает',
-    icon: CircleDot,
+    icon: CircleDashed,
   },
   in_progress: {
     label: 'В работе',

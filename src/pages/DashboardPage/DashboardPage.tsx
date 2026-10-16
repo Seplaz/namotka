@@ -40,7 +40,7 @@ export function DashboardPage() {
           status="in_progress"
         />
       </TaskColumn>
-      <Button className={styles.button} type="button">
+      <Button type="button">
         Новая намотка
       </Button>
     </main>

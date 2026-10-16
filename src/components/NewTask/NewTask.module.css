@@ -102,11 +102,6 @@
   opacity: 0.5;
 }
 
-.schedule:has(.schedule input:disabled) {
-  cursor: not-allowed;
-  opacity: 0.5;
-}
-
 .datetime {
   display: flex;
   inline-size: 100%;

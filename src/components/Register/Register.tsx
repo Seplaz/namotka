@@ -19,8 +19,8 @@ export function Register() {
             id="name"
             type="text"
             name="name"
-            placeholder="Ваше имя"
             autoComplete="name"
+            placeholder="Рулон Обоев"
           />
         </FormField>
         <FormField label="Логин" htmlFor="login">
@@ -28,8 +28,8 @@ export function Register() {
             id="login"
             type="text"
             name="login"
-            placeholder="Придумайте логин"
             autoComplete="username"
+            placeholder="rulon_oboev"
           />
         </FormField>
         <FormField label="Пароль" htmlFor="password">
@@ -38,9 +38,9 @@ export function Register() {
               id="password"
               type={showPassword ? 'text' : 'password'}
               name="password"
-              placeholder="Минимум 8 символов"
               autoComplete="new-password"
               required
+              placeholder="Минимум 8 символов"
             />
 
             <button

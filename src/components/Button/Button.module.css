@@ -16,6 +16,10 @@
   gap: 6px;
 }
 
+.full {
+  inline-size: 100%;
+}
+
 .button:hover {
   background-color: #fafafa;
 }
@@ -29,7 +33,3 @@
   color: #737373;
   cursor: not-allowed;
 }
-
-/* .button:focus-visible {
-  outline: 2px solid #8b5cf6;
-} */

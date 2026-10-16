@@ -15,13 +15,7 @@ export function Login() {
       <Title className={styles.title}>Добро пожаловать</Title>
       <form className={styles.form}>
         <FormField label="Логин" htmlFor="login">
-          <Input
-            id="login"
-            type="text"
-            name="login"
-            autoComplete="username"
-            placeholder="Введите логин"
-          />
+          <Input id="login" type="text" name="login" autoComplete="username" />
         </FormField>
         <FormField label="Пароль" htmlFor="password">
           <div className={styles.password}>
@@ -30,7 +24,6 @@ export function Login() {
               type={showPassword ? 'text' : 'password'}
               name="password"
               autoComplete="current-password"
-              placeholder="Введите пароль"
               required
             />
 
