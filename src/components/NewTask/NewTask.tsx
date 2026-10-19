@@ -5,9 +5,41 @@ import { FormField } from '@/components/FormField/FormField';
 import { Input } from '@/components/Input/Input';
 import { Textarea } from '../Textarea/Textarea';
 import { Button } from '@/components/Button/Button';
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 
 type NewTaskProps = {
   onClose: () => void;
+};
+
+const formVariants = {
+  hidden: { opacity: 0, scale: 0.7 },
+  visible: { opacity: 1, scale: 1 },
+  transition: {
+    duration: 0.45,
+    ease: 'easeOut' as const,
+  },
+};
+
+const scheduleVariants = {
+  hidden: {
+    height: 0,
+    opacity: 0,
+  },
+  visible: {
+    height: 'auto',
+    opacity: 1,
+  },
+};
+
+const scheduleTransition = {
+  height: {
+    duration: 0.15,
+    ease: 'easeInOut' as const,
+  },
+  opacity: {
+    duration: 0.15,
+    ease: 'easeOut' as const,
+  },
 };
 
 export function NewTask({ onClose }: NewTaskProps) {
@@ -54,9 +86,21 @@ export function NewTask({ onClose }: NewTaskProps) {
     }
   }
 
+  const shouldReduceMotion = useReducedMotion();
+
+  const formAnimation = shouldReduceMotion
+    ? { hidden: {}, visible: {} }
+    : formVariants;
+
   return (
     <div className={styles.new}>
-      <form className={styles.form} onSubmit={handleSubmit}>
+      <motion.form
+        className={styles.form}
+        onSubmit={handleSubmit}
+        variants={formAnimation}
+        initial="hidden"
+        animate="visible"
+      >
         <div className={styles.header}>
           <h2 className={styles.title}>Новая намотка</h2>
           <button type="button" className={styles.close} onClick={onClose}>
@@ -124,38 +168,54 @@ export function NewTask({ onClose }: NewTaskProps) {
           <span>Запланировать звонок</span>
         </label>
 
-        {scheduleCall && (
-          <FormField label="Дата звонка" htmlFor="scheduledDate">
-            <div className={styles.datetime}>
-              <Input
-                className={styles.date}
-                id="scheduledDate"
-                type="date"
-                name="scheduledDate"
-                value={scheduledDate}
-                min={getLocalDate()}
-                onChange={(event) => handleDateChange(event.target.value)}
-                aria-label="Дата звонка"
-              />
+        <AnimatePresence initial={false}>
+          {scheduleCall && (
+            <motion.div
+              key="schedule-fields"
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              variants={scheduleVariants}
+              transition={
+                shouldReduceMotion ? { duration: 0 } : scheduleTransition
+              }
+              style={{ overflow: 'hidden' }}
+            >
+              <FormField label="Дата звонка" htmlFor="scheduledDate">
+                <div className={styles.datetime}>
+                  <Input
+                    className={styles.date}
+                    id="scheduledDate"
+                    type="date"
+                    name="scheduledDate"
+                    value={scheduledDate}
+                    min={getLocalDate()}
+                    onChange={(event) => handleDateChange(event.target.value)}
+                    aria-label="Дата звонка"
+                    required
+                  />
 
-              <Input
-                className={styles.time}
-                id="scheduledTime"
-                type="time"
-                name="scheduledTime"
-                value={scheduledTime}
-                onChange={(event) => setScheduledTime(event.target.value)}
-                disabled={!scheduledDate}
-                aria-label="Время звонка"
-              />
-            </div>
-          </FormField>
-        )}
+                  <Input
+                    className={styles.time}
+                    id="scheduledTime"
+                    type="time"
+                    name="scheduledTime"
+                    value={scheduledTime}
+                    onChange={(event) => setScheduledTime(event.target.value)}
+                    disabled={!scheduledDate}
+                    aria-label="Время звонка"
+                    required
+                  />
+                </div>
+              </FormField>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <Button type="submit" disabled={!isFormValid}>
           Намотать
         </Button>
-      </form>
+      </motion.form>
     </div>
   );
 }

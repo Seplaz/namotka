@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Check, Copy, Undo2 } from 'lucide-react';
 import { Button } from '../Button/Button';
 import { TaskStatus } from '../TaskStatus/TaskStatus';
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 
 type TaskStatusValue = 'new' | 'waiting' | 'in_progress' | 'completed';
 
@@ -12,6 +13,17 @@ type TaskCardProps = {
   inn: string;
   phone: string;
   status: TaskStatusValue;
+};
+
+const contentVariants = {
+  collapsed: {
+    height: 0,
+    opacity: 0,
+  },
+  expanded: {
+    height: 'auto',
+    opacity: 1,
+  },
 };
 
 export function TaskCard({
@@ -42,6 +54,14 @@ export function TaskCard({
     }
   };
 
+  const shouldReduceMotion = useReducedMotion();
+  const transition = shouldReduceMotion
+    ? { duration: 0 }
+    : {
+        height: { duration: 0.3, ease: 'easeInOut' as const },
+        opacity: { duration: 0.2, ease: 'easeOut' as const },
+      };
+
   return (
     <article className={styles.card}>
       <button
@@ -50,87 +70,98 @@ export function TaskCard({
         onClick={() => setExpanded((prev) => !prev)}
       >
         <span className={styles.id}>#{id}</span>
-        {!expanded && <span className={styles.preview}>{description}</span>}
+        {/* {!expanded && <span className={styles.preview}>{description}</span>} */}
         <TaskStatus status={status} />
       </button>
 
-      {expanded && (
-        <div className={styles.content}>
-          <p className={styles.description}>{description}</p>
+      <AnimatePresence initial={false}>
+        {expanded && (
+          <motion.div
+            className={styles.content}
+            key="task-content"
+            variants={contentVariants}
+            initial="collapsed"
+            animate="expanded"
+            exit="collapsed"
+            transition={transition}
+            style={{ overflow: 'hidden' }}
+          >
+            <p className={styles.description}>{description}</p>
 
-          <div className={styles.info}>
-            <div className={styles.field}>
-              <span className={styles.label}>ИНН</span>
+            <div className={styles.info}>
+              <div className={styles.field}>
+                <span className={styles.label}>ИНН</span>
 
-              <div className={styles.value}>
-                <span>{inn}</span>
+                <div className={styles.value}>
+                  <span>{inn}</span>
 
-                <button
-                  type="button"
-                  className={styles.copy}
-                  onClick={() => handleCopy(inn, 'inn')}
-                  aria-label="Скопировать ИНН"
-                  title="Скопировать ИНН"
-                >
-                  {copiedField === 'inn' ? (
-                    <Check size={16} />
-                  ) : (
-                    <Copy size={16} />
-                  )}
-                </button>
-              </div>
-            </div>
-
-            <div className={styles.field}>
-              <span className={styles.label}>Номер телефона</span>
-
-              <div className={styles.value}>
-                <span>{phone}</span>
-
-                <button
-                  type="button"
-                  className={styles.copy}
-                  onClick={() => handleCopy(phone, 'phone')}
-                  aria-label="Скопировать номер телефона"
-                  title="Скопировать номер телефона"
-                >
-                  {copiedField === 'phone' ? (
-                    <Check size={16} />
-                  ) : (
-                    <Copy size={16} />
-                  )}
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {hasActions && (
-            <div className={styles.actions}>
-              {(isNew || isWaiting) && (
-                <Button type="button" onClick={() => {}}>
-                  Начать
-                </Button>
-              )}
-
-              {isInProgress && (
-                <>
-                  <Button
+                  <button
                     type="button"
-                    icon={<Undo2 size={16} />}
-                    onClick={() => {}}
+                    className={styles.copy}
+                    onClick={() => handleCopy(inn, 'inn')}
+                    aria-label="Скопировать ИНН"
+                    title="Скопировать ИНН"
                   >
-                    Вернуть
-                  </Button>
+                    {copiedField === 'inn' ? (
+                      <Check size={16} />
+                    ) : (
+                      <Copy size={16} />
+                    )}
+                  </button>
+                </div>
+              </div>
 
-                  <Button type="button" onClick={() => {}}>
-                    Завершить
-                  </Button>
-                </>
-              )}
+              <div className={styles.field}>
+                <span className={styles.label}>Номер телефона</span>
+
+                <div className={styles.value}>
+                  <span>{phone}</span>
+
+                  <button
+                    type="button"
+                    className={styles.copy}
+                    onClick={() => handleCopy(phone, 'phone')}
+                    aria-label="Скопировать номер телефона"
+                    title="Скопировать номер телефона"
+                  >
+                    {copiedField === 'phone' ? (
+                      <Check size={16} />
+                    ) : (
+                      <Copy size={16} />
+                    )}
+                  </button>
+                </div>
+              </div>
             </div>
-          )}
-        </div>
-      )}
+
+            {hasActions && (
+              <div className={styles.actions}>
+                {(isNew || isWaiting) && (
+                  <Button type="button" onClick={() => {}}>
+                    Начать
+                  </Button>
+                )}
+
+                {isInProgress && (
+                  <>
+                    <Button
+                      type="button"
+                      icon={<Undo2 size={16} />}
+                      onClick={() => {}}
+                    >
+                      Вернуть
+                    </Button>
+
+                    <Button type="button" onClick={() => {}}>
+                      Завершить
+                    </Button>
+                  </>
+                )}
+              </div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </article>
   );
 }
