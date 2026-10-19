@@ -46,9 +46,6 @@ export function Register() {
             pattern="[A-Za-zА-Яа-яЁё][A-Za-zА-Яа-яЁё '\u002D]{1,59}"
             title="Допустимы только кириллица или латиница, пробелы, дефис и апостроф"
           />
-          <span className={styles.hint}>
-            Кириллица или латиница, пробелы, дефис и апостроф
-          </span>
         </FormField>
         <FormField label="Логин" htmlFor="login">
           <Input
@@ -62,9 +59,6 @@ export function Register() {
             pattern="[A-Za-z0-9_]{3,30}"
             title="От 3 до 30 символов: латинские буквы, цифры и _"
           />
-          <span className={styles.hint}>
-            От 3 до 30 символов: латинские буквы, цифры и _
-          </span>
         </FormField>
         <FormField label="Пароль" htmlFor="password">
           <div className={styles.password}>
@@ -98,9 +92,6 @@ export function Register() {
               </AnimatePresence>
             </button>
           </div>
-          <span className={styles.hint}>
-            Минимум 8 символов: латинские буквы, цифры и спецсимволы
-          </span>
         </FormField>
 
         <Button type="submit">Зарегистрироваться</Button>
