@@ -58,10 +58,36 @@ export function Register() {
     });
 
     if (error) {
+      if (error.code === 'over_email_send_rate_limit') {
+        showToast({
+          type: 'warning',
+          message:
+            'Слишком много попыток отправки письма. Подожди немного и попробуй позже.',
+        });
+      } else if (
+        error.code === 'user_already_exists' ||
+        error.code === 'email_exists'
+      ) {
+        showToast({
+          type: 'error',
+          message: 'Возможно, аккаунт уже существует. Попробуй войти.',
+        });
+      } else {
+        showToast({
+          type: 'error',
+          message: 'Не удалось зарегистрироваться. Попробуй ещё раз позже.',
+        });
+      }
+
+      return;
+    }
+
+    if (data.user && data.user.identities?.length === 0) {
       showToast({
         type: 'error',
-        message: 'Не удалось зарегистрироваться. Попробуйте ещё раз.',
+        message: 'Этот email уже зарегистрирован. Попробуйте войти.',
       });
+
       return;
     }
 
@@ -73,8 +99,8 @@ export function Register() {
     } else {
       showToast({
         type: 'warning',
-        message: 'Аккаунт создан. Проверьте почту для подтверждения email.',
-        duration: 0,
+        message:
+          'Если регистрация возможна, проверьте почту для подтверждения аккаунта.',
       });
     }
   }
@@ -141,7 +167,7 @@ export function Register() {
                   initial={{ opacity: 0, scale: 0.7 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.7 }}
-                  transition={{ duration: 0.15, ease: 'easeOut' }}
+                  transition={{ duration: 0.1, ease: 'easeOut' }}
                 >
                   {showPassword ? <Eye size={20} /> : <EyeClosed size={20} />}
                 </motion.span>
