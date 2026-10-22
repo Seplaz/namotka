@@ -11,11 +11,11 @@ export function Navigation({ username, onLogout }: NavigationProps) {
     <nav className={styles.navigation}>
       <span className={styles.username}>{username}</span>
 
-      <Link className={styles.link} href="/dashboard">
+      <Link className={styles.link} to="/dashboard">
         Намотки
       </Link>
 
-      <Link className={styles.link} href="/dashboard">
+      <Link className={styles.link} to="/dashboard">
         История
       </Link>
 

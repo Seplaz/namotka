@@ -4,18 +4,25 @@ import { Link } from '@/components/Link/Link';
 import { Navigation } from '@/components/Navigation/Navigation';
 
 type HeaderProps = {
-  username: string;
+  isAuthenticated: boolean;
+  username?: string;
   onLogout: () => void;
 };
 
-export function Header({ username, onLogout }: HeaderProps) {
+export function Header({
+  isAuthenticated,
+  username = '',
+  onLogout,
+}: HeaderProps) {
   return (
     <header className={styles.header}>
-      <Link href="/dashboard">
+      <Link to={isAuthenticated ? '/dashboard' : '/login'}>
         <img className={styles.logo} src={logo} alt="NAMOTKA" />
       </Link>
 
-      <Navigation username={username} onLogout={onLogout} />
+      {isAuthenticated && (
+        <Navigation username={username} onLogout={onLogout} />
+      )}
     </header>
   );
 }

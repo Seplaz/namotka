@@ -1,0 +1,37 @@
+.toast {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 16px 12px 12px;
+  inline-size: fit-content;
+  align-self: center;
+  gap: 12px;
+  border-radius: 999px;
+}
+
+.icon {
+  flex-shrink: 0;
+}
+
+.message {
+  font: 16px;
+  font-weight: 400;
+}
+
+.success {
+  color: #4ade80;
+  background-color: #002b16;
+  border-color: #064525;
+}
+
+.warning {
+  color: #fbbf24;
+  background-color: #422006;
+  border-color: #713f12;
+}
+
+.error {
+  color: #f87171;
+  background-color: #450a0a;
+  border-color: #7f1d1d;
+}

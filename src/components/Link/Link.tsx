@@ -1,8 +1,12 @@
 import styles from '@/components/Link/Link.module.css';
-import type { AnchorHTMLAttributes } from 'react';
+import { Link as RouterLink, type LinkProps } from 'react-router-dom';
 
-type LinkProps = AnchorHTMLAttributes<HTMLAnchorElement>;
+type Props = Omit<LinkProps, 'className'> & {
+  className?: string;
+};
 
-export function Link({ className, ...props }: LinkProps) {
-  return <a className={`${styles.link} ${className ?? ''}`} {...props} />;
+export function Link({ className, ...props }: Props) {
+  return (
+    <RouterLink className={`${styles.link} ${className ?? ''}`} {...props} />
+  );
 }

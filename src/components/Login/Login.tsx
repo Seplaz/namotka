@@ -100,7 +100,7 @@ export function Login() {
         </FormField>
 
         <Button type="submit">Войти</Button>
-        <Link href="/register">Зарегистрироваться</Link>
+        <Link to="/register">Зарегистрироваться</Link>
       </motion.form>
     </div>
   );

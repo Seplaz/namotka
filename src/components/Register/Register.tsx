@@ -122,7 +122,7 @@ export function Register() {
         </FormField>
 
         <Button type="submit">Зарегистрироваться</Button>
-        <Link href="/login">Войти</Link>
+        <Link to="/login">Войти</Link>
       </motion.form>
     </div>
   );
