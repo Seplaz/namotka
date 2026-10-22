@@ -6,13 +6,13 @@
   color: #e5e5e5;
   font-size: 16px;
   outline: none;
+  transition:
+    border-color 150ms ease,
+    background-color 150ms ease;
   resize: none;
   inline-size: 100%;
   min-inline-size: 0;
   min-block-size: 96px;
-  transition:
-    border-color 150ms ease,
-    background-color 150ms ease;
 }
 
 .textarea::placeholder {

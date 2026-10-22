@@ -2,6 +2,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 6px;
   padding: 12px 24px;
   border: none;
   border-radius: 12px;
@@ -13,7 +14,6 @@
   min-block-size: 45px;
   block-size: min-content;
   inline-size: 100%;
-  gap: 6px;
 }
 
 .full {

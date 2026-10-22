@@ -35,11 +35,11 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  padding: 0;
   border: none;
   background: transparent;
-  cursor: pointer;
   color: #737373;
-  padding: 0;
+  cursor: pointer;
 }
 
 @media (max-width: 768px) {

@@ -30,11 +30,11 @@
 }
 
 .preview {
-  overflow: hidden;
+  flex: 1;
   color: #a3a3a3;
   text-overflow: ellipsis;
   white-space: nowrap;
-  flex: 1;
+  overflow: hidden;
   min-inline-size: 0;
 }
 
@@ -45,8 +45,8 @@
 }
 
 .description {
-  font-size: 16px;
   color: #a3a3a3;
+  font-size: 16px;
 }
 
 .info {
@@ -74,8 +74,8 @@
 }
 
 .copy {
-  border: none;
   padding: 0;
+  border: none;
   background: transparent;
   cursor: pointer;
 }

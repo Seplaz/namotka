@@ -28,10 +28,10 @@
 }
 
 .close {
-  border: none;
-  background-color: #e5e5e5;
-  border-radius: 999px;
   padding: 6px;
+  border: none;
+  border-radius: 999px;
+  background-color: #e5e5e5;
   color: #171717;
   transition: background-color 150ms ease;
 }
@@ -48,30 +48,30 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  font-size: 16px;
   color: #e5e5e5;
+  font-size: 16px;
   font-weight: 600;
 }
 
 .schedule input {
-  background-color: #171717;
-  inline-size: 1px;
-  block-size: 1px;
+  position: absolute;
   margin: -1px;
   padding: 0;
-  cursor: pointer;
-  position: absolute;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
   border: none;
+  background-color: #171717;
+  white-space: nowrap;
+  overflow: hidden;
+  cursor: pointer;
+  inline-size: 1px;
+  block-size: 1px;
+  clip-path: inset(50%);
 }
 
 .checkbox {
   display: inline-flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
   width: 24px;
   height: 24px;
   border: 2px solid #292929;
@@ -89,8 +89,8 @@
 }
 
 .schedule input:checked + .checkbox {
-  background-color: #8b5cf6;
   border-color: #8b5cf6;
+  background-color: #8b5cf6;
 }
 
 .schedule input:focus-visible + .checkbox {
@@ -104,8 +104,8 @@
 
 .datetime {
   display: flex;
-  inline-size: 100%;
   gap: 24px;
+  inline-size: 100%;
 }
 
 .actions {
