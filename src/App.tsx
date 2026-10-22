@@ -7,7 +7,7 @@ import { RegisterPage } from './pages/RegisterPage/RegisterPage';
 function App() {
   return (
     <>
-      <Header />
+      <Header username="Абасов Алибаба Нога Рука Оглы" onLogout={() => {}} />
       {/* <LoginPage /> */}
       <RegisterPage />
       {/* <DashboardPage /> */}

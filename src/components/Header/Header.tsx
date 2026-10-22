@@ -1,10 +1,21 @@
 import logo from '@/assets/logo.svg';
 import styles from '@/components/Header/Header.module.css';
+import { Link } from '@/components/Link/Link';
+import { Navigation } from '@/components/Navigation/Navigation';
 
-export function Header() {
+type HeaderProps = {
+  username: string;
+  onLogout: () => void;
+};
+
+export function Header({ username, onLogout }: HeaderProps) {
   return (
     <header className={styles.header}>
-      <img className={styles.logo} src={logo} alt="NAMOTKA" />
+      <Link href="/dashboard">
+        <img className={styles.logo} src={logo} alt="NAMOTKA" />
+      </Link>
+
+      <Navigation username={username} onLogout={onLogout} />
     </header>
   );
 }

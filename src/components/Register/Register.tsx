@@ -7,6 +7,8 @@ import { Input } from '@/components/Input/Input';
 import { Button } from '@/components/Button/Button';
 import { Link } from '@/components/Link/Link';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
+import { supabase } from '@/lib/supabase';
+import type { FormEvent } from 'react';
 
 const formVariants = {
   hidden: { opacity: 0, scale: 0.7 },
@@ -25,6 +27,35 @@ export function Register() {
     ? { hidden: {}, visible: {} }
     : formVariants;
 
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    const formData = new FormData(event.currentTarget);
+
+    const name = String(formData.get('name') ?? '').trim();
+    const email = String(formData.get('email') ?? '').trim();
+    const password = String(formData.get('password') ?? '');
+
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { name },
+      },
+    });
+
+    if (error) {
+      alert(`Ошибка регистрации: ${error.message}`);
+      return;
+    }
+
+    if (data.session) {
+      alert('Регистрация успешна!');
+    } else {
+      alert('Аккаунт создан. Если требуется, подтвердите email.');
+    }
+  }
+
   return (
     <div className={styles.register}>
       <Title className={styles.title}>Регистрация</Title>
@@ -33,6 +64,7 @@ export function Register() {
         variants={formAnimation}
         initial="hidden"
         animate="visible"
+        onSubmit={handleSubmit}
       >
         <FormField label="Имя" htmlFor="name">
           <Input
@@ -43,21 +75,16 @@ export function Register() {
             required
             minLength={2}
             maxLength={60}
-            pattern="[A-Za-zА-Яа-яЁё][A-Za-zА-Яа-яЁё '\u002D]{1,59}"
-            title="Допустимы только кириллица или латиница, пробелы, дефис и апостроф"
           />
         </FormField>
-        <FormField label="Логин" htmlFor="login">
+
+        <FormField label="Email" htmlFor="email">
           <Input
-            id="login"
-            type="text"
-            name="login"
-            autoComplete="username"
+            id="email"
+            type="email"
+            name="email"
+            autoComplete="email"
             required
-            minLength={3}
-            maxLength={30}
-            pattern="[A-Za-z0-9_]{3,30}"
-            title="От 3 до 30 символов: латинские буквы, цифры и _"
           />
         </FormField>
         <FormField label="Пароль" htmlFor="password">

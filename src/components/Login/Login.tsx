@@ -7,6 +7,8 @@ import { Input } from '@/components/Input/Input';
 import { Button } from '@/components/Button/Button';
 import { Link } from '@/components/Link/Link';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
+import { supabase } from '@/lib/supabase';
+import type { FormEvent } from 'react';
 
 const formVariants = {
   hidden: { opacity: 0, scale: 0.7 },
@@ -25,6 +27,27 @@ export function Login() {
     ? { hidden: {}, visible: {} }
     : formVariants;
 
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    const formData = new FormData(event.currentTarget);
+
+    const email = String(formData.get('email') ?? '').trim();
+    const password = String(formData.get('password') ?? '');
+
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      alert(`Ошибка входа: ${error.message}`);
+      return;
+    }
+
+    alert('Вход успешно выполнен!');
+  }
+
   return (
     <div className={styles.login}>
       <Title className={styles.title}>Добро пожаловать</Title>
@@ -33,13 +56,14 @@ export function Login() {
         variants={formAnimation}
         initial="hidden"
         animate="visible"
+        onSubmit={handleSubmit}
       >
-        <FormField label="Логин" htmlFor="login">
+        <FormField label="Email" htmlFor="email">
           <Input
-            id="login"
-            type="text"
-            name="login"
-            autoComplete="username"
+            id="email"
+            type="email"
+            name="email"
+            autoComplete="email"
             required
           />
         </FormField>
