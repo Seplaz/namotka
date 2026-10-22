@@ -7,16 +7,16 @@ import {
 } from 'react';
 
 import { Toast } from '@/components/Toast/Toast';
-import {
-  ToastContext,
-  type ToastOptions,
-  // type ToastType,
-} from '@/contexts/ToastContext';
+import { ToastContext, type ToastOptions } from '@/contexts/ToastContext';
 
 import styles from '@/components/ToastProvider/ToastProvider.module.css';
 
+const MAX_TOASTS = 3;
+const DEFAULT_DURATION = 3000;
+
 type ToastItem = ToastOptions & {
   id: number;
+  timerKey: number;
 };
 
 type ToastProviderProps = {
@@ -30,7 +30,34 @@ export function ToastProvider({ children }: ToastProviderProps) {
   const showToast = useCallback((options: ToastOptions) => {
     const id = ++nextId.current;
 
-    setToasts((current) => [...current, { ...options, id }]);
+    setToasts((current) => {
+      const existingIndex = current.findIndex(
+        (toast) =>
+          toast.type === options.type && toast.message === options.message,
+      );
+
+      if (existingIndex !== -1) {
+        const updated = [...current];
+        const existing = updated[existingIndex];
+
+        updated[existingIndex] = {
+          ...existing,
+          ...options,
+          id: existing.id,
+          timerKey: id,
+        };
+
+        return updated;
+      }
+
+      const newToast: ToastItem = {
+        ...options,
+        id,
+        timerKey: id,
+      };
+
+      return [...current, newToast].slice(-MAX_TOASTS);
+    });
   }, []);
 
   const dismissToast = useCallback((id: number) => {
@@ -60,7 +87,7 @@ type ToastWithTimerProps = {
 };
 
 function ToastWithTimer({ toast, onClose }: ToastWithTimerProps) {
-  const { duration = 3000 } = toast;
+  const duration = toast.duration ?? DEFAULT_DURATION;
 
   useEffect(() => {
     if (duration <= 0) return;
@@ -68,7 +95,7 @@ function ToastWithTimer({ toast, onClose }: ToastWithTimerProps) {
     const timerId = setTimeout(onClose, duration);
 
     return () => clearTimeout(timerId);
-  }, [duration, onClose]);
+  }, [duration, toast.timerKey, onClose]);
 
   return <Toast type={toast.type} message={toast.message} onClose={onClose} />;
 }
