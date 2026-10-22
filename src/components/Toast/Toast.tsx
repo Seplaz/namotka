@@ -1,7 +1,7 @@
 import styles from '@/components/Toast/Toast.module.css';
-import { CircleAlert, CircleCheck, CircleX } from 'lucide-react';
+import { CircleAlert, CircleCheck, CircleX, X } from 'lucide-react';
 
-type ToastType = 'success' | 'warning' | 'error';
+export type ToastType = 'success' | 'warning' | 'error';
 
 type ToastProps = {
   type: ToastType;
@@ -26,9 +26,8 @@ export function Toast({ type, message, onClose, className }: ToastProps) {
       aria-atomic="true"
     >
       <Icon className={styles.icon} size={20} aria-hidden="true" />
-      <div className={styles.content}>
-        <span className={styles.message}>{message}</span>
-      </div>
+
+      <span className={styles.message}>{message}</span>
 
       {onClose && (
         <button
@@ -37,7 +36,7 @@ export function Toast({ type, message, onClose, className }: ToastProps) {
           onClick={onClose}
           aria-label="Закрыть уведомление"
         >
-          <CircleX size={16} aria-hidden="true" />
+          <X size={20} aria-hidden="true" />
         </button>
       )}
     </div>

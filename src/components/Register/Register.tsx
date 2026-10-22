@@ -9,6 +9,7 @@ import { Link } from '@/components/Link/Link';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { supabase } from '@/lib/supabase';
 import type { FormEvent } from 'react';
+import { useToast } from '@/hooks/useToast';
 
 const formVariants = {
   hidden: { opacity: 0, scale: 0.7 },
@@ -20,7 +21,19 @@ const formVariants = {
 };
 
 export function Register() {
+  const { showToast } = useToast();
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+
+  const isFormValid =
+    name.trim().length >= 2 &&
+    name.trim().length <= 60 &&
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()) &&
+    password.length >= 8 &&
+    password.length <= 128;
+
   const shouldReduceMotion = useReducedMotion();
 
   const formAnimation = shouldReduceMotion
@@ -45,14 +58,24 @@ export function Register() {
     });
 
     if (error) {
-      alert(`Ошибка регистрации: ${error.message}`);
+      showToast({
+        type: 'error',
+        message: 'Не удалось зарегистрироваться. Попробуйте ещё раз.',
+      });
       return;
     }
 
     if (data.session) {
-      alert('Регистрация успешна!');
+      showToast({
+        type: 'success',
+        message: 'Регистрация прошла успешно.',
+      });
     } else {
-      alert('Аккаунт создан. Если требуется, подтвердите email.');
+      showToast({
+        type: 'warning',
+        message: 'Аккаунт создан. Проверьте почту для подтверждения email.',
+        duration: 0,
+      });
     }
   }
 
@@ -72,6 +95,8 @@ export function Register() {
             type="text"
             name="name"
             autoComplete="name"
+            value={name}
+            onChange={(event) => setName(event.target.value)}
             required
             minLength={2}
             maxLength={60}
@@ -84,6 +109,8 @@ export function Register() {
             type="email"
             name="email"
             autoComplete="email"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
             required
           />
         </FormField>
@@ -97,6 +124,8 @@ export function Register() {
               required
               minLength={8}
               maxLength={128}
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
             />
 
             <button
@@ -121,7 +150,9 @@ export function Register() {
           </div>
         </FormField>
 
-        <Button type="submit">Зарегистрироваться</Button>
+        <Button type="submit" disabled={!isFormValid}>
+          Зарегистрироваться
+        </Button>
         <Link to="/login">Войти</Link>
       </motion.form>
     </div>

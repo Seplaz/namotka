@@ -9,6 +9,7 @@ import { Link } from '@/components/Link/Link';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { supabase } from '@/lib/supabase';
 import type { FormEvent } from 'react';
+import { useToast } from '@/hooks/useToast';
 
 const formVariants = {
   hidden: { opacity: 0, scale: 0.7 },
@@ -20,7 +21,16 @@ const formVariants = {
 };
 
 export function Login() {
+  const { showToast } = useToast();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+
+  const isFormValid =
+    email.trim() !== '' &&
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()) &&
+    password.length > 0;
+
   const shouldReduceMotion = useReducedMotion();
 
   const formAnimation = shouldReduceMotion
@@ -41,11 +51,17 @@ export function Login() {
     });
 
     if (error) {
-      alert(`Ошибка входа: ${error.message}`);
+      showToast({
+        type: 'error',
+        message: 'Не удалось войти. Неверный email или пароль.',
+      });
       return;
     }
 
-    alert('Вход успешно выполнен!');
+    showToast({
+      type: 'success',
+      message: 'Вход выполнен успешно.',
+    });
   }
 
   return (
@@ -64,6 +80,8 @@ export function Login() {
             type="email"
             name="email"
             autoComplete="email"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
             required
           />
         </FormField>
@@ -74,6 +92,8 @@ export function Login() {
               type={showPassword ? 'text' : 'password'}
               name="password"
               autoComplete="current-password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
               required
             />
 
@@ -99,7 +119,9 @@ export function Login() {
           </div>
         </FormField>
 
-        <Button type="submit">Войти</Button>
+        <Button type="submit" disabled={!isFormValid}>
+          Войти
+        </Button>
         <Link to="/register">Зарегистрироваться</Link>
       </motion.form>
     </div>
