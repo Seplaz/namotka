@@ -18,6 +18,7 @@ type TaskCardProps = {
   scheduled_at: string | null;
   created_at: string;
   onStartTask: (taskId: string) => Promise<void>;
+  onReturnTask: (taskId: string) => Promise<void>;
 };
 
 const contentVariants = {
@@ -40,12 +41,15 @@ export function TaskCard({
   status,
   scheduled_at,
   onStartTask,
+  onReturnTask,
 }: TaskCardProps) {
   const { showToast } = useToast();
 
   const [expanded, setExpanded] = useState(false);
   const [copiedField, setCopiedField] = useState<'inn' | 'phone' | null>(null);
+
   const [isStarting, setIsStarting] = useState(false);
+  const [isReturning, setIsReturning] = useState(false);
 
   const isNew = status === 'new';
   const isWaiting = status === 'waiting';
@@ -96,6 +100,27 @@ export function TaskCard({
       });
     } finally {
       setIsStarting(false);
+    }
+  }
+
+  async function handleReturn() {
+    try {
+      setIsReturning(true);
+
+      await onReturnTask(id);
+
+      showToast({
+        type: 'success',
+        message: 'Задача возвращена в новые.',
+      });
+    } catch (error) {
+      console.error('Не удалось вернуть задачу:', error);
+      showToast({
+        type: 'error',
+        message: 'Не удалось вернуть задачу.',
+      });
+    } finally {
+      setIsReturning(false);
     }
   }
 
@@ -202,9 +227,10 @@ export function TaskCard({
                     <Button
                       type="button"
                       icon={<Undo2 size={16} />}
-                      onClick={() => {}}
+                      onClick={handleReturn}
+                      disabled={isReturning}
                     >
-                      Вернуть
+                      {isReturning ? 'Возвращаем...' : 'Вернуть'}
                     </Button>
 
                     <Button type="button" onClick={() => {}}>

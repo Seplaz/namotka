@@ -12,16 +12,23 @@ type DashboardProps = {
   tasks: Task[];
   onCreateTask: (data: NewTaskData) => Promise<void>;
   onStartTask: (taskId: string) => Promise<void>;
+  onReturnTask: (taskId: string) => Promise<void>;
 };
 
 export function Dashboard({
   tasks,
   onCreateTask,
   onStartTask,
+  onReturnTask,
 }: DashboardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const newTasks = tasks.filter((task) => task.status === 'new');
+
+  const waitingTasks = tasks.filter((task) => task.status === 'waiting');
+
+  const newColumnTasks = [...newTasks, ...waitingTasks];
+
   const inProgressTasks = tasks.filter((task) => task.status === 'in_progress');
 
   function handleOpenModal() {
@@ -36,9 +43,10 @@ export function Dashboard({
     <main className={styles.dashboard}>
       <TaskColumn
         title="Новые"
-        tasks={newTasks}
+        tasks={newColumnTasks}
         emptyMessage="Намоток нет"
         onStartTask={onStartTask}
+        onReturnTask={onReturnTask}
       />
 
       <TaskColumn
@@ -46,6 +54,7 @@ export function Dashboard({
         tasks={inProgressTasks}
         emptyMessage="Наконец-то нет работы и можно бездельничать"
         onStartTask={onStartTask}
+        onReturnTask={onReturnTask}
       />
 
       <Button type="button" onClick={handleOpenModal}>

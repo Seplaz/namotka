@@ -13,7 +13,7 @@ const statusConfig = {
     icon: Circle,
   },
   waiting: {
-    label: 'Ожидает',
+    label: 'Возвращена',
     icon: CircleDashed,
   },
   in_progress: {

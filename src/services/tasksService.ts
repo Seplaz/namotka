@@ -44,7 +44,7 @@ export async function getTasks(): Promise<Task[]> {
     .select(
       'id, task_number, description, inn, phone, status, scheduled_at, created_at',
     )
-    .order('created_at', { ascending: false });
+    .order('created_at', { ascending: true });
 
   if (error) throw error;
 

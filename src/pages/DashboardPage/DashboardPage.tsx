@@ -63,6 +63,14 @@ export function DashboardPage() {
     );
   }
 
+  async function handleReturnTask(taskId: string) {
+    const updatedTask = await updateTaskStatus(taskId, 'waiting');
+
+    setTasks((currentTasks) =>
+      currentTasks.map((task) => (task.id === taskId ? updatedTask : task)),
+    );
+  }
+
   if (isLoading) {
     return <Loader />;
   }
@@ -78,5 +86,12 @@ export function DashboardPage() {
     );
   }
 
-  return <Dashboard tasks={tasks} onCreateTask={handleCreateTask} onStartTask={handleStartTask} />;
+  return (
+    <Dashboard
+      tasks={tasks}
+      onCreateTask={handleCreateTask}
+      onStartTask={handleStartTask}
+      onReturnTask={handleReturnTask}
+    />
+  );
 }
