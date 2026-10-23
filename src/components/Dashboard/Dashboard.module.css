@@ -1,0 +1,16 @@
+.dashboard {
+  display: grid;
+  grid-template-columns: 345px minmax(345px, 1fr) auto;
+  grid-template-rows: minmax(0, 1fr);
+  padding: 32px 64px 0 64px;
+  min-block-size: 0;
+  flex: 1;
+  gap: 32px;
+  overflow-y: hidden;
+}
+
+.button {
+  justify-self: start;
+  align-self: start;
+  inline-size: fit-content;
+}

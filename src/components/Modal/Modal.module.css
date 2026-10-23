@@ -1,0 +1,17 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(13, 13, 13, 0.65);
+  inline-size: 100%;
+  block-size: 100%;
+  /* backdrop-filter: blur(6px); */
+}
+
+.modal {
+  inline-size: 100%;
+  max-inline-size: 390px;
+}

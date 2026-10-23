@@ -1,48 +1,26 @@
-import styles from '@/pages/DashboardPage/DashboardPage.module.css';
-import { TaskColumn } from '@/components/TaskColumn/TaskColumn';
-import { Button } from '@/components/Button/Button';
-import { TaskCard } from '@/components/TaskCard/TaskCard';
+import { Dashboard } from '@/components/Dashboard/Dashboard';
 
 export function DashboardPage() {
-  return (
-    <main className={styles.dashboard}>
-      <TaskColumn title="Новые">
-        <TaskCard
-          id={228}
-          description="Помочь с регистрацией в Диадоке"
-          inn="6658497833"
-          phone="88005000899"
-          status="new"
-        />
+  const tasks = [
+    // {
+    //   id: 1,
+    //   description: 'Помочь с регистрацией в Диадоке',
+    //   inn: '6658497833',
+    //   phone: '88005000899',
+    //   status: 'new' as const,
+    // },
+    // {
+    //   id: 2,
+    //   description: 'Сделать МЧД на сотрудника для ЭДО и Логистики',
+    //   inn: '6658497833',
+    //   phone: '88005000899',
+    //   status: 'in_progress' as const,
+    // },
+  ];
 
-        <TaskCard
-          id={228}
-          description="Помочь с регистрацией в Диадоке"
-          inn="6658497833"
-          phone="88005000899"
-          status="completed"
-        />
+  function handleCreateTask() {
+    // модальное окно
+  }
 
-        <TaskCard
-          id={228}
-          description="Помочь с регистрацией в Диадоке"
-          inn="6658497833"
-          phone="88005000899"
-          status="waiting"
-        />
-      </TaskColumn>
-      <TaskColumn title="В работе">
-        <TaskCard
-          id={228}
-          description="Помочь с регистрацией в Диадоке, сделать МЧД на сотрудника для ЭДО и Логистики"
-          inn="6658497833"
-          phone="88005000899"
-          status="in_progress"
-        />
-      </TaskColumn>
-      <Button type="button">
-        Новая намотка
-      </Button>
-    </main>
-  );
+  return <Dashboard tasks={tasks} onCreateTask={handleCreateTask} />;
 }

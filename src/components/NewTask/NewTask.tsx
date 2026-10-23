@@ -102,9 +102,16 @@ export function NewTask({ onClose }: NewTaskProps) {
         animate="visible"
       >
         <div className={styles.header}>
-          <h2 className={styles.title}>Новая намотка</h2>
-          <button type="button" className={styles.close} onClick={onClose}>
-            <X size={16} />
+          <h2 className={styles.title} id="new-task-title">
+            Новая намотка
+          </h2>
+          <button
+            type="button"
+            className={styles.close}
+            onClick={onClose}
+            aria-label="Закрыть окно"
+          >
+            <X size={16} aria-hidden="true" />
           </button>
         </div>
         <FormField label="ИНН" htmlFor="inn">
