@@ -7,6 +7,7 @@ import { Header } from '@/components/Header/Header';
 import { LoginPage } from '@/pages/LoginPage/LoginPage';
 import { RegisterPage } from '@/pages/RegisterPage/RegisterPage';
 import { DashboardPage } from '@/pages/DashboardPage/DashboardPage';
+import { Loader } from './components/Loader/Loader';
 
 function App() {
   const [session, setSession] = useState<Session | null>(null);
@@ -56,7 +57,7 @@ function App() {
       />
 
       {loading ? (
-        <p>Загрузка...</p>
+        <Loader />
       ) : (
         <Routes>
           <Route

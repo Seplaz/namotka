@@ -9,10 +9,13 @@ type TaskStatusValue = 'new' | 'waiting' | 'in_progress' | 'completed';
 
 type TaskCardProps = {
   id: string;
+  task_number: number;
   description: string;
   inn: string;
   phone: string;
   status: TaskStatusValue;
+  scheduled_at: string | null;
+  created_at: string;
 };
 
 const contentVariants = {
@@ -27,11 +30,12 @@ const contentVariants = {
 };
 
 export function TaskCard({
-  id,
+  task_number,
   description,
   inn,
   phone,
   status,
+  scheduled_at,
 }: TaskCardProps) {
   const [expanded, setExpanded] = useState(false);
   const [copiedField, setCopiedField] = useState<'inn' | 'phone' | null>(null);
@@ -62,6 +66,17 @@ export function TaskCard({
         opacity: { duration: 0.15, ease: 'easeOut' as const },
       };
 
+  const formattedDate = scheduled_at
+    ? new Intl.DateTimeFormat('ru-RU', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hourCycle: 'h23',
+      }).format(new Date(scheduled_at))
+    : null;
+
   return (
     <article className={styles.card}>
       <button
@@ -69,8 +84,22 @@ export function TaskCard({
         className={styles.header}
         onClick={() => setExpanded((prev) => !prev)}
       >
-        <span className={styles.id}>#{id}</span>
-        {/* {!expanded && <span className={styles.preview}>{description}</span>} */}
+        <div className={styles.preview}>
+          <span className={styles.number}>#{task_number}</span>
+
+          <div className={styles.schedule}>
+            <span className={styles.title}>Время звонка</span>
+
+            {scheduled_at && formattedDate ? (
+              <time className={styles.text} dateTime={scheduled_at}>
+                {formattedDate}
+              </time>
+            ) : (
+              <span className={styles.text}>Не назначено</span>
+            )}
+          </div>
+        </div>
+
         <TaskStatus status={status} />
       </button>
 

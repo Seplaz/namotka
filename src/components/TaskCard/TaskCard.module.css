@@ -23,19 +23,32 @@
   inline-size: 100%;
 }
 
-.id {
+.preview {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.number {
   color: #f5f5f5;
   font-size: 16px;
   font-weight: 500;
 }
 
-.preview {
-  flex: 1;
+.schedule {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
   color: #a3a3a3;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-  min-inline-size: 0;
+}
+
+.title {
+  font-size: 12px;
+}
+
+.text {
+  font-size: 16px;
+  font-weight: 600;
 }
 
 .content {

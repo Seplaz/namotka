@@ -1,22 +1,72 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Dashboard } from '@/components/Dashboard/Dashboard';
-import { createTask, type NewTaskData } from '@/services/tasksService';
-
-type Task = {
-  id: string;
-  description: string;
-  inn: string;
-  phone: string;
-  status: 'new' | 'in_progress' | 'completed' | 'waiting';
-};
+import { Loader } from '@/components/Loader/Loader';
+import {
+  createTask,
+  getTasks,
+  type NewTaskData,
+} from '@/services/tasksService';
+import type { Task } from '@/types/task';
 
 export function DashboardPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let isCurrent = true;
+
+    async function loadTasks() {
+      try {
+        setIsLoading(true);
+        setLoadError(null);
+
+        const loadedTasks = await getTasks();
+
+        if (isCurrent) {
+          setTasks(loadedTasks);
+        }
+      } catch (error) {
+        console.error('Не удалось загрузить задачи:', error);
+
+        if (isCurrent) {
+          setLoadError(
+            'Не удалось загрузить задачи. Попробуйте обновить страницу.',
+          );
+        }
+      } finally {
+        if (isCurrent) {
+          setIsLoading(false);
+        }
+      }
+    }
+
+    void loadTasks();
+
+    return () => {
+      isCurrent = false;
+    };
+  }, []);
 
   async function handleCreateTask(data: NewTaskData) {
     const createdTask = await createTask(data);
 
-    setTasks((currentTasks) => [...currentTasks, createdTask as Task]);
+    setTasks((currentTasks) => [createdTask as Task, ...currentTasks]);
+  }
+
+  if (isLoading) {
+    return <Loader />;
+  }
+
+  if (loadError) {
+    return (
+      <div>
+        <p role="alert">{loadError}</p>
+        <button type="button" onClick={() => window.location.reload()}>
+          Обновить страницу
+        </button>
+      </div>
+    );
   }
 
   return <Dashboard tasks={tasks} onCreateTask={handleCreateTask} />;
