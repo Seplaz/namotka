@@ -8,7 +8,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 type TaskStatusValue = 'new' | 'waiting' | 'in_progress' | 'completed';
 
 type TaskCardProps = {
-  id: number;
+  id: string;
   description: string;
   inn: string;
   phone: string;

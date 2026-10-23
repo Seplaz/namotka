@@ -1,13 +1,6 @@
 import styles from '@/components/TaskColumn/TaskColumn.module.css';
+import type { Task } from '@/types/task';
 import { TaskCard } from '@/components/TaskCard/TaskCard';
-
-type Task = {
-  id: number;
-  description: string;
-  inn: string;
-  phone: string;
-  status: 'new' | 'in_progress' | 'completed' | 'waiting';
-};
 
 type TaskColumnProps = {
   title: string;

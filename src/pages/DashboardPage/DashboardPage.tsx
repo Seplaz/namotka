@@ -1,25 +1,22 @@
+import { useState } from 'react';
 import { Dashboard } from '@/components/Dashboard/Dashboard';
+import { createTask, type NewTaskData } from '@/services/tasksService';
+
+type Task = {
+  id: string;
+  description: string;
+  inn: string;
+  phone: string;
+  status: 'new' | 'in_progress' | 'completed' | 'waiting';
+};
 
 export function DashboardPage() {
-  const tasks = [
-    {
-      id: 1,
-      description: 'Помочь с регистрацией в Диадоке',
-      inn: '6658497833',
-      phone: '88005000899',
-      status: 'new' as const,
-    },
-    {
-      id: 2,
-      description: 'Сделать МЧД на сотрудника для ЭДО и Логистики',
-      inn: '6658497833',
-      phone: '88005000899',
-      status: 'in_progress' as const,
-    },
-  ];
+  const [tasks, setTasks] = useState<Task[]>([]);
 
-  function handleCreateTask() {
-    // модальное окно
+  async function handleCreateTask(data: NewTaskData) {
+    const createdTask = await createTask(data);
+
+    setTasks((currentTasks) => [...currentTasks, createdTask as Task]);
   }
 
   return <Dashboard tasks={tasks} onCreateTask={handleCreateTask} />;

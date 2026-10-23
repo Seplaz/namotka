@@ -1,5 +1,7 @@
 import styles from '@/components/NewTask/NewTask.module.css';
 import { useState, type FormEvent } from 'react';
+import { useToast } from '@/hooks/useToast';
+import type { NewTaskData } from '@/services/tasksService';
 import { X, Check } from 'lucide-react';
 import { FormField } from '@/components/FormField/FormField';
 import { Input } from '@/components/Input/Input';
@@ -10,6 +12,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 
 type NewTaskProps = {
   onClose: () => void;
+  onSubmit: (data: NewTaskData) => Promise<void>;
 };
 
 const formVariants = {
@@ -43,7 +46,8 @@ const scheduleTransition = {
   },
 };
 
-export function NewTask({ onClose }: NewTaskProps) {
+export function NewTask({ onClose, onSubmit }: NewTaskProps) {
+  const { showToast } = useToast();
   const [inn, setInn] = useState('');
   const [phone, setPhone] = useState('');
   const [description, setDescription] = useState('');
@@ -53,6 +57,7 @@ export function NewTask({ onClose }: NewTaskProps) {
   const [innError, setInnError] = useState('');
   const [phoneError, setPhoneError] = useState('');
   const [scheduleError, setScheduleError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   function normalizePhone(value: string): string | null {
     const digits = value.replace(/\D/g, '');
@@ -84,8 +89,10 @@ export function NewTask({ onClose }: NewTaskProps) {
     description.trim() !== '' &&
     isScheduleValid;
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    if (isSubmitting) return;
 
     const normalizedInn = inn.trim();
     const normalizedPhone = normalizePhone(phone);
@@ -126,12 +133,27 @@ export function NewTask({ onClose }: NewTaskProps) {
       scheduledAt = localDateTime.toISOString();
     }
 
-    console.log({
-      inn: normalizedInn,
-      phone: normalizedPhone,
-      description: normalizedDescription,
-      scheduledAt,
-    });
+    setIsSubmitting(true);
+
+    try {
+      await onSubmit({
+        inn: normalizedInn,
+        phone: normalizedPhone,
+        description: normalizedDescription,
+        scheduledAt,
+      });
+
+      showToast({ type: 'success', message: 'Намотка успешно создана' });
+      onClose();
+    } catch (error) {
+      console.error('Не удалось создать намотку:', error);
+      showToast({
+        type: 'error',
+        message: 'Не удалось сохранить намотку. Попробуйте ещё раз.',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   function getLocalDate(offset = 0) {
@@ -322,8 +344,8 @@ export function NewTask({ onClose }: NewTaskProps) {
           )}
         </AnimatePresence>
 
-        <Button type="submit" disabled={!isFormValid}>
-          Намотать
+        <Button type="submit" disabled={!isFormValid || isSubmitting}>
+          {isSubmitting ? 'Отправляем намотку...' : 'Намотать'}
         </Button>
       </motion.form>
     </div>

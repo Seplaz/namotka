@@ -1,22 +1,17 @@
 import styles from '@/components/Dashboard/Dashboard.module.css';
 import { useState } from 'react';
+import type { Task } from '@/types/task';
+import type { NewTaskData } from '@/services/tasksService';
 import { TaskColumn } from '@/components/TaskColumn/TaskColumn';
 import { Button } from '@/components/Button/Button';
 import { Modal } from '@/components/Modal/Modal';
 import { NewTask } from '@/components/NewTask/NewTask';
 import { AnimatePresence } from 'motion/react';
 
-type Task = {
-  id: number;
-  description: string;
-  inn: string;
-  phone: string;
-  status: 'new' | 'in_progress' | 'completed' | 'waiting';
-};
 
 type DashboardProps = {
   tasks: Task[];
-  onCreateTask: () => void;
+  onCreateTask: (data: NewTaskData) => Promise<void>;
 };
 
 export function Dashboard({ tasks, onCreateTask }: DashboardProps) {
@@ -33,20 +28,11 @@ export function Dashboard({ tasks, onCreateTask }: DashboardProps) {
     setIsModalOpen(false);
   }
 
-  function handleCreateTask() {
-    onCreateTask();
-    handleCloseModal();
-  }
-
   return (
     <main className={styles.dashboard}>
       <TaskColumn title="Новые" tasks={newTasks} emptyMessage="Намоток нет" />
 
-      <TaskColumn
-        title="В работе"
-        tasks={inProgressTasks}
-        emptyMessage="Наконец то нет работы и можно бездельничать"
-      />
+      <TaskColumn title="В работе" tasks={inProgressTasks} emptyMessage="Наконец то нет работы и можно бездельничать" />
 
       <Button type="button" onClick={handleOpenModal}>
         Новая намотка
@@ -55,7 +41,7 @@ export function Dashboard({ tasks, onCreateTask }: DashboardProps) {
       <AnimatePresence>
         {isModalOpen && (
           <Modal onClose={handleCloseModal} titleId="new-task-title">
-            <NewTask onClose={handleCloseModal} />
+            <NewTask onClose={handleCloseModal} onSubmit={onCreateTask} />
           </Modal>
         )}
       </AnimatePresence>
