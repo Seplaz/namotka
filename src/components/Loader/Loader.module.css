@@ -7,7 +7,7 @@
 }
 
 .loader svg {
-  animation: spin 1s linear infinite;
+  animation: spin 0.45s linear infinite;
 }
 
 @keyframes spin {
