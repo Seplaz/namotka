@@ -8,13 +8,17 @@ import { Modal } from '@/components/Modal/Modal';
 import { NewTask } from '@/components/NewTask/NewTask';
 import { AnimatePresence } from 'motion/react';
 
-
 type DashboardProps = {
   tasks: Task[];
   onCreateTask: (data: NewTaskData) => Promise<void>;
+  onStartTask: (taskId: string) => Promise<void>;
 };
 
-export function Dashboard({ tasks, onCreateTask }: DashboardProps) {
+export function Dashboard({
+  tasks,
+  onCreateTask,
+  onStartTask,
+}: DashboardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const newTasks = tasks.filter((task) => task.status === 'new');
@@ -30,9 +34,19 @@ export function Dashboard({ tasks, onCreateTask }: DashboardProps) {
 
   return (
     <main className={styles.dashboard}>
-      <TaskColumn title="Новые" tasks={newTasks} emptyMessage="Намоток нет" />
+      <TaskColumn
+        title="Новые"
+        tasks={newTasks}
+        emptyMessage="Намоток нет"
+        onStartTask={onStartTask}
+      />
 
-      <TaskColumn title="В работе" tasks={inProgressTasks} emptyMessage="Наконец то нет работы и можно бездельничать" />
+      <TaskColumn
+        title="В работе"
+        tasks={inProgressTasks}
+        emptyMessage="Наконец-то нет работы и можно бездельничать"
+        onStartTask={onStartTask}
+      />
 
       <Button type="button" onClick={handleOpenModal}>
         Новая намотка

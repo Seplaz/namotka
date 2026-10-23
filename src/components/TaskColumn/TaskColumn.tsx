@@ -7,6 +7,7 @@ type TaskColumnProps = {
   tasks: Task[];
   emptyImage?: string;
   emptyMessage?: string;
+  onStartTask: (taskId: string) => Promise<void>;
 };
 
 export function TaskColumn({
@@ -14,6 +15,7 @@ export function TaskColumn({
   tasks,
   emptyImage,
   emptyMessage,
+  onStartTask
 }: TaskColumnProps) {
   return (
     <section className={styles.column}>
@@ -27,7 +29,7 @@ export function TaskColumn({
             {emptyMessage && <p>{emptyMessage}</p>}
           </div>
         ) : (
-          tasks.map((task) => <TaskCard key={task.id} {...task} />)
+          tasks.map((task) => <TaskCard key={task.id} {...task} onStartTask={onStartTask} />)
         )}
       </div>
     </section>

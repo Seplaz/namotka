@@ -1,5 +1,6 @@
 import styles from '@/components/TaskCard/TaskCard.module.css';
 import { useState } from 'react';
+import { useToast } from '@/hooks/useToast';
 import { Check, Copy, Undo2 } from 'lucide-react';
 import { Button } from '../Button/Button';
 import { TaskStatus } from '../TaskStatus/TaskStatus';
@@ -16,6 +17,7 @@ type TaskCardProps = {
   status: TaskStatusValue;
   scheduled_at: string | null;
   created_at: string;
+  onStartTask: (taskId: string) => Promise<void>;
 };
 
 const contentVariants = {
@@ -30,15 +32,20 @@ const contentVariants = {
 };
 
 export function TaskCard({
+  id,
   task_number,
   description,
   inn,
   phone,
   status,
   scheduled_at,
+  onStartTask,
 }: TaskCardProps) {
+  const { showToast } = useToast();
+
   const [expanded, setExpanded] = useState(false);
   const [copiedField, setCopiedField] = useState<'inn' | 'phone' | null>(null);
+  const [isStarting, setIsStarting] = useState(false);
 
   const isNew = status === 'new';
   const isWaiting = status === 'waiting';
@@ -77,6 +84,21 @@ export function TaskCard({
       }).format(new Date(scheduled_at))
     : null;
 
+  async function handleStart() {
+    try {
+      setIsStarting(true);
+      await onStartTask(id);
+    } catch (error) {
+      console.error('Не удалось начать задачу:', error);
+      showToast({
+        type: 'error',
+        message: 'Не удалось начать задачу.',
+      });
+    } finally {
+      setIsStarting(false);
+    }
+  }
+
   return (
     <article className={styles.card}>
       <button
@@ -85,7 +107,7 @@ export function TaskCard({
         onClick={() => setExpanded((prev) => !prev)}
       >
         <div className={styles.preview}>
-          <span className={styles.number}>#{task_number}</span>
+          <span className={styles.number}># {task_number}</span>
 
           <div className={styles.schedule}>
             <span className={styles.title}>Время звонка</span>
@@ -166,8 +188,12 @@ export function TaskCard({
             {hasActions && (
               <div className={styles.actions}>
                 {(isNew || isWaiting) && (
-                  <Button type="button" onClick={() => {}}>
-                    Начать
+                  <Button
+                    type="button"
+                    onClick={handleStart}
+                    disabled={isStarting}
+                  >
+                    {isStarting ? 'Наматываемся...' : 'Намотаться'}
                   </Button>
                 )}
 

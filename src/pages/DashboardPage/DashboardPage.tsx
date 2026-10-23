@@ -4,6 +4,7 @@ import { Loader } from '@/components/Loader/Loader';
 import {
   createTask,
   getTasks,
+  updateTaskStatus,
   type NewTaskData,
 } from '@/services/tasksService';
 import type { Task } from '@/types/task';
@@ -54,6 +55,14 @@ export function DashboardPage() {
     setTasks((currentTasks) => [createdTask as Task, ...currentTasks]);
   }
 
+  async function handleStartTask(taskId: string) {
+    const updatedTask = await updateTaskStatus(taskId, 'in_progress');
+
+    setTasks((currentTasks) =>
+      currentTasks.map((task) => (task.id === taskId ? updatedTask : task)),
+    );
+  }
+
   if (isLoading) {
     return <Loader />;
   }
@@ -69,5 +78,5 @@ export function DashboardPage() {
     );
   }
 
-  return <Dashboard tasks={tasks} onCreateTask={handleCreateTask} />;
+  return <Dashboard tasks={tasks} onCreateTask={handleCreateTask} onStartTask={handleStartTask} />;
 }
