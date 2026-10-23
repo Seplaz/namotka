@@ -1,4 +1,10 @@
+.wrapper {
+  position: relative;
+  inline-size: 100%;
+}
+
 .textarea {
+  display: block;
   padding: 12px;
   border: 2px solid #292929;
   border-radius: 12px;
@@ -13,6 +19,12 @@
   inline-size: 100%;
   min-inline-size: 0;
   min-block-size: 96px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.textarea::-webkit-scrollbar {
+  display: none;
 }
 
 .textarea::placeholder {
@@ -26,4 +38,12 @@
 
 .textarea:focus {
   border-color: #8b5cf6;
+}
+
+.counter {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  font-size: 12px;
+  color: #737373;
 }

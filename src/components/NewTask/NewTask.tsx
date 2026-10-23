@@ -5,6 +5,7 @@ import { FormField } from '@/components/FormField/FormField';
 import { Input } from '@/components/Input/Input';
 import { Textarea } from '../Textarea/Textarea';
 import { Button } from '@/components/Button/Button';
+import { AnimatedError } from '@/components/AnimatedError/AnimatedError';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 
 type NewTaskProps = {
@@ -49,21 +50,87 @@ export function NewTask({ onClose }: NewTaskProps) {
   const [scheduleCall, setScheduleCall] = useState(false);
   const [scheduledDate, setScheduledDate] = useState('');
   const [scheduledTime, setScheduledTime] = useState('');
+  const [innError, setInnError] = useState('');
+  const [phoneError, setPhoneError] = useState('');
+  const [scheduleError, setScheduleError] = useState('');
+
+  function normalizePhone(value: string): string | null {
+    const digits = value.replace(/\D/g, '');
+
+    if (digits.length === 10) {
+      return `8${digits}`;
+    }
+
+    if (digits.length === 11 && digits.startsWith('7')) {
+      return `8${digits.slice(1)}`;
+    }
+
+    if (digits.length === 11 && digits.startsWith('8')) {
+      return digits;
+    }
+
+    return null;
+  }
+
+  const isScheduleValid =
+    !scheduleCall ||
+    (scheduledDate !== '' &&
+      scheduledTime !== '' &&
+      scheduledDate >= getLocalDate());
 
   const isFormValid =
-    inn.trim() !== '' && phone.trim() !== '' && description.trim() !== '';
+    /^(\d{10}|\d{12})$/.test(inn.trim()) &&
+    normalizePhone(phone) !== null &&
+    description.trim() !== '' &&
+    isScheduleValid;
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if (!isFormValid) return;
+    const normalizedInn = inn.trim();
+    const normalizedPhone = normalizePhone(phone);
+    const normalizedDescription = description.trim();
+
+    const isInnValid = /^(\d{10}|\d{12})$/.test(normalizedInn);
+
+    setInnError(isInnValid ? '' : 'ИНН должен содержать 10 или 12 цифр');
+
+    setPhoneError(normalizedPhone ? '' : 'Введите корректный номер телефона');
+
+    if (!isInnValid || !normalizedPhone || !normalizedDescription) {
+      return;
+    }
+
+    if (scheduleCall && (!scheduledDate || !scheduledTime)) {
+      setScheduleError('Укажи дату и время звонка');
+      return;
+    }
+
+    setScheduleError('');
+
+    let scheduledAt: string | null = null;
+
+    if (scheduleCall) {
+      const localDateTime = new Date(`${scheduledDate}T${scheduledTime}`);
+
+      if (Number.isNaN(localDateTime.getTime())) {
+        setScheduleError('Укажи корректную дату и время');
+        return;
+      }
+
+      if (localDateTime.getTime() <= Date.now()) {
+        setScheduleError('Дата и время звонка должны быть в будущем');
+        return;
+      }
+
+      scheduledAt = localDateTime.toISOString();
+    }
 
     console.log({
-      inn: inn.trim(),
-      phone: phone.trim(),
-      description: description.trim(),
-      scheduledDate: scheduledDate || null,
-      scheduledTime: scheduledTime || null,
+      inn: normalizedInn,
+      phone: normalizedPhone,
+      description: normalizedDescription,
+      scheduledAt,
     });
   }
 
@@ -80,6 +147,7 @@ export function NewTask({ onClose }: NewTaskProps) {
 
   function handleDateChange(value: string) {
     setScheduledDate(value);
+    setScheduleError('');
 
     if (!value) {
       setScheduledTime('');
@@ -120,11 +188,24 @@ export function NewTask({ onClose }: NewTaskProps) {
             type="text"
             name="inn"
             inputMode="numeric"
-            placeholder="Введите ИНН"
+            autoComplete="off"
+            placeholder="10 или 12 цифр"
             value={inn}
-            onChange={(event) => setInn(event.target.value)}
+            maxLength={12}
+            onChange={(event) => {
+              const value = event.target.value.replace(/\D/g, '').slice(0, 12);
+              setInn(value);
+              setInnError(
+                value.length > 0 && value.length !== 10 && value.length !== 12
+                  ? 'ИНН должен содержать 10 или 12 цифр'
+                  : '',
+              );
+            }}
+            aria-invalid={Boolean(innError)}
+            aria-describedby={innError ? 'inn-error' : undefined}
             required
           />
+          <AnimatedError id="inn-error" message={innError} />
         </FormField>
 
         <FormField label="Телефон" htmlFor="phone">
@@ -132,12 +213,28 @@ export function NewTask({ onClose }: NewTaskProps) {
             id="phone"
             type="tel"
             name="phone"
+            inputMode="tel"
             autoComplete="tel"
-            placeholder="Введите номер"
+            placeholder="+7 (900) 123-45-67"
             value={phone}
-            onChange={(event) => setPhone(event.target.value)}
+            onChange={(event) => {
+              const value = event.target.value;
+              setPhone(value);
+
+              if (!value.trim()) {
+                setPhoneError('');
+                return;
+              }
+
+              setPhoneError(
+                normalizePhone(value) ? '' : 'Введите номер из 10 или 11 цифр',
+              );
+            }}
+            aria-invalid={Boolean(phoneError)}
+            aria-describedby={phoneError ? 'phone-error' : undefined}
             required
           />
+          <AnimatedError id="phone-error" message={phoneError} />
         </FormField>
 
         <FormField label="Суть намотки" htmlFor="description">
@@ -149,6 +246,7 @@ export function NewTask({ onClose }: NewTaskProps) {
             onChange={(event) => setDescription(event.target.value)}
             rows={3}
             maxLength={1000}
+            showCounter
             required
           />
         </FormField>
@@ -164,6 +262,7 @@ export function NewTask({ onClose }: NewTaskProps) {
               if (!checked) {
                 setScheduledDate('');
                 setScheduledTime('');
+                setScheduleError('');
               }
             }}
           />
@@ -208,12 +307,16 @@ export function NewTask({ onClose }: NewTaskProps) {
                     type="time"
                     name="scheduledTime"
                     value={scheduledTime}
-                    onChange={(event) => setScheduledTime(event.target.value)}
+                    onChange={(event) => {
+                      setScheduledTime(event.target.value);
+                      setScheduleError('');
+                    }}
                     disabled={!scheduledDate}
                     aria-label="Время звонка"
                     required
                   />
                 </div>
+                <AnimatedError message={scheduleError} />
               </FormField>
             </motion.div>
           )}
