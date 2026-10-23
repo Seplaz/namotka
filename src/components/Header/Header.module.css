@@ -7,6 +7,7 @@
 .logo {
   display: block;
   user-select: none;
+  block-size: 32px;
 }
 
 @media (max-width: 768px) {
