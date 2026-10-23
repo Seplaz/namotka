@@ -58,8 +58,8 @@ export function TaskCard({
   const transition = shouldReduceMotion
     ? { duration: 0 }
     : {
-        height: { duration: 0.3, ease: 'easeInOut' as const },
-        opacity: { duration: 0.2, ease: 'easeOut' as const },
+        height: { duration: 0.15, ease: 'easeInOut' as const },
+        opacity: { duration: 0.15, ease: 'easeOut' as const },
       };
 
   return (
