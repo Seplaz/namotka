@@ -52,7 +52,7 @@ export function Dashboard({
       <TaskColumn
         title="В работе"
         tasks={inProgressTasks}
-        emptyMessage="Наконец-то нет работы и можно бездельничать"
+        emptyMessage="В работе ничего нет, но стоит ли наматываться?"
         onStartTask={onStartTask}
         onReturnTask={onReturnTask}
       />

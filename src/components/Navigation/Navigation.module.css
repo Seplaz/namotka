@@ -4,6 +4,10 @@
   gap: 24px;
 }
 
+.username {
+  font-weight: 500;
+}
+
 .logout {
   padding: 0;
   border: none;
