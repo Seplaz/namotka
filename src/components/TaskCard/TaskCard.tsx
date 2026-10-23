@@ -193,7 +193,7 @@ export function TaskCard({
                     onClick={handleStart}
                     disabled={isStarting}
                   >
-                    {isStarting ? 'Наматываемся...' : 'Намотаться'}
+                    {isStarting ? 'Идёт намотка...' : 'Намотаться'}
                   </Button>
                 )}
 
