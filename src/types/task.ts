@@ -1,11 +1,17 @@
-export type TaskStatus = 'new' | 'in_progress' | 'completed' | 'waiting';
+export type TaskStatus =
+  | 'new'
+  | 'in_progress'
+  | 'completed'
+  | 'waiting'
+  | 'cancelled';
 
 export function isTaskStatus(status: string): status is TaskStatus {
   return (
     status === 'new' ||
     status === 'in_progress' ||
     status === 'completed' ||
-    status === 'waiting'
+    status === 'waiting' ||
+    status === 'cancelled'
   );
 }
 

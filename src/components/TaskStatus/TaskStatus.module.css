@@ -36,6 +36,11 @@
   color: #4ade80;
 }
 
+.cancelled {
+  background-color: #450a0a;
+  color: #f87171;
+}
+
 .in_progress svg {
   animation: spin 0.45s linear infinite;
 }

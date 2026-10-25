@@ -7,8 +7,8 @@ type TaskColumnProps = {
   tasks: Task[];
   emptyImage?: string;
   emptyMessage?: string;
-  onStartTask: (taskId: string) => Promise<void>;
-  onReturnTask: (taskId: string) => Promise<void>;
+  onStartTask?: (taskId: string) => Promise<void>;
+  onReturnTask?: (taskId: string) => Promise<void>;
 };
 
 export function TaskColumn({
@@ -27,7 +27,6 @@ export function TaskColumn({
         {tasks.length === 0 ? (
           <div className={styles.empty}>
             {emptyImage && <img src={emptyImage} alt="" />}
-
             {emptyMessage && <p>{emptyMessage}</p>}
           </div>
         ) : (

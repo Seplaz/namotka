@@ -1,7 +1,12 @@
 import styles from '@/components/TaskStatus/TaskStatus.module.css';
-import { Circle, CircleCheck, CircleDashed, LoaderCircle } from 'lucide-react';
-
-type TaskStatusValue = 'new' | 'waiting' | 'in_progress' | 'completed';
+import {
+  Circle,
+  CircleCheck,
+  CircleDashed,
+  CircleX,
+  LoaderCircle,
+} from 'lucide-react';
+import type { TaskStatus as TaskStatusValue } from '@/types/task';
 
 type TaskStatusProps = {
   status: TaskStatusValue;
@@ -23,6 +28,10 @@ const statusConfig = {
   completed: {
     label: 'Завершено',
     icon: CircleCheck,
+  },
+  cancelled: {
+    label: 'Отменено',
+    icon: CircleX,
   },
 } satisfies Record<TaskStatusValue, { label: string; icon: typeof Circle }>;
 

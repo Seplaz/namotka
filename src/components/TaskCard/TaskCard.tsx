@@ -5,8 +5,7 @@ import { Check, Copy, Undo2, ArrowRight } from 'lucide-react';
 import { Button } from '../Button/Button';
 import { TaskStatus } from '../TaskStatus/TaskStatus';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
-
-type TaskStatusValue = 'new' | 'waiting' | 'in_progress' | 'completed';
+import type { TaskStatus as TaskStatusValue } from '@/types/task';
 
 type TaskCardProps = {
   id: string;
@@ -19,8 +18,8 @@ type TaskCardProps = {
   created_at: string;
   assigned_to: string | null;
   assigneeName: string | null;
-  onStartTask: (taskId: string) => Promise<void>;
-  onReturnTask: (taskId: string) => Promise<void>;
+  onStartTask?: (taskId: string) => Promise<void>;
+  onReturnTask?: (taskId: string) => Promise<void>;
 };
 
 const contentVariants = {
@@ -92,6 +91,8 @@ export function TaskCard({
     : null;
 
   async function handleStart() {
+    if (!onStartTask) return;
+
     try {
       setIsStarting(true);
       await onStartTask(id);
@@ -107,9 +108,10 @@ export function TaskCard({
   }
 
   async function handleReturn() {
+    if (!onReturnTask) return;
+
     try {
       setIsReturning(true);
-
       await onReturnTask(id);
 
       showToast({
