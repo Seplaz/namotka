@@ -9,4 +9,6 @@ export type Task = {
   status: TaskStatus;
   scheduled_at: string | null;
   created_at: string;
+  assigned_to: string | null;
+  assigneeName: string | null;
 };
