@@ -1,7 +1,7 @@
 import styles from '@/components/TaskCard/TaskCard.module.css';
 import { useState } from 'react';
 import { useToast } from '@/hooks/useToast';
-import { Check, Copy, Undo2 } from 'lucide-react';
+import { Check, Copy, Undo2, ArrowRight } from 'lucide-react';
 import { Button } from '../Button/Button';
 import { TaskStatus } from '../TaskStatus/TaskStatus';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
@@ -226,6 +226,8 @@ export function TaskCard({
                 {(isNew || isWaiting) && (
                   <Button
                     type="button"
+                    icon={<ArrowRight size={16} />}
+                    // iconPosition="right"
                     onClick={handleStart}
                     disabled={isStarting}
                   >
@@ -244,7 +246,11 @@ export function TaskCard({
                       {isReturning ? 'Возвращаем...' : 'Вернуть'}
                     </Button>
 
-                    <Button type="button" onClick={() => {}}>
+                    <Button
+                      type="button"
+                      icon={<Check size={16} />}
+                      onClick={() => {}}
+                    >
                       Завершить
                     </Button>
                   </>

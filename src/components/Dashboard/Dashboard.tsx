@@ -7,6 +7,7 @@ import { Button } from '@/components/Button/Button';
 import { Modal } from '@/components/Modal/Modal';
 import { NewTask } from '@/components/NewTask/NewTask';
 import { AnimatePresence } from 'motion/react';
+import { Plus } from 'lucide-react';
 
 type DashboardProps = {
   tasks: Task[];
@@ -57,7 +58,11 @@ export function Dashboard({
         onReturnTask={onReturnTask}
       />
 
-      <Button type="button" onClick={handleOpenModal}>
+      <Button
+        type="button"
+        icon={<Plus size={16} />}
+        onClick={handleOpenModal}
+      >
         Новая намотка
       </Button>
 

@@ -1,5 +1,6 @@
 import { supabase } from '@/lib/supabase';
-import type { Task, TaskStatus } from '@/types/task';
+import type { Tables } from '@/types/database.types';
+import { isTaskStatus, type Task, type TaskStatus } from '@/types/task';
 
 const TASK_SELECT = `
   id,
@@ -14,6 +15,21 @@ const TASK_SELECT = `
   assignee:profiles!tasks_assigned_to_fkey(username)
 `;
 
+type TaskRow = Pick<
+  Tables<'tasks'>,
+  | 'id'
+  | 'task_number'
+  | 'description'
+  | 'inn'
+  | 'phone'
+  | 'status'
+  | 'scheduled_at'
+  | 'created_at'
+  | 'assigned_to'
+> & {
+  assignee: { username: string } | null;
+};
+
 export type NewTaskData = {
   inn: string;
   phone: string;
@@ -21,16 +37,10 @@ export type NewTaskData = {
   scheduledAt: string | null;
 };
 
-type TaskWithAssignee = Omit<Task, 'assigneeName'> & {
-  assignee: { username: string | null }[] | { username: string | null } | null;
-};
-
-function mapTaskToTask(task: TaskWithAssignee): Task {
-  const assignee = task.assignee;
-
-  const assigneeName = Array.isArray(assignee)
-    ? (assignee[0]?.username ?? null)
-    : (assignee?.username ?? null);
+function mapTaskToTask(task: TaskRow): Task {
+  if (!isTaskStatus(task.status)) {
+    throw new Error(`Неизвестный статус задачи: ${task.status}`);
+  }
 
   return {
     id: task.id,
@@ -42,7 +52,7 @@ function mapTaskToTask(task: TaskWithAssignee): Task {
     scheduled_at: task.scheduled_at,
     created_at: task.created_at,
     assigned_to: task.assigned_to,
-    assigneeName,
+    assigneeName: task.assignee?.username ?? null,
   };
 }
 
@@ -73,7 +83,7 @@ export async function createTask(data: NewTaskData): Promise<Task> {
 
   if (error) throw error;
 
-  return mapTaskToTask(task);
+  return mapTaskToTask(task as TaskRow);
 }
 
 export async function getTasks(): Promise<Task[]> {
@@ -84,7 +94,7 @@ export async function getTasks(): Promise<Task[]> {
 
   if (error) throw error;
 
-  return (data ?? []).map(mapTaskToTask);
+  return (data ?? []).map((task) => mapTaskToTask(task as TaskRow));
 }
 
 export async function updateTaskStatus(
@@ -104,18 +114,10 @@ export async function updateTaskStatus(
 
   const updates =
     status === 'in_progress'
-      ? {
-          status,
-          assigned_to: user.id,
-        }
+      ? { status, assigned_to: user.id }
       : status === 'waiting'
-        ? {
-            status,
-            assigned_to: null,
-          }
-        : {
-            status,
-          };
+        ? { status, assigned_to: null }
+        : { status };
 
   const { data: task, error } = await supabase
     .from('tasks')
@@ -126,5 +128,5 @@ export async function updateTaskStatus(
 
   if (error) throw error;
 
-  return mapTaskToTask(task);
+  return mapTaskToTask(task as TaskRow);
 }
