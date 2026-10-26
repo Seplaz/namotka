@@ -4,7 +4,7 @@
   gap: 24px;
   padding: 24px;
   border-radius: 24px;
-  background-color: #1c1c1c;
+  background-color: var(--color-surface);
   min-inline-size: 345px;
   max-inline-size: 390px;
 }
@@ -30,16 +30,16 @@
 }
 
 .number {
-  color: #f5f5f5;
+  color: var(--color-text-primary);
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .schedule {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  color: #a3a3a3;
+  color: var(--color-text-secondary);
 }
 
 .title {
@@ -58,7 +58,7 @@
 }
 
 .description {
-  color: #a3a3a3;
+  color: var(--color-text-secondary);
   font-size: 16px;
 }
 
@@ -83,7 +83,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  color: #a3a3a3;
+  color: var(--color-text-secondary);
 }
 
 .copy {

@@ -25,19 +25,19 @@
 }
 
 .success {
-  border-color: #064525;
-  background-color: #002b16;
-  color: #4ade80;
+  border-color: var(--color-toast-success-border);
+  background-color: var(--color-toast-success-bg);
+  color: var(--color-toast-success-text);
 }
 
 .warning {
-  border-color: #713f12;
-  background-color: #422006;
-  color: #fbbf24;
+  border-color: var(--color-toast-warning-border);
+  background-color: var(--color-toast-warning-bg);
+  color: var(--color-toast-warning-text);
 }
 
 .error {
-  border-color: #7f1d1d;
-  background-color: #450a0a;
-  color: #f87171;
+  border-color: var(--color-toast-error-border);
+  background-color: var(--color-toast-error-bg);
+  color: var(--color-toast-error-text);
 }

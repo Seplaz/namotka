@@ -6,11 +6,11 @@
   padding: 12px 24px;
   border: none;
   border-radius: 12px;
-  background-color: #e5e5e5;
-  color: #171717;
+  background-color: var(--color-button-background);
+  color: var(--color-button-text);
   font-size: 16px;
   font-weight: 500;
-  transition: background-color 150ms ease;
+  transition: background-color 150ms ease, color 150ms ease;
   min-block-size: 45px;
   block-size: min-content;
   inline-size: 100%;
@@ -21,15 +21,17 @@
 }
 
 .button:hover {
-  background-color: #fafafa;
+  background-color: var(--color-button-background-hover);
+  color: var(--color-button-text-hover);
 }
 
 .button:active {
-  background-color: #d4d4d4;
+  background-color: var(--color-button-background-active);
+  color: var(--color-button-text-active);
 }
 
 .button:disabled {
-  background-color: #262626;
-  color: #737373;
+  background-color: var(--color-button-background-disabled);
+  color: var(--color-button-text-disabled);
   cursor: not-allowed;
 }
