@@ -1,3 +1,4 @@
+import styles from '@/components/ToastProvider/ToastProvider.module.css';
 import {
   useCallback,
   useEffect,
@@ -8,8 +9,6 @@ import {
 
 import { Toast } from '@/components/Toast/Toast';
 import { ToastContext, type ToastOptions } from '@/contexts/ToastContext';
-
-import styles from '@/components/ToastProvider/ToastProvider.module.css';
 
 const MAX_TOASTS = 3;
 const DEFAULT_DURATION = 3000;

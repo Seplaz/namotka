@@ -101,32 +101,23 @@ export async function updateTaskStatus(
   taskId: string,
   status: TaskStatus,
 ): Promise<Task> {
-  const {
-    data: { user },
-    error: userError,
-  } = await supabase.auth.getUser();
+  const { error } = await supabase.rpc('change_task_status', {
+    p_task_id: taskId,
+    p_new_status: status,
+  });
 
-  if (userError) throw userError;
-
-  if (!user) {
-    throw new Error('Необходимо войти в учётную запись.');
+  if (error) {
+    throw error;
   }
 
-  const updates =
-    status === 'in_progress'
-      ? { status, assigned_to: user.id }
-      : status === 'waiting'
-        ? { status, assigned_to: null }
-        : { status };
+  const tasks = await getTasks();
+  const updatedTask = tasks.find((task) => task.id === taskId);
 
-  const { data: task, error } = await supabase
-    .from('tasks')
-    .update(updates)
-    .eq('id', taskId)
-    .select(TASK_SELECT)
-    .single();
+  if (!updatedTask) {
+    throw new Error(
+      'Статус изменён, но не удалось загрузить обновлённую задачу.',
+    );
+  }
 
-  if (error) throw error;
-
-  return mapTaskToTask(task as TaskRow);
+  return updatedTask;
 }

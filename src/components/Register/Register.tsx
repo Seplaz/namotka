@@ -10,6 +10,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { supabase } from '@/lib/supabase';
 import type { FormEvent } from 'react';
 import { useToast } from '@/hooks/useToast';
+import { AnimatedError } from '@/components/AnimatedError/AnimatedError';
 
 const formVariants = {
   hidden: { opacity: 0, scale: 0.7 },
@@ -20,17 +21,27 @@ const formVariants = {
   },
 };
 
+const EMAIL_DOMAIN_ERROR =
+  'Регистрация доступна только с почтой @kontur-irkutsk.ru.';
+
+function isCorporateEmail(email: string): boolean {
+  return /^[^\s@]+@kontur-irkutsk\.ru$/i.test(email.trim());
+}
+
 export function Register() {
   const { showToast } = useToast();
+
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [emailError, setEmailError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const isFormValid =
     name.trim().length >= 2 &&
     name.trim().length <= 60 &&
-    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()) &&
+    isCorporateEmail(email) &&
     password.length >= 8 &&
     password.length <= 128;
 
@@ -43,71 +54,91 @@ export function Register() {
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    const formData = new FormData(event.currentTarget);
+    if (!isFormValid || isSubmitting) {
+      return;
+    }
 
-    const name = String(formData.get('name') ?? '').trim();
-    const email = String(formData.get('email') ?? '').trim();
-    const password = String(formData.get('password') ?? '');
+    const normalizedName = name.trim();
+    const normalizedEmail = email.trim();
 
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: { name },
-      },
-    });
+    if (!isCorporateEmail(normalizedEmail)) {
+      setEmailError(EMAIL_DOMAIN_ERROR);
+      return;
+    }
 
-    if (error) {
-      if (error.code === 'over_email_send_rate_limit') {
-        showToast({
-          type: 'warning',
-          message:
-            'Слишком много попыток отправки письма. Подожди немного и попробуй позже.',
-        });
-      } else if (
-        error.code === 'user_already_exists' ||
-        error.code === 'email_exists'
-      ) {
+    setEmailError('');
+    setIsSubmitting(true);
+
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email: normalizedEmail,
+        password,
+        options: {
+          data: { name: normalizedName },
+        },
+      });
+
+      if (error) {
+        if (error.message.includes(EMAIL_DOMAIN_ERROR)) {
+          setEmailError(EMAIL_DOMAIN_ERROR);
+        } else if (error.code === 'over_email_send_rate_limit') {
+          showToast({
+            type: 'warning',
+            message:
+              'Слишком много попыток отправки письма. Подождите немного и попробуйте позже.',
+          });
+        } else if (
+          error.code === 'user_already_exists' ||
+          error.code === 'email_exists'
+        ) {
+          showToast({
+            type: 'error',
+            message: 'Возможно, аккаунт уже существует. Попробуйте войти.',
+          });
+        } else {
+          showToast({
+            type: 'error',
+            message: 'Не удалось зарегистрироваться. Попробуйте позже.',
+          });
+        }
+
+        return;
+      }
+
+      if (data.user && data.user.identities?.length === 0) {
         showToast({
           type: 'error',
-          message: 'Возможно, аккаунт уже существует. Попробуй войти.',
+          message: 'Этот email уже зарегистрирован. Попробуйте войти.',
+        });
+
+        return;
+      }
+
+      if (data.session) {
+        showToast({
+          type: 'success',
+          message: 'Регистрация прошла успешно.',
         });
       } else {
         showToast({
-          type: 'error',
-          message: 'Не удалось зарегистрироваться. Попробуй ещё раз позже.',
+          type: 'warning',
+          message: 'Проверьте почту для подтверждения аккаунта.',
         });
       }
-
-      return;
-    }
-
-    if (data.user && data.user.identities?.length === 0) {
+    } catch {
       showToast({
         type: 'error',
-        message: 'Этот email уже зарегистрирован. Попробуйте войти.',
+        message: 'Ошибка соединения. Проверьте интернет и попробуйте ещё раз.',
       });
-
-      return;
-    }
-
-    if (data.session) {
-      showToast({
-        type: 'success',
-        message: 'Регистрация прошла успешно.',
-      });
-    } else {
-      showToast({
-        type: 'warning',
-        message:
-          'Если регистрация возможна, проверьте почту для подтверждения аккаунта.',
-      });
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
   return (
     <div className={styles.register}>
       <Title className={styles.title}>Регистрация</Title>
+
       <motion.form
         className={styles.form}
         variants={formAnimation}
@@ -136,10 +167,25 @@ export function Register() {
             name="email"
             autoComplete="email"
             value={email}
-            onChange={(event) => setEmail(event.target.value)}
+            onChange={(event) => {
+              const value = event.target.value;
+              setEmail(value);
+
+              if (!value.trim()) {
+                setEmailError('');
+                return;
+              }
+
+              setEmailError(isCorporateEmail(value) ? '' : EMAIL_DOMAIN_ERROR);
+            }}
+            aria-invalid={Boolean(emailError)}
+            aria-describedby={emailError ? 'email-error' : undefined}
             required
           />
+
+          <AnimatedError id="email-error" message={emailError} />
         </FormField>
+
         <FormField label="Пароль" htmlFor="password">
           <div className={styles.password}>
             <Input
@@ -176,9 +222,10 @@ export function Register() {
           </div>
         </FormField>
 
-        <Button type="submit" disabled={!isFormValid}>
-          Зарегистрироваться
+        <Button type="submit" disabled={!isFormValid || isSubmitting}>
+          {isSubmitting ? 'Регистрируем...' : 'Зарегистрироваться'}
         </Button>
+
         <Link to="/login">Войти</Link>
       </motion.form>
     </div>

@@ -3,8 +3,11 @@ import { Archive } from '@/components/Archive/Archive';
 import { Loader } from '@/components/Loader/Loader';
 import { getTasks } from '@/services/tasksService';
 import type { Task } from '@/types/task';
+import { useToast } from '@/hooks/useToast';
 
 export function ArchivePage() {
+  const { showToast } = useToast();
+
   const [tasks, setTasks] = useState<Task[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -23,7 +26,11 @@ export function ArchivePage() {
           setTasks(loadedTasks);
         }
       } catch (error) {
-        console.error('Не удалось загрузить задачи:', error);
+        console.error('Не удалось загрузить намотки:', error);
+        showToast({
+          type: 'error',
+          message: 'Не удалось загрузить намотки.',
+        });
 
         if (isCurrent) {
           setLoadError(

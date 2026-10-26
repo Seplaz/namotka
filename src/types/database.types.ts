@@ -100,7 +100,28 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      change_task_status: {
+        Args: { p_new_status: string; p_task_id: string }
+        Returns: {
+          assigned_to: string | null
+          created_at: string
+          created_by: string
+          description: string
+          id: string
+          inn: string
+          phone: string
+          scheduled_at: string | null
+          status: string
+          task_number: number
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "tasks"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
     }
     Enums: {
       [_ in never]: never

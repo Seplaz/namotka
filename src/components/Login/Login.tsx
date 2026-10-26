@@ -56,7 +56,8 @@ export function Login() {
         if (error.code === 'email_not_confirmed') {
           showToast({
             type: 'warning',
-            message: 'Необходимо подтвердить email по ссылке из письма, чтобы войти.',
+            message:
+              'Необходимо подтвердить email по ссылке из письма, чтобы войти.',
           });
         } else if (error.code === 'invalid_credentials') {
           showToast({
@@ -66,7 +67,7 @@ export function Login() {
         } else {
           showToast({
             type: 'error',
-            message: 'Не удалось войти. Попробуй ещё раз позже.',
+            message: 'Не удалось войти. Попробуйте позже.',
           });
         }
 
@@ -88,7 +89,7 @@ export function Login() {
     } catch {
       showToast({
         type: 'error',
-        message: 'Ошибка соединения. Проверь интернет и попробуй ещё раз.',
+        message: 'Ошибка соединения. Проверьте интернет и попробуйте ещё раз.',
       });
     } finally {
       setIsSubmitting(false);

@@ -109,7 +109,7 @@ export function NewTask({ onClose, onSubmit }: NewTaskProps) {
     }
 
     if (scheduleCall && (!scheduledDate || !scheduledTime)) {
-      setScheduleError('Укажи дату и время звонка');
+      setScheduleError('Укажите дату и время звонка');
       return;
     }
 
@@ -121,7 +121,7 @@ export function NewTask({ onClose, onSubmit }: NewTaskProps) {
       const localDateTime = new Date(`${scheduledDate}T${scheduledTime}`);
 
       if (Number.isNaN(localDateTime.getTime())) {
-        setScheduleError('Укажи корректную дату и время');
+        setScheduleError('Укажите корректную дату и время');
         return;
       }
 

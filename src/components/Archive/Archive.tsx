@@ -16,7 +16,7 @@ export function Archive({ tasks }: ArchiveProps) {
       <TaskColumn
         title="Завершённые"
         tasks={completedTasks}
-        emptyMessage="Завершённых намоток пока нет"
+        emptyMessage="Завершённых намоток пока нет."
       />
 
       {/* <TaskColumn

@@ -100,10 +100,10 @@ export function TaskCard({
       setIsStarting(true);
       await onStartTask(id);
     } catch (error) {
-      console.error('Не удалось начать задачу:', error);
+      console.error('Не удалось начать намотку:', error);
       showToast({
         type: 'error',
-        message: 'Не удалось начать задачу.',
+        message: 'Не удалось начать намотку.',
       });
     } finally {
       setIsStarting(false);
@@ -119,13 +119,13 @@ export function TaskCard({
 
       showToast({
         type: 'success',
-        message: 'Задача возвращена в новые.',
+        message: 'намотку возвращена в новые.',
       });
     } catch (error) {
-      console.error('Не удалось вернуть задачу:', error);
+      console.error('Не удалось вернуть намотку:', error);
       showToast({
         type: 'error',
-        message: 'Не удалось вернуть задачу.',
+        message: 'Не удалось вернуть намотку.',
       });
     } finally {
       setIsReturning(false);
@@ -142,14 +142,14 @@ export function TaskCard({
 
       showToast({
         type: 'success',
-        message: 'Задача завершена и перенесена в архив.',
+        message: 'Намотка завершена и перенесена в архив.',
       });
     } catch (error) {
-      console.error('Не удалось завершить задачу:', error);
+      console.error('Не удалось завершить намотку:', error);
 
       showToast({
         type: 'error',
-        message: 'Не удалось завершить задачу.',
+        message: 'Не удалось завершить намотку.',
       });
     } finally {
       setIsCompleting(false);
