@@ -71,6 +71,14 @@ export function DashboardPage() {
     );
   }
 
+  async function handleCompleteTask(taskId: string) {
+    const updatedTask = await updateTaskStatus(taskId, 'completed');
+
+    setTasks((currentTasks) =>
+      currentTasks.map((task) => (task.id === taskId ? updatedTask : task)),
+    );
+  }
+
   if (isLoading) {
     return <Loader />;
   }
@@ -92,6 +100,7 @@ export function DashboardPage() {
       onCreateTask={handleCreateTask}
       onStartTask={handleStartTask}
       onReturnTask={handleReturnTask}
+      onCompleteTask={handleCompleteTask}
     />
   );
 }

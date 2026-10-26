@@ -26,11 +26,11 @@ const statusConfig = {
     icon: LoaderCircle,
   },
   completed: {
-    label: 'Завершено',
+    label: 'Завершена',
     icon: CircleCheck,
   },
   cancelled: {
-    label: 'Отменено',
+    label: 'Отменена',
     icon: CircleX,
   },
 } satisfies Record<TaskStatusValue, { label: string; icon: typeof Circle }>;

@@ -14,6 +14,7 @@ type DashboardProps = {
   onCreateTask: (data: NewTaskData) => Promise<void>;
   onStartTask: (taskId: string) => Promise<void>;
   onReturnTask: (taskId: string) => Promise<void>;
+  onCompleteTask: (taskId: string) => Promise<void>;
 };
 
 export function Dashboard({
@@ -21,6 +22,7 @@ export function Dashboard({
   onCreateTask,
   onStartTask,
   onReturnTask,
+  onCompleteTask,
 }: DashboardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -48,6 +50,7 @@ export function Dashboard({
         emptyMessage="Намоток нет"
         onStartTask={onStartTask}
         onReturnTask={onReturnTask}
+        onCompleteTask={onCompleteTask}
       />
 
       <TaskColumn
@@ -56,13 +59,10 @@ export function Dashboard({
         emptyMessage="В работе ничего нет, но стоит ли наматываться?"
         onStartTask={onStartTask}
         onReturnTask={onReturnTask}
+        onCompleteTask={onCompleteTask}
       />
 
-      <Button
-        type="button"
-        icon={<Plus size={16} />}
-        onClick={handleOpenModal}
-      >
+      <Button type="button" icon={<Plus size={16} />} onClick={handleOpenModal}>
         Новая намотка
       </Button>
 

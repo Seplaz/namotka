@@ -20,6 +20,7 @@ type TaskCardProps = {
   assigneeName: string | null;
   onStartTask?: (taskId: string) => Promise<void>;
   onReturnTask?: (taskId: string) => Promise<void>;
+  onCompleteTask?: (taskId: string) => Promise<void>;
 };
 
 const contentVariants = {
@@ -44,6 +45,7 @@ export function TaskCard({
   assigneeName,
   onStartTask,
   onReturnTask,
+  onCompleteTask,
 }: TaskCardProps) {
   const { showToast } = useToast();
 
@@ -52,6 +54,7 @@ export function TaskCard({
 
   const [isStarting, setIsStarting] = useState(false);
   const [isReturning, setIsReturning] = useState(false);
+  const [isCompleting, setIsCompleting] = useState(false);
 
   const isNew = status === 'new';
   const isWaiting = status === 'waiting';
@@ -126,6 +129,30 @@ export function TaskCard({
       });
     } finally {
       setIsReturning(false);
+    }
+  }
+
+  async function handleComplete() {
+    if (!onCompleteTask) return;
+
+    try {
+      setIsCompleting(true);
+
+      await onCompleteTask(id);
+
+      showToast({
+        type: 'success',
+        message: 'Задача завершена и перенесена в архив.',
+      });
+    } catch (error) {
+      console.error('Не удалось завершить задачу:', error);
+
+      showToast({
+        type: 'error',
+        message: 'Не удалось завершить задачу.',
+      });
+    } finally {
+      setIsCompleting(false);
     }
   }
 
@@ -229,7 +256,6 @@ export function TaskCard({
                   <Button
                     type="button"
                     icon={<ArrowRight size={16} />}
-                    // iconPosition="right"
                     onClick={handleStart}
                     disabled={isStarting}
                   >
@@ -251,9 +277,10 @@ export function TaskCard({
                     <Button
                       type="button"
                       icon={<Check size={16} />}
-                      onClick={() => {}}
+                      onClick={handleComplete}
+                      disabled={isCompleting || isReturning}
                     >
-                      Завершить
+                      {isCompleting ? 'Завершаем...' : 'Завершить'}
                     </Button>
                   </>
                 )}

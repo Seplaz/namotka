@@ -9,6 +9,7 @@ type TaskColumnProps = {
   emptyMessage?: string;
   onStartTask?: (taskId: string) => Promise<void>;
   onReturnTask?: (taskId: string) => Promise<void>;
+  onCompleteTask?: (taskId: string) => Promise<void>;
 };
 
 export function TaskColumn({
@@ -18,6 +19,7 @@ export function TaskColumn({
   emptyMessage,
   onStartTask,
   onReturnTask,
+  onCompleteTask,
 }: TaskColumnProps) {
   return (
     <section className={styles.column}>
@@ -36,6 +38,7 @@ export function TaskColumn({
               {...task}
               onStartTask={onStartTask}
               onReturnTask={onReturnTask}
+              onCompleteTask={onCompleteTask}
             />
           ))
         )}
