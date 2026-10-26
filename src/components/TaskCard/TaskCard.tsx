@@ -34,6 +34,28 @@ const contentVariants = {
   },
 };
 
+function CopyIcon({ copied }: { copied: boolean }) {
+  const shouldReduceMotion = useReducedMotion();
+
+  return (
+    <AnimatePresence mode="wait" initial={false}>
+      <motion.span
+        key={copied ? 'check' : 'copy'}
+        initial={shouldReduceMotion ? false : { opacity: 0, scale: 0.7 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={shouldReduceMotion ? undefined : { opacity: 0, scale: 0.7 }}
+        transition={{
+          duration: shouldReduceMotion ? 0 : 0.1,
+          ease: 'easeOut',
+        }}
+        style={{ display: 'inline-flex' }}
+      >
+        {copied ? <Check size={16} /> : <Copy size={16} />}
+      </motion.span>
+    </AnimatePresence>
+  );
+}
+
 export function TaskCard({
   id,
   task_number,
@@ -103,7 +125,7 @@ export function TaskCard({
       console.error('Не удалось начать намотку:', error);
       showToast({
         type: 'error',
-        message: 'Не удалось начать намотку.',
+        message: 'Не удалось начать намотку. И слава богу.',
       });
     } finally {
       setIsStarting(false);
@@ -218,11 +240,7 @@ export function TaskCard({
                     aria-label="Скопировать ИНН"
                     title="Скопировать ИНН"
                   >
-                    {copiedField === 'inn' ? (
-                      <Check size={16} />
-                    ) : (
-                      <Copy size={16} />
-                    )}
+                    <CopyIcon copied={copiedField === 'inn'} />
                   </button>
                 </div>
               </div>
@@ -240,11 +258,7 @@ export function TaskCard({
                     aria-label="Скопировать номер телефона"
                     title="Скопировать номер телефона"
                   >
-                    {copiedField === 'phone' ? (
-                      <Check size={16} />
-                    ) : (
-                      <Copy size={16} />
-                    )}
+                    <CopyIcon copied={copiedField === 'phone'} />
                   </button>
                 </div>
               </div>

@@ -143,13 +143,19 @@ export function NewTask({ onClose, onSubmit }: NewTaskProps) {
         scheduledAt,
       });
 
-      showToast({ type: 'success', message: 'Намотка успешно создана' });
+      showToast({
+        type: 'success',
+        message: 'Опять работать? Минус вайб...',
+      });
       onClose();
     } catch (error) {
-      console.error('Не удалось создать намотку:', error);
+      console.error(
+        'Поделом, намотка не удалась. А может и не надо? Ошибка:',
+        error,
+      );
       showToast({
         type: 'error',
-        message: 'Не удалось сохранить намотку. Попробуйте ещё раз.',
+        message: 'Поделом, намотка не удалась. А может и не надо?',
       });
     } finally {
       setIsSubmitting(false);

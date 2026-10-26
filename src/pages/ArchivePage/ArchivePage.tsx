@@ -29,7 +29,7 @@ export function ArchivePage() {
         console.error('Не удалось загрузить намотки:', error);
         showToast({
           type: 'error',
-          message: 'Не удалось загрузить намотки.',
+          message: 'Не удалось загрузить намотки. И не надо.',
         });
 
         if (isCurrent) {
