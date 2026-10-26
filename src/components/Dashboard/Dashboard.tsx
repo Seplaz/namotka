@@ -47,7 +47,7 @@ export function Dashboard({
       <TaskColumn
         title="Новые"
         tasks={newColumnTasks}
-        emptyMessage="Намоток нет"
+        emptyMessage="Намотки отсутствуют."
         onStartTask={onStartTask}
         onReturnTask={onReturnTask}
         onCompleteTask={onCompleteTask}

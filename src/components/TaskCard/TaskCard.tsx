@@ -119,7 +119,7 @@ export function TaskCard({
 
       showToast({
         type: 'success',
-        message: 'намотку возвращена в новые.',
+        message: 'Намотка возвращена в новые.',
       });
     } catch (error) {
       console.error('Не удалось вернуть намотку:', error);
