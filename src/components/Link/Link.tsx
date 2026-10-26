@@ -1,12 +1,19 @@
 import styles from '@/components/Link/Link.module.css';
-import { Link as RouterLink, type LinkProps } from 'react-router-dom';
+import { NavLink as RouterLink, type NavLinkProps } from 'react-router-dom';
 
-type Props = Omit<LinkProps, 'className'> & {
+type Props = Omit<NavLinkProps, 'className'> & {
   className?: string;
 };
 
 export function Link({ className, ...props }: Props) {
   return (
-    <RouterLink className={`${styles.link} ${className ?? ''}`} {...props} />
+    <RouterLink
+      className={({ isActive }) =>
+        [styles.link, isActive ? styles.active : '', className ?? '']
+          .filter(Boolean)
+          .join(' ')
+      }
+      {...props}
+    />
   );
 }

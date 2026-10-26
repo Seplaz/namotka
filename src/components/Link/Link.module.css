@@ -16,3 +16,8 @@
 .link:active {
   color: #d4d4d4;
 }
+
+.active {
+  color: #f5f5f5;
+  text-decoration: none;
+}
