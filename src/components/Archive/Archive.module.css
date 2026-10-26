@@ -1,6 +1,7 @@
 .archive {
   display: grid;
-  grid-template-columns: 390px minmax(345px, 1fr) auto;
+  /* grid-template-columns: 390px minmax(345px, 1fr) auto; */
+  grid-template-columns: minmax(345px, 1fr);
   grid-template-rows: minmax(0, 1fr);
   padding: 32px 64px 0 64px;
   min-block-size: 0;

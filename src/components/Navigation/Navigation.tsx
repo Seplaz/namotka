@@ -16,7 +16,7 @@ export function Navigation({ username, onLogout }: NavigationProps) {
       </Link>
 
       <Link className={styles.link} to="/archive">
-        Архив намоток
+        Архив
       </Link>
 
       <button className={styles.logout} type="button" onClick={onLogout}>

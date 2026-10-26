@@ -9,7 +9,7 @@ type ArchiveProps = {
 export function Archive({ tasks }: ArchiveProps) {
   const completedTasks = tasks.filter((task) => task.status === 'completed');
 
-  const cancelledTasks = tasks.filter((task) => task.status === 'cancelled');
+  // const cancelledTasks = tasks.filter((task) => task.status === 'cancelled');
 
   return (
     <main className={styles.archive}>
@@ -19,11 +19,11 @@ export function Archive({ tasks }: ArchiveProps) {
         emptyMessage="Завершённых намоток пока нет"
       />
 
-      <TaskColumn
+      {/* <TaskColumn
         title="Отменённые"
         tasks={cancelledTasks}
         emptyMessage="Отменённых намоток пока нет"
-      />
+      /> */}
     </main>
   );
 }
