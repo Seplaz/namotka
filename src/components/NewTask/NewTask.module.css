@@ -62,7 +62,7 @@
   margin: -1px;
   padding: 0;
   border: none;
-  background-color: var(--color-surface);
+  background-color: var(--color-surface-disabled);
   white-space: nowrap;
   overflow: hidden;
   cursor: pointer;
@@ -80,7 +80,7 @@
   height: 24px;
   border: 2px solid var(--color-input-border);
   border-radius: 5px;
-  background-color: var(--color-surface);
+  background-color: var(--color-surface-disabled);
   color: var(--color-text-primary);
   transition:
     background-color 150ms ease,
