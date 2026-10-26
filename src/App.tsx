@@ -7,6 +7,7 @@ import { Header } from '@/components/Header/Header';
 import { LoginPage } from '@/pages/LoginPage/LoginPage';
 import { RegisterPage } from '@/pages/RegisterPage/RegisterPage';
 import { DashboardPage } from '@/pages/DashboardPage/DashboardPage';
+import { ArchivePage } from '@/pages/ArchivePage/ArchivePage';
 import { Loader } from './components/Loader/Loader';
 
 function App() {
@@ -87,6 +88,17 @@ function App() {
             element={
               isAuthenticated ? (
                 <DashboardPage />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+
+          <Route
+            path="/archive"
+            element={
+              isAuthenticated ? (
+                <ArchivePage />
               ) : (
                 <Navigate to="/login" replace />
               )
