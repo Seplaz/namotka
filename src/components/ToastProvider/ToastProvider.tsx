@@ -6,6 +6,7 @@ import {
   useState,
   type ReactNode,
 } from 'react';
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { Toast } from '@/components/Toast/Toast';
 import { ToastContext, type ToastOptions } from '@/contexts/ToastContext';
 
@@ -24,6 +25,7 @@ type ToastProviderProps = {
 export function ToastProvider({ children }: ToastProviderProps) {
   const [toasts, setToasts] = useState<ToastItem[]>([]);
   const nextId = useRef(0);
+  const shouldReduceMotion = useReducedMotion();
 
   const showToast = useCallback((options: ToastOptions) => {
     const id = ++nextId.current;
@@ -62,18 +64,52 @@ export function ToastProvider({ children }: ToastProviderProps) {
     setToasts((current) => current.filter((toast) => toast.id !== id));
   }, []);
 
+  const toastVariants = {
+    hidden: {
+      opacity: 0,
+      y: shouldReduceMotion ? 0 : 16,
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+    },
+    exit: {
+      opacity: 0,
+      y: shouldReduceMotion ? 0 : -24,
+    },
+  };
+
   return (
     <ToastContext.Provider value={{ showToast }}>
       {children}
 
       <div className={styles.container}>
-        {toasts.map((toast) => (
-          <ToastWithTimer
-            key={toast.id}
-            toast={toast}
-            onClose={() => dismissToast(toast.id)}
-          />
-        ))}
+        <AnimatePresence initial={false}>
+          {toasts.map((toast) => (
+            <motion.div
+              key={toast.id}
+              variants={toastVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              transition={{
+                opacity: {
+                  duration: shouldReduceMotion ? 0 : 0.2,
+                  ease: 'easeOut',
+                },
+                y: {
+                  duration: shouldReduceMotion ? 0 : 0.25,
+                  ease: 'easeInOut',
+                },
+              }}
+            >
+              <ToastWithTimer
+                toast={toast}
+                onClose={() => dismissToast(toast.id)}
+              />
+            </motion.div>
+          ))}
+        </AnimatePresence>
       </div>
     </ToastContext.Provider>
   );
