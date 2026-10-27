@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Dashboard } from '@/components/Dashboard/Dashboard';
 import { Loader } from '@/components/Loader/Loader';
+import { supabase } from '@/lib/supabase';
 import {
   createTask,
   getTasks,
@@ -22,7 +23,6 @@ export function DashboardPage() {
 
     async function loadTasks() {
       try {
-        setIsLoading(true);
         setLoadError(null);
 
         const loadedTasks = await getTasks();
@@ -32,15 +32,15 @@ export function DashboardPage() {
         }
       } catch (error) {
         console.error('Не удалось загрузить намотки:', error);
-        showToast({
-          type: 'error',
-          message: 'Не удалось загрузить намотки. И не надо.',
-        });
 
         if (isCurrent) {
           setLoadError(
             'Не удалось загрузить задачи. Попробуйте обновить страницу.',
           );
+          showToast({
+            type: 'error',
+            message: 'Не удалось загрузить намотки. И не надо.',
+          });
         }
       } finally {
         if (isCurrent) {
@@ -51,10 +51,38 @@ export function DashboardPage() {
 
     void loadTasks();
 
+    const channel = supabase
+      .channel('dashboard-tasks')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'tasks',
+        },
+        async (payload) => {
+          console.log('Realtime task event:', payload);
+
+          try {
+            const latestTasks = await getTasks();
+
+            if (isCurrent) {
+              setTasks(latestTasks);
+            }
+          } catch (error) {
+            console.error('Не удалось обновить задачи через Realtime:', error);
+          }
+        },
+      )
+      .subscribe((status) => {
+        console.log('Tasks Realtime status:', status);
+      });
+
     return () => {
       isCurrent = false;
+      void supabase.removeChannel(channel);
     };
-  }, []);
+  }, [showToast]);
 
   async function handleCreateTask(data: NewTaskData) {
     const createdTask = await createTask(data);
