@@ -219,11 +219,21 @@ export function TaskCard({
             <p className={styles.description}>{description}</p>
 
             <div className={styles.info}>
-              <div className={styles.field}>
-                <span className={styles.label}>Исполнитель</span>
+              <div className={styles.assignee}>
+                <div className={styles.field}>
+                  <span className={styles.label}>Намотчик</span>
 
-                <div className={styles.value}>
-                  <span>{assigneeName ?? 'Не назначен'}</span>
+                  <div className={styles.value}>
+                    <span>{assigneeName ?? 'Не назначен'}</span>
+                  </div>
+                </div>
+
+                <div className={styles.field}>
+                  <span className={styles.label}>Наматываемый</span>
+
+                  <div className={styles.value}>
+                    <span>{assigneeName ?? 'Не назначен'}</span>
+                  </div>
                 </div>
               </div>
 
