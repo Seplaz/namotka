@@ -41,12 +41,14 @@ export type Database = {
       tasks: {
         Row: {
           assigned_to: string | null
+          assignment_type: string
           created_at: string
           created_by: string
           description: string
           id: string
           inn: string
           phone: string
+          priority: string
           scheduled_at: string | null
           status: string
           task_number: number
@@ -54,12 +56,14 @@ export type Database = {
         }
         Insert: {
           assigned_to?: string | null
+          assignment_type?: string
           created_at?: string
           created_by: string
           description: string
           id?: string
           inn: string
           phone: string
+          priority?: string
           scheduled_at?: string | null
           status?: string
           task_number?: number
@@ -67,12 +71,14 @@ export type Database = {
         }
         Update: {
           assigned_to?: string | null
+          assignment_type?: string
           created_at?: string
           created_by?: string
           description?: string
           id?: string
           inn?: string
           phone?: string
+          priority?: string
           scheduled_at?: string | null
           status?: string
           task_number?: number
@@ -104,12 +110,14 @@ export type Database = {
         Args: { p_new_status: string; p_task_id: string }
         Returns: {
           assigned_to: string | null
+          assignment_type: string
           created_at: string
           created_by: string
           description: string
           id: string
           inn: string
           phone: string
+          priority: string
           scheduled_at: string | null
           status: string
           task_number: number
@@ -122,6 +130,7 @@ export type Database = {
           isSetofReturn: false
         }
       }
+      check_signup_email_domain: { Args: { event: Json }; Returns: Json }
     }
     Enums: {
       [_ in never]: never

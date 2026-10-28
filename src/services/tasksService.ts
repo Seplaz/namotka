@@ -11,7 +11,9 @@ const TASK_SELECT = `
   status,
   scheduled_at,
   created_at,
+  created_by,
   assigned_to,
+  creator:profiles!tasks_created_by_fkey(username),
   assignee:profiles!tasks_assigned_to_fkey(username)
 `;
 
@@ -25,16 +27,22 @@ type TaskRow = Pick<
   | 'status'
   | 'scheduled_at'
   | 'created_at'
+  | 'created_by'
   | 'assigned_to'
 > & {
+  creator: { username: string } | null;
   assignee: { username: string } | null;
 };
+
+type TaskPriority = 'low' | 'medium' | 'high';
 
 export type NewTaskData = {
   inn: string;
   phone: string;
   description: string;
   scheduledAt: string | null;
+  assignedTo: string | null;
+  priority: TaskPriority;
 };
 
 function mapTaskToTask(task: TaskRow): Task {
@@ -51,7 +59,9 @@ function mapTaskToTask(task: TaskRow): Task {
     status: task.status,
     scheduled_at: task.scheduled_at,
     created_at: task.created_at,
+    created_by: task.created_by,
     assigned_to: task.assigned_to,
+    creatorName: task.creator?.username ?? null,
     assigneeName: task.assignee?.username ?? null,
   };
 }
@@ -77,6 +87,10 @@ export async function createTask(data: NewTaskData): Promise<Task> {
       scheduled_at: data.scheduledAt,
       status: 'new',
       created_by: user.id,
+
+      assigned_to: data.assignedTo,
+      priority: data.priority,
+      assignment_type: data.assignedTo ? 'direct' : 'open',
     })
     .select(TASK_SELECT)
     .single();
@@ -87,10 +101,23 @@ export async function createTask(data: NewTaskData): Promise<Task> {
 }
 
 export async function getTasks(): Promise<Task[]> {
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError) throw userError;
+
+  if (!user) {
+    throw new Error('Необходимо войти в учётную запись.');
+  }
+
   const { data, error } = await supabase
     .from('tasks')
     .select(TASK_SELECT)
-    .order('created_at', { ascending: true });
+    .or(`assigned_to.eq.${user.id},assigned_to.is.null`)
+    .order('created_at', { ascending: true })
+    .order('task_number', { ascending: true });
 
   if (error) throw error;
 

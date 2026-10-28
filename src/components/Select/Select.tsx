@@ -1,5 +1,11 @@
 import styles from '@/components/Select/Select.module.css';
-import { ChevronDown } from 'lucide-react';
+import {
+  Select as ShadcnSelect,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 export type SelectOption<T extends string = string> = {
   value: T;
@@ -19,6 +25,8 @@ type SelectProps<T extends string = string> = {
   className?: string;
 };
 
+const EMPTY_VALUE = '__select_unassigned__';
+
 export function Select<T extends string = string>({
   name,
   value,
@@ -31,7 +39,6 @@ export function Select<T extends string = string>({
   className,
 }: SelectProps<T>) {
   const selectId = id ?? name;
-  const errorId = `${selectId}-error`;
 
   const rootClassName = [
     styles.root,
@@ -42,37 +49,62 @@ export function Select<T extends string = string>({
     .filter(Boolean)
     .join(' ');
 
+  const internalValue = value === '' ? EMPTY_VALUE : value;
+
+  const selectedLabel =
+    value === ''
+      ? placeholder
+      : (options.find((option) => option.value === value)?.label ??
+        placeholder);
+
+  const handleValueChange = (nextValue: string | null) => {
+    onChange(
+      nextValue === EMPTY_VALUE || nextValue == null ? '' : (nextValue as T),
+    );
+  };
+
   return (
     <div className={rootClassName}>
-      <div className={styles.control}>
-        <select
+      <ShadcnSelect
+        name={name}
+        value={internalValue}
+        onValueChange={handleValueChange}
+        disabled={disabled}
+      >
+        <SelectTrigger
           id={selectId}
-          name={name}
-          value={value}
-          disabled={disabled}
-          className={styles.select}
-          onChange={(event) => {
-            onChange(event.target.value as T | '');
-          }}
+          className={styles.trigger}
+          aria-invalid={Boolean(error)}
         >
-          <option value="" disabled>
+          <SelectValue>{selectedLabel}</SelectValue>
+        </SelectTrigger>
+
+        <SelectContent
+          className={styles.content}
+          align="start"
+          side="bottom"
+          sideOffset={-52}
+          alignItemWithTrigger={false}
+        >
+          <SelectItem value={EMPTY_VALUE} className={styles.item}>
             {placeholder}
-          </option>
+          </SelectItem>
 
           {options.map((option) => (
-            <option
+            <SelectItem
               key={option.value}
               value={option.value}
               disabled={option.disabled}
+              className={styles.item}
             >
               {option.label}
-            </option>
+            </SelectItem>
           ))}
-        </select>
-        <ChevronDown className={styles.chevron} size={20} aria-hidden="true" />
-      </div>
+        </SelectContent>
+      </ShadcnSelect>
+
       {error && (
-        <p id={errorId} className={styles.error} role="alert">
+        <p className={styles.error} role="alert">
           {error}
         </p>
       )}

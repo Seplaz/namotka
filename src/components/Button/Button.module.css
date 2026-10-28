@@ -10,7 +10,9 @@
   color: var(--color-button-text);
   font-size: 16px;
   font-weight: 500;
-  transition: background-color 150ms ease, color 150ms ease;
+  transition:
+    background-color 150ms ease,
+    color 150ms ease;
   min-block-size: 45px;
   block-size: min-content;
   inline-size: 100%;
@@ -35,3 +37,10 @@
   color: var(--color-button-text-disabled);
   cursor: not-allowed;
 }
+
+/* @media (max-width: 1024px) {
+  .button {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+} */

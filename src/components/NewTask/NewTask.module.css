@@ -4,6 +4,7 @@
   align-items: center;
   justify-content: center;
   gap: 32px;
+  inline-size: 100%;
   block-size: 100%;
 }
 
@@ -14,7 +15,7 @@
   padding: 24px;
   border-radius: 24px;
   background-color: var(--color-surface);
-  inline-size: min(fit-content, 100%);
+  inline-size: 100%;
 }
 
 .header {

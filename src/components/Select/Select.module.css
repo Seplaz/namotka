@@ -3,73 +3,118 @@
   min-inline-size: 0;
 }
 
-.control {
-  position: relative;
-  inline-size: 100%;
-}
-
-.select {
-  appearance: none;
-  inline-size: 100%;
-  min-block-size: 49px;
+.trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
   padding: 12px;
-  font-size: 16px;
-  color: var(--color-text-placeholder);
-
-  background-color: var(--color-surface-disabled);
   border: 2px solid var(--color-input-border);
   border-radius: 12px;
-
-  outline: none;
+  background-color: var(--color-surface-disabled);
+  color: var(--color-text-primary);
+  font-size: 16px;
+  text-align: start;
+  box-shadow: none;
   cursor: pointer;
+  outline: none;
   transition:
     border-color 150ms ease,
-    box-shadow 150ms ease,
-    background-color 150ms ease;
+    background-color 150ms ease,
+    box-shadow 150ms ease;
+
+  inline-size: 100%;
+  min-block-size: 52px;
 }
 
-.select:hover {
+.trigger:hover {
   border-color: var(--color-input-border-hover);
 }
 
-.select:focus-visible {
+.trigger:focus-visible,
+.trigger[data-state='open'] {
   border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-focus-ring);
 }
 
-.select:disabled {
-  cursor: not-allowed;
+.trigger:disabled {
   opacity: 0.55;
+  cursor: not-allowed;
 }
 
-.select option {
+.trigger [data-placeholder] {
   color: var(--color-text-placeholder);
-  background-color: var(--color-surface-disabled);
 }
 
-.select option[value=''] {
+.trigger > svg {
+  flex-shrink: 0;
+  color: var(--color-text-placeholder);
+  transition: transform 150ms ease;
+  inline-size: 20px;
+  block-size: 20px;
+}
+
+.trigger[data-state='open'] > svg {
+  color: var(--color-accent);
+  transform: rotate(180deg);
+}
+
+.content {
+  z-index: 10;
+  /* padding: 12px; */
+  box-sizing: border-box;
+  border: 2px solid var(--color-input-border);
+  border-radius: 12px;
+  background-color: var(--color-surface-disabled);
+  color: var(--color-text-placeholder);
+  box-shadow:
+    0 8px 24px rgb(0 0 0 / 25%),
+    0 2px 6px rgb(0 0 0 / 15%);
+
+  overflow: hidden;
+  transform-origin: var(--radix-select-content-transform-origin);
+  animation: select-in 120ms ease-out;
+  min-inline-size: var(--radix-select-trigger-width);
+  max-block-size: var(--radix-select-content-available-height);
+}
+
+.item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 12px;
+  border-radius: 6px;
+  background-color: var(--color-surface-disabled);
+  color: var(--color-text-placeholder);
+  font-size: 16px;
+  cursor: pointer;
+  user-select: none;
+  outline: none;
+  transition:
+    color 120ms ease,
+    background-color 120ms ease;
+}
+
+.item[data-highlighted] {
+  background-color: var(--color-surface-hover);
   color: var(--color-text-primary);
 }
 
-.select option:disabled {
-  color: var(--color-text-placeholder);
+.item[data-state='checked'] {
+  color: var(--color-text-primary);
 }
 
-.chevron {
-  position: absolute;
-  top: 50%;
-  right: 12px;
-  transform: translateY(-50%);
-
-  color: var(--color-text-placeholder);
-  pointer-events: none;
-  transition: transform 150ms ease;
+.item[data-disabled] {
+  opacity: 0.45;
+  cursor: not-allowed;
 }
 
-.control:has(.select:focus-visible) .chevron {
+.item > span:first-child {
   color: var(--color-accent);
 }
 
-.hasError .select {
+.hasError .trigger {
   border-color: var(--color-danger);
 }
 
@@ -81,4 +126,28 @@
   margin: 6px 0 0;
   color: var(--color-danger);
   font-size: 12px;
+}
+
+@keyframes select-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trigger,
+  .trigger > svg,
+  .item {
+    transition: none;
+  }
+
+  .content {
+    animation: none;
+  }
 }

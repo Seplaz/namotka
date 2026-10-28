@@ -62,6 +62,8 @@ export function TaskColumn({
                   onStartTask={onStartTask}
                   onReturnTask={onReturnTask}
                   onCompleteTask={onCompleteTask}
+                  creatorName={task.creatorName}
+                  assigneeName={task.assigneeName}
                 />
               </motion.div>
             ))}

@@ -49,7 +49,7 @@ export function ArchivePage() {
     return () => {
       isCurrent = false;
     };
-  }, []);
+  }, [showToast]);
 
   if (isLoading) {
     return <Loader />;
