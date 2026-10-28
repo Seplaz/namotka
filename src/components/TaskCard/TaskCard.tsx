@@ -229,7 +229,7 @@ export function TaskCard({
                 </div>
 
                 <div className={styles.field}>
-                  <span className={styles.label}>Наматываемый</span>
+                  <span className={styles.label}>Намотанный</span>
 
                   <div className={styles.value}>
                     <span>{assigneeName ?? 'Не назначен'}</span>

@@ -36,7 +36,7 @@ export function Toast({ type, message, onClose, className }: ToastProps) {
           onClick={onClose}
           aria-label="Закрыть уведомление"
         >
-          <X size={20} aria-hidden="true" />
+          <X size={16} aria-hidden="true" />
         </button>
       )}
     </div>

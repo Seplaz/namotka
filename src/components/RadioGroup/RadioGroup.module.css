@@ -1,0 +1,79 @@
+.group {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  inline-size: 100%;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 2px solid var(--color-input-border);
+  border-radius: 12px;
+  background-color: var(--color-surface-disabled);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  min-block-size: 49px;
+  user-select: none;
+  transition:
+    border-color 150ms ease,
+    background-color 150ms ease,
+    color 150ms ease;
+}
+
+.option:hover:not(.disabled) {
+  border-color: var(--color-input-border-hover);
+  color: var(--color-text-primary);
+}
+
+.selected {
+  border-color: var(--color-accent);
+  color: var(--color-text-primary);
+}
+
+.selected:hover:not(.disabled) {
+  border-color: var(--color-accent);
+}
+
+.input {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.icon {
+  flex-shrink: 0;
+  color: var(--color-text-placeholder);
+  transition: color 150ms ease;
+}
+
+.selected .icon {
+  color: var(--color-text-primary);
+}
+
+.label {
+  font-size: 16px;
+  text-align: center;
+}
+
+.option:has(.input:focus-visible) {
+  outline: 2px solid var(--ring);
+  outline-offset: 3px;
+}
+
+.disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .option {
+    transition: none;
+  }
+}

@@ -1,14 +1,28 @@
 import styles from '@/components/NewTask/NewTask.module.css';
-import { useState, type FormEvent } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import { useToast } from '@/hooks/useToast';
 import type { NewTaskData } from '@/services/tasksService';
+import { getSpecialists, type Specialist } from '@/services/profileService';
 import { X, Check } from 'lucide-react';
 import { FormField } from '@/components/FormField/FormField';
 import { Input } from '@/components/Input/Input';
-import { Textarea } from '../Textarea/Textarea';
+import { Textarea } from '@/components/Textarea/Textarea';
+import {
+  RadioGroup,
+  type RadioOption,
+} from '@/components/RadioGroup/RadioGroup';
+import { Select, type SelectOption } from '@/components/Select/Select';
 import { Button } from '@/components/Button/Button';
 import { AnimatedError } from '@/components/AnimatedError/AnimatedError';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
+
+type TaskPriority = 'low' | 'medium' | 'high';
+
+const priorityOptions: RadioOption<TaskPriority>[] = [
+  { value: 'low', label: 'Низкая' },
+  { value: 'medium', label: 'Средняя' },
+  { value: 'high', label: 'Высокая' },
+];
 
 type NewTaskProps = {
   onClose: () => void;
@@ -51,6 +65,7 @@ export function NewTask({ onClose, onSubmit }: NewTaskProps) {
   const [inn, setInn] = useState('');
   const [phone, setPhone] = useState('');
   const [description, setDescription] = useState('');
+  const [priority, setPriority] = useState<TaskPriority>('medium');
   const [scheduleCall, setScheduleCall] = useState(false);
   const [scheduledDate, setScheduledDate] = useState('');
   const [scheduledTime, setScheduledTime] = useState('');
@@ -58,6 +73,10 @@ export function NewTask({ onClose, onSubmit }: NewTaskProps) {
   const [phoneError, setPhoneError] = useState('');
   const [scheduleError, setScheduleError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [specialists, setSpecialists] = useState<Specialist[]>([]);
+  const [specialistId, setSpecialistId] = useState<string>('');
+  const [isLoadingSpecialists, setIsLoadingSpecialists] = useState(true);
+  const [specialistsError, setSpecialistsError] = useState('');
 
   function normalizePhone(value: string): string | null {
     const digits = value.replace(/\D/g, '');
@@ -88,6 +107,44 @@ export function NewTask({ onClose, onSubmit }: NewTaskProps) {
     normalizePhone(phone) !== null &&
     description.trim() !== '' &&
     isScheduleValid;
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadSpecialists() {
+      try {
+        const data = await getSpecialists();
+
+        if (cancelled) return;
+
+        setSpecialists(data);
+        setSpecialistsError('');
+      } catch (error) {
+        console.error('Ошибка загрузки специалистов:', error);
+
+        if (!cancelled) {
+          setSpecialistsError('Не удалось загрузить специалистов.');
+        }
+      } finally {
+        if (!cancelled) {
+          setIsLoadingSpecialists(false);
+        }
+      }
+    }
+
+    void loadSpecialists();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const specialistOptions: SelectOption<string>[] = specialists.map(
+    (specialist) => ({
+      value: specialist.id,
+      label: specialist.username,
+    }),
+  );
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -276,6 +333,34 @@ export function NewTask({ onClose, onSubmit }: NewTaskProps) {
             maxLength={1000}
             showCounter
             required
+          />
+        </FormField>
+
+        <FormField label="Важность намотки" htmlFor="priority">
+          <RadioGroup
+            name="priority"
+            value={priority}
+            onChange={setPriority}
+            options={priorityOptions}
+          />
+        </FormField>
+
+        <FormField label="Кого будем наматывать?" htmlFor="specialist">
+          <Select
+            id="specialist"
+            name="specialist"
+            value={specialistId}
+            onChange={setSpecialistId}
+            options={specialistOptions}
+            placeholder={
+              isLoadingSpecialists
+                ? 'Загружаем намотантов...'
+                : specialists.length === 0
+                  ? 'Нет доступных намотантов'
+                  : 'Никого, общая намотка'
+            }
+            disabled={isLoadingSpecialists || specialists.length === 0}
+            error={specialistsError || undefined}
           />
         </FormField>
 

@@ -1,0 +1,84 @@
+.root {
+  inline-size: 100%;
+  min-inline-size: 0;
+}
+
+.control {
+  position: relative;
+  inline-size: 100%;
+}
+
+.select {
+  appearance: none;
+  inline-size: 100%;
+  min-block-size: 49px;
+  padding: 12px;
+  font-size: 16px;
+  color: var(--color-text-placeholder);
+
+  background-color: var(--color-surface-disabled);
+  border: 2px solid var(--color-input-border);
+  border-radius: 12px;
+
+  outline: none;
+  cursor: pointer;
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease,
+    background-color 150ms ease;
+}
+
+.select:hover {
+  border-color: var(--color-input-border-hover);
+}
+
+.select:focus-visible {
+  border-color: var(--color-accent);
+}
+
+.select:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.select option {
+  color: var(--color-text-placeholder);
+  background-color: var(--color-surface-disabled);
+}
+
+.select option[value=''] {
+  color: var(--color-text-primary);
+}
+
+.select option:disabled {
+  color: var(--color-text-placeholder);
+}
+
+.chevron {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+
+  color: var(--color-text-placeholder);
+  pointer-events: none;
+  transition: transform 150ms ease;
+}
+
+.control:has(.select:focus-visible) .chevron {
+  color: var(--color-accent);
+}
+
+.hasError .select {
+  border-color: var(--color-danger);
+}
+
+.disabled {
+  opacity: 0.7;
+}
+
+.error {
+  margin: 6px 0 0;
+  color: var(--color-danger);
+  font-size: 12px;
+}
