@@ -6,7 +6,6 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-
   --color-background: #09090b;
   --color-surface: #18181b;
   --color-surface-hover: #27272a;
@@ -70,6 +69,8 @@
   --color-toast-error-bg: #450a0a;
   --color-toast-error-border: #7f1d1d;
   --color-toast-error-text: #f87171;
+
+  --color-danger: #f87171;
 
   --background: var(--color-background);
   --foreground: var(--color-text-primary);

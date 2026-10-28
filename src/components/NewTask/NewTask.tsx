@@ -354,7 +354,7 @@ export function NewTask({ onClose, onSubmit }: NewTaskProps) {
             options={specialistOptions}
             placeholder={
               isLoadingSpecialists
-                ? 'Загружаем намотантов...'
+                ? 'Никого, общая намотка'
                 : specialists.length === 0
                   ? 'Нет доступных намотантов'
                   : 'Никого, общая намотка'

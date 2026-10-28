@@ -1,5 +1,11 @@
 import styles from '@/components/Select/Select.module.css';
-import { ChevronDown } from 'lucide-react';
+import {
+  Select as ShadcnSelect,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 export type SelectOption<T extends string = string> = {
   value: T;
@@ -31,7 +37,6 @@ export function Select<T extends string = string>({
   className,
 }: SelectProps<T>) {
   const selectId = id ?? name;
-  const errorId = `${selectId}-error`;
 
   const rootClassName = [
     styles.root,
@@ -44,35 +49,37 @@ export function Select<T extends string = string>({
 
   return (
     <div className={rootClassName}>
-      <div className={styles.control}>
-        <select
+      <ShadcnSelect
+        name={name}
+        value={value || undefined}
+        onValueChange={(nextValue) => onChange(nextValue as T)}
+        disabled={disabled}
+      >
+        <SelectTrigger
           id={selectId}
-          name={name}
-          value={value}
-          disabled={disabled}
-          className={styles.select}
-          onChange={(event) => {
-            onChange(event.target.value as T | '');
-          }}
+          className={styles.trigger}
+          aria-invalid={Boolean(error)}
         >
-          <option value="" disabled>
-            {placeholder}
-          </option>
+          <SelectValue placeholder={placeholder} />
+        </SelectTrigger>
 
+        <SelectContent className={styles.content}>
+          <SelectItem className={styles.item}>{placeholder}</SelectItem>
           {options.map((option) => (
-            <option
+            <SelectItem
               key={option.value}
               value={option.value}
               disabled={option.disabled}
+              className={styles.item}
             >
               {option.label}
-            </option>
+            </SelectItem>
           ))}
-        </select>
-        <ChevronDown className={styles.chevron} size={20} aria-hidden="true" />
-      </div>
+        </SelectContent>
+      </ShadcnSelect>
+
       {error && (
-        <p id={errorId} className={styles.error} role="alert">
+        <p className={styles.error} role="alert">
           {error}
         </p>
       )}
