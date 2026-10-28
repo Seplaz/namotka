@@ -1,0 +1,141 @@
+:root {
+  /* Backgrounds */
+  --color-background: #09090b;
+  --color-surface: #18181b;
+  --color-surface-hover: #27272a;
+  --color-surface-disabled: #141416;
+
+  /* Text */
+  --color-text-primary: #e4e4e7;
+  --color-text-secondary: #a1a1aa;
+  --color-text-placeholder: #71717a;
+  --color-text-disabled: #52525b;
+
+  /* Borders */
+  --color-border: #27272a;
+  --color-input-border: #3f3f46;
+  --color-input-border-hover: #52525b;
+  --color-input-border-focus: #8b5cf6;
+  --color-focus-ring: rgb(139 92 246 / 25%);
+
+  /* Primary button — soft gray */
+  --color-button-background: #e4e4e7;
+  --color-button-background-hover: #d4d4d8;
+  --color-button-background-active: #a1a1aa;
+  --color-button-background-disabled: #27272a;
+
+  --color-button-text: #18181b;
+  --color-button-text-hover: #18181b;
+  --color-button-text-active: #18181b;
+  --color-button-text-disabled: #71717a;
+
+  /* Secondary button — zinc */
+  --color-button-secondary-background: #27272a;
+  --color-button-secondary-background-hover: #3f3f46;
+  --color-button-secondary-text: #e4e4e7;
+
+  /* Links */
+  --color-link: #a1a1aa;
+  --color-link-hover: #e4e4e7;
+  --color-link-active: #a78bfa;
+
+  /* Accent — Violet */
+  --color-accent: #8b5cf6;
+  --color-accent-hover: #a78bfa;
+
+  /* Task statuses */
+  --color-status-new-bg: #172554;
+  --color-status-new-text: #60a5fa;
+
+  --color-status-waiting-bg: #3b0764;
+  --color-status-waiting-text: #d8b4fe;
+
+  --color-status-in-progress-bg: #422006;
+  --color-status-in-progress-text: #fbbf24;
+
+  --color-status-completed-bg: #052e16;
+  --color-status-completed-text: #4ade80;
+
+  --color-status-cancelled-bg: #450a0a;
+  --color-status-cancelled-text: #f87171;
+
+  /* Toasts */
+  --color-toast-success-bg: #002b16;
+  --color-toast-success-border: #064525;
+  --color-toast-success-text: #4ade80;
+
+  --color-toast-warning-bg: #422006;
+  --color-toast-warning-border: #713f12;
+  --color-toast-warning-text: #fbbf24;
+
+  --color-toast-error-bg: #450a0a;
+  --color-toast-error-border: #7f1d1d;
+  --color-toast-error-text: #f87171;
+
+  background-color: var(--color-background);
+  color: var(--color-text-primary);
+  color-scheme: dark;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-block-size: 100%;
+  block-size: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-background);
+  font-family: 'Geist', system-ui, sans-serif;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin: 0;
+}
+
+button,
+input,
+textarea,
+select {
+  color: inherit;
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+img,
+svg {
+  display: block;
+  max-inline-size: 100%;
+}
+
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}

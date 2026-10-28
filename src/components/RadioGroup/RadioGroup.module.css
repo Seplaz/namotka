@@ -10,18 +10,18 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-  padding: 6px 12px;
+  padding: 12px;
   border: 2px solid var(--color-input-border);
   border-radius: 12px;
   background-color: var(--color-surface-disabled);
   color: var(--color-text-secondary);
   cursor: pointer;
-  min-block-size: 49px;
   user-select: none;
   transition:
     border-color 150ms ease,
     background-color 150ms ease,
     color 150ms ease;
+  inline-size: 100%;
 }
 
 .option:hover:not(.disabled) {
@@ -40,11 +40,11 @@
 
 .input {
   position: absolute;
+  white-space: nowrap;
+  overflow: hidden;
   inline-size: 1px;
   block-size: 1px;
-  overflow: hidden;
   clip-path: inset(50%);
-  white-space: nowrap;
 }
 
 .icon {

@@ -9,23 +9,23 @@
 }
 
 .select {
-  appearance: none;
-  inline-size: 100%;
-  min-block-size: 49px;
   padding: 12px;
-  font-size: 16px;
-  color: var(--color-text-placeholder);
-
-  background-color: var(--color-surface-disabled);
   border: 2px solid var(--color-input-border);
   border-radius: 12px;
 
-  outline: none;
+  background-color: var(--color-surface-disabled);
+  color: var(--color-text-placeholder);
+  font-size: 16px;
   cursor: pointer;
+
+  outline: none;
   transition:
     border-color 150ms ease,
     box-shadow 150ms ease,
     background-color 150ms ease;
+  appearance: none;
+  inline-size: 100%;
+  min-block-size: 49px;
 }
 
 .select:hover {
@@ -37,13 +37,13 @@
 }
 
 .select:disabled {
-  cursor: not-allowed;
   opacity: 0.55;
+  cursor: not-allowed;
 }
 
 .select option {
-  color: var(--color-text-placeholder);
   background-color: var(--color-surface-disabled);
+  color: var(--color-text-placeholder);
 }
 
 .select option[value=''] {
@@ -58,11 +58,11 @@
   position: absolute;
   top: 50%;
   right: 12px;
-  transform: translateY(-50%);
 
   color: var(--color-text-placeholder);
   pointer-events: none;
   transition: transform 150ms ease;
+  transform: translateY(-50%);
 }
 
 .control:has(.select:focus-visible) .chevron {
