@@ -116,7 +116,8 @@ export async function getTasks(): Promise<Task[]> {
     .from('tasks')
     .select(TASK_SELECT)
     .or(`assigned_to.eq.${user.id},assigned_to.is.null`)
-    .order('created_at', { ascending: false });
+    .order('created_at', { ascending: true })
+    .order('task_number', { ascending: true });
 
   if (error) throw error;
 
