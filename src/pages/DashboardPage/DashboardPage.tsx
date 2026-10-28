@@ -84,10 +84,16 @@ export function DashboardPage() {
     };
   }, [showToast]);
 
+  // async function handleCreateTask(data: NewTaskData) {
+  //   const createdTask = await createTask(data);
+
+  //   setTasks((currentTasks) => [createdTask as Task, ...currentTasks]);
+  // }
+
   async function handleCreateTask(data: NewTaskData) {
     const createdTask = await createTask(data);
 
-    setTasks((currentTasks) => [createdTask as Task, ...currentTasks]);
+    setTasks((currentTasks) => [...currentTasks, createdTask]);
   }
 
   async function handleStartTask(taskId: string) {
