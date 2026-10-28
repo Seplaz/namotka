@@ -25,6 +25,8 @@ type SelectProps<T extends string = string> = {
   className?: string;
 };
 
+const EMPTY_VALUE = '__select_unassigned__';
+
 export function Select<T extends string = string>({
   name,
   value,
@@ -47,12 +49,20 @@ export function Select<T extends string = string>({
     .filter(Boolean)
     .join(' ');
 
+  const internalValue = value === '' ? EMPTY_VALUE : value;
+
+  const handleValueChange = (nextValue: string | null) => {
+    onChange(
+      nextValue === EMPTY_VALUE || nextValue == null ? '' : (nextValue as T),
+    );
+  };
+
   return (
     <div className={rootClassName}>
       <ShadcnSelect
         name={name}
-        value={value || undefined}
-        onValueChange={(nextValue) => onChange(nextValue as T)}
+        value={internalValue}
+        onValueChange={handleValueChange}
         disabled={disabled}
       >
         <SelectTrigger
@@ -70,7 +80,10 @@ export function Select<T extends string = string>({
           sideOffset={-52}
           alignItemWithTrigger={false}
         >
-          <SelectItem className={styles.item}>{placeholder}</SelectItem>
+          <SelectItem value={EMPTY_VALUE} className={styles.item}>
+            {placeholder}
+          </SelectItem>
+
           {options.map((option) => (
             <SelectItem
               key={option.value}

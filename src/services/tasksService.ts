@@ -30,11 +30,15 @@ type TaskRow = Pick<
   assignee: { username: string } | null;
 };
 
+type TaskPriority = 'low' | 'medium' | 'high';
+
 export type NewTaskData = {
   inn: string;
   phone: string;
   description: string;
   scheduledAt: string | null;
+  assignedTo: string | null;
+  priority: TaskPriority;
 };
 
 function mapTaskToTask(task: TaskRow): Task {
@@ -77,6 +81,10 @@ export async function createTask(data: NewTaskData): Promise<Task> {
       scheduled_at: data.scheduledAt,
       status: 'new',
       created_by: user.id,
+
+      assigned_to: data.assignedTo,
+      priority: data.priority,
+      assignment_type: data.assignedTo ? 'direct' : 'open',
     })
     .select(TASK_SELECT)
     .single();

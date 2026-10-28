@@ -198,6 +198,8 @@ export function NewTask({ onClose, onSubmit }: NewTaskProps) {
         phone: normalizedPhone,
         description: normalizedDescription,
         scheduledAt,
+        assignedTo: specialistId || null,
+        priority,
       });
 
       showToast({
