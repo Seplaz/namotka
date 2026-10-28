@@ -63,7 +63,13 @@ export function Select<T extends string = string>({
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
 
-        <SelectContent className={styles.content}>
+        <SelectContent
+          className={styles.content}
+          align="start"
+          side="bottom"
+          sideOffset={-52}
+          alignItemWithTrigger={false}
+        >
           <SelectItem className={styles.item}>{placeholder}</SelectItem>
           {options.map((option) => (
             <SelectItem
