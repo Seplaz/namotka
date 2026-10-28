@@ -101,10 +101,22 @@ export async function createTask(data: NewTaskData): Promise<Task> {
 }
 
 export async function getTasks(): Promise<Task[]> {
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError) throw userError;
+
+  if (!user) {
+    throw new Error('Необходимо войти в учётную запись.');
+  }
+
   const { data, error } = await supabase
     .from('tasks')
     .select(TASK_SELECT)
-    .order('created_at', { ascending: true });
+    .or(`assigned_to.eq.${user.id},assigned_to.is.null`)
+    .order('created_at', { ascending: false });
 
   if (error) throw error;
 
