@@ -16,6 +16,7 @@ type TaskCardProps = {
   status: TaskStatusValue;
   scheduled_at: string | null;
   created_at: string;
+  creatorName: string | null;
   assigned_to: string | null;
   assigneeName: string | null;
   onStartTask?: (taskId: string) => Promise<void>;
@@ -64,6 +65,7 @@ export function TaskCard({
   phone,
   status,
   scheduled_at,
+  creatorName,
   assigneeName,
   onStartTask,
   onReturnTask,
@@ -224,7 +226,7 @@ export function TaskCard({
                   <span className={styles.label}>Намотчик</span>
 
                   <div className={styles.value}>
-                    <span>{assigneeName ?? 'Не назначен'}</span>
+                    <span>{creatorName ?? 'Неизвестный пользователь'}</span>
                   </div>
                 </div>
 

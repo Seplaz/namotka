@@ -24,6 +24,8 @@ export type Task = {
   status: TaskStatus;
   scheduled_at: string | null;
   created_at: string;
+  created_by: string;
   assigned_to: string | null;
+  creatorName: string | null;
   assigneeName: string | null;
 };

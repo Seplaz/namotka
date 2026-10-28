@@ -11,7 +11,9 @@ const TASK_SELECT = `
   status,
   scheduled_at,
   created_at,
+  created_by,
   assigned_to,
+  creator:profiles!tasks_created_by_fkey(username),
   assignee:profiles!tasks_assigned_to_fkey(username)
 `;
 
@@ -25,8 +27,10 @@ type TaskRow = Pick<
   | 'status'
   | 'scheduled_at'
   | 'created_at'
+  | 'created_by'
   | 'assigned_to'
 > & {
+  creator: { username: string } | null;
   assignee: { username: string } | null;
 };
 
@@ -55,7 +59,9 @@ function mapTaskToTask(task: TaskRow): Task {
     status: task.status,
     scheduled_at: task.scheduled_at,
     created_at: task.created_at,
+    created_by: task.created_by,
     assigned_to: task.assigned_to,
+    creatorName: task.creator?.username ?? null,
     assigneeName: task.assignee?.username ?? null,
   };
 }

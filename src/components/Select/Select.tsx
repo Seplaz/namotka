@@ -51,6 +51,12 @@ export function Select<T extends string = string>({
 
   const internalValue = value === '' ? EMPTY_VALUE : value;
 
+  const selectedLabel =
+    value === ''
+      ? placeholder
+      : (options.find((option) => option.value === value)?.label ??
+        placeholder);
+
   const handleValueChange = (nextValue: string | null) => {
     onChange(
       nextValue === EMPTY_VALUE || nextValue == null ? '' : (nextValue as T),
@@ -70,7 +76,7 @@ export function Select<T extends string = string>({
           className={styles.trigger}
           aria-invalid={Boolean(error)}
         >
-          <SelectValue placeholder={placeholder} />
+          <SelectValue>{selectedLabel}</SelectValue>
         </SelectTrigger>
 
         <SelectContent
