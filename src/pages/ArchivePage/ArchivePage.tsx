@@ -27,15 +27,16 @@ export function ArchivePage() {
         }
       } catch (error) {
         console.error('Не удалось загрузить намотки:', error);
-        showToast({
-          type: 'error',
-          message: 'Не удалось загрузить намотки. И не надо.',
-        });
 
         if (isCurrent) {
           setLoadError(
             'Не удалось загрузить архив. Попробуйте обновить страницу.',
           );
+
+          showToast({
+            type: 'error',
+            message: 'Не удалось загрузить архив.',
+          });
         }
       } finally {
         if (isCurrent) {
@@ -59,6 +60,7 @@ export function ArchivePage() {
     return (
       <div>
         <p role="alert">{loadError}</p>
+
         <button type="button" onClick={() => window.location.reload()}>
           Обновить страницу
         </button>

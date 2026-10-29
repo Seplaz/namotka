@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import styles from '@/components/Archive/Archive.module.css';
 import type { Task } from '@/types/task';
 import { TaskColumn } from '@/components/TaskColumn/TaskColumn';
@@ -7,9 +8,13 @@ type ArchiveProps = {
 };
 
 export function Archive({ tasks }: ArchiveProps) {
+  const [expandedTaskId, setExpandedTaskId] = useState<string | null>(null);
+
   const completedTasks = tasks.filter((task) => task.status === 'completed');
 
-  // const cancelledTasks = tasks.filter((task) => task.status === 'cancelled');
+  function handleToggleTask(taskId: string) {
+    setExpandedTaskId((currentId) => (currentId === taskId ? null : taskId));
+  }
 
   return (
     <main className={styles.archive}>
@@ -17,13 +22,9 @@ export function Archive({ tasks }: ArchiveProps) {
         title="Завершённые"
         tasks={completedTasks}
         emptyMessage="Завершённых намоток пока нет."
+        expandedTaskId={expandedTaskId}
+        onToggleTask={handleToggleTask}
       />
-
-      {/* <TaskColumn
-        title="Отменённые"
-        tasks={cancelledTasks}
-        emptyMessage="Отменённых намоток пока нет"
-      /> */}
     </main>
   );
 }

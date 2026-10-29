@@ -19,6 +19,8 @@ type TaskCardProps = {
   creatorName: string | null;
   assigned_to: string | null;
   assigneeName: string | null;
+  expanded: boolean;
+  onToggleExpand: () => void;
   onStartTask?: (taskId: string) => Promise<void>;
   onReturnTask?: (taskId: string) => Promise<void>;
   onCompleteTask?: (taskId: string) => Promise<void>;
@@ -67,15 +69,14 @@ export function TaskCard({
   scheduled_at,
   creatorName,
   assigneeName,
+  expanded,
+  onToggleExpand,
   onStartTask,
   onReturnTask,
   onCompleteTask,
 }: TaskCardProps) {
   const { showToast } = useToast();
-
-  const [expanded, setExpanded] = useState(false);
   const [copiedField, setCopiedField] = useState<'inn' | 'phone' | null>(null);
-
   const [isStarting, setIsStarting] = useState(false);
   const [isReturning, setIsReturning] = useState(false);
   const [isCompleting, setIsCompleting] = useState(false);
@@ -102,7 +103,7 @@ export function TaskCard({
   const transition = shouldReduceMotion
     ? { duration: 0 }
     : {
-        height: { duration: 0.15, ease: 'easeInOut' as const },
+        height: { duration: 0.2, ease: 'easeInOut' as const },
         opacity: { duration: 0.15, ease: 'easeOut' as const },
       };
 
@@ -181,11 +182,23 @@ export function TaskCard({
   }
 
   return (
-    <article className={styles.card}>
+    <motion.article
+      layout="position"
+      className={styles.card}
+      transition={{
+        layout: {
+          type: 'tween',
+          duration: shouldReduceMotion ? 0 : 0.25,
+          ease: [0.22, 1, 0.36, 1],
+        },
+      }}
+    >
       <button
         type="button"
         className={styles.header}
-        onClick={() => setExpanded((prev) => !prev)}
+        onClick={onToggleExpand}
+        aria-expanded={expanded}
+        aria-controls={`task-content-${id}`}
       >
         <div className={styles.preview}>
           <span className={styles.number}># {task_number}</span>
@@ -209,6 +222,7 @@ export function TaskCard({
       <AnimatePresence initial={false}>
         {expanded && (
           <motion.div
+            id={`task-content-${id}`}
             className={styles.content}
             key="task-content"
             variants={contentVariants}
@@ -315,6 +329,6 @@ export function TaskCard({
           </motion.div>
         )}
       </AnimatePresence>
-    </article>
+    </motion.article>
   );
 }

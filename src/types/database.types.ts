@@ -41,6 +41,7 @@ export type Database = {
       tasks: {
         Row: {
           assigned_to: string | null
+          assignment_origin: string | null
           assignment_type: string
           created_at: string
           created_by: string
@@ -56,6 +57,7 @@ export type Database = {
         }
         Insert: {
           assigned_to?: string | null
+          assignment_origin?: string | null
           assignment_type?: string
           created_at?: string
           created_by: string
@@ -71,6 +73,7 @@ export type Database = {
         }
         Update: {
           assigned_to?: string | null
+          assignment_origin?: string | null
           assignment_type?: string
           created_at?: string
           created_by?: string
@@ -110,6 +113,7 @@ export type Database = {
         Args: { p_new_status: string; p_task_id: string }
         Returns: {
           assigned_to: string | null
+          assignment_origin: string | null
           assignment_type: string
           created_at: string
           created_by: string
@@ -131,6 +135,17 @@ export type Database = {
         }
       }
       check_signup_email_domain: { Args: { event: Json }; Returns: Json }
+      create_task: {
+        Args: {
+          p_assigned_to?: string
+          p_description: string
+          p_inn: string
+          p_phone: string
+          p_priority?: string
+          p_scheduled_at?: string
+        }
+        Returns: Json
+      }
     }
     Enums: {
       [_ in never]: never

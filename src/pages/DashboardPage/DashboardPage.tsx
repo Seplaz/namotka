@@ -84,16 +84,20 @@ export function DashboardPage() {
     };
   }, [showToast]);
 
-  // async function handleCreateTask(data: NewTaskData) {
-  //   const createdTask = await createTask(data);
-
-  //   setTasks((currentTasks) => [createdTask as Task, ...currentTasks]);
-  // }
-
   async function handleCreateTask(data: NewTaskData) {
-    const createdTask = await createTask(data);
+    await createTask(data);
 
-    setTasks((currentTasks) => [...currentTasks, createdTask]);
+    try {
+      const latestTasks = await getTasks();
+      setTasks(latestTasks);
+    } catch (error) {
+      console.error('Намотка создана, но не удалось обновить список:', error);
+
+      showToast({
+        type: 'error',
+        message: 'Намотка создана, но список не удалось обновить',
+      });
+    }
   }
 
   async function handleStartTask(taskId: string) {

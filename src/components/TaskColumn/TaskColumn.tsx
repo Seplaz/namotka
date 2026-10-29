@@ -8,6 +8,8 @@ type TaskColumnProps = {
   tasks: Task[];
   emptyImage?: string;
   emptyMessage?: string;
+  expandedTaskId: string | null;
+  onToggleTask: (taskId: string) => void;
   onStartTask?: (taskId: string) => Promise<void>;
   onReturnTask?: (taskId: string) => Promise<void>;
   onCompleteTask?: (taskId: string) => Promise<void>;
@@ -18,6 +20,8 @@ export function TaskColumn({
   tasks,
   emptyImage,
   emptyMessage,
+  expandedTaskId,
+  onToggleTask,
   onStartTask,
   onReturnTask,
   onCompleteTask,
@@ -59,6 +63,8 @@ export function TaskColumn({
               >
                 <TaskCard
                   {...task}
+                  expanded={expandedTaskId === task.id}
+                  onToggleExpand={() => onToggleTask(task.id)}
                   onStartTask={onStartTask}
                   onReturnTask={onReturnTask}
                   onCompleteTask={onCompleteTask}

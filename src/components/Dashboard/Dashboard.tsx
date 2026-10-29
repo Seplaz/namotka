@@ -25,6 +25,7 @@ export function Dashboard({
   onCompleteTask,
 }: DashboardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [expandedTaskId, setExpandedTaskId] = useState<string | null>(null);
 
   const newTasks = tasks.filter((task) => task.status === 'new');
 
@@ -42,6 +43,10 @@ export function Dashboard({
     setIsModalOpen(false);
   }
 
+  function handleToggleTask(taskId: string) {
+    setExpandedTaskId((currentId) => (currentId === taskId ? null : taskId));
+  }
+
   return (
     <main className={styles.dashboard}>
       <TaskColumn
@@ -51,6 +56,8 @@ export function Dashboard({
         onStartTask={onStartTask}
         onReturnTask={onReturnTask}
         onCompleteTask={onCompleteTask}
+        expandedTaskId={expandedTaskId}
+        onToggleTask={handleToggleTask}
       />
 
       <TaskColumn
@@ -60,6 +67,8 @@ export function Dashboard({
         onStartTask={onStartTask}
         onReturnTask={onReturnTask}
         onCompleteTask={onCompleteTask}
+        expandedTaskId={expandedTaskId}
+        onToggleTask={handleToggleTask}
       />
 
       <Button type="button" icon={<Plus size={16} />} onClick={handleOpenModal}>

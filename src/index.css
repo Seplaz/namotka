@@ -6,72 +6,82 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --color-background: #09090b;
-  --color-surface: #18181b;
-  --color-surface-hover: #27272a;
-  --color-surface-disabled: #141416;
+  /* Backgrounds and surfaces */
+  --color-background: #101013;
+  --color-surface: #202024;
+  --color-surface-hover: #29292f;
+  --color-surface-disabled: #18181c;
 
+  /* Text */
   --color-text-primary: #e4e4e7;
-  --color-text-secondary: #a1a1aa;
-  --color-text-placeholder: #71717a;
-  --color-text-disabled: #52525b;
+  --color-text-secondary: #b4b4be;
+  --color-text-placeholder: #858591;
+  --color-text-disabled: #696974;
 
-  --color-border: #27272a;
-  --color-input-border: #3f3f46;
-  --color-input-border-hover: #52525b;
-  --color-input-border-focus: #8b5cf6;
-  --color-focus-ring: rgb(139 92 246 / 25%);
+  /* Borders and focus */
+  --color-border: #41414a;
+  --color-input-border: #4b4b55;
+  --color-input-border-hover: #646471;
+  --color-input-border-focus: #a78bfa;
+  --color-focus-ring: rgb(167 139 250 / 28%);
 
+  /* Primary button */
   --color-button-background: #e4e4e7;
   --color-button-background-hover: #d4d4d8;
-  --color-button-background-active: #a1a1aa;
-  --color-button-background-disabled: #27272a;
+  --color-button-background-active: #c4c4cc;
+  --color-button-background-disabled: #303036;
 
   --color-button-text: #18181b;
   --color-button-text-hover: #18181b;
   --color-button-text-active: #18181b;
-  --color-button-text-disabled: #71717a;
+  --color-button-text-disabled: #858591;
 
-  --color-button-secondary-background: #27272a;
-  --color-button-secondary-background-hover: #3f3f46;
+  /* Secondary button */
+  --color-button-secondary-background: #303036;
+  --color-button-secondary-background-hover: #41414a;
   --color-button-secondary-text: #e4e4e7;
 
-  --color-link: #a1a1aa;
+  /* Links */
+  --color-link: #b4b4be;
   --color-link-hover: #e4e4e7;
   --color-link-active: #a78bfa;
 
-  --color-accent: #8b5cf6;
-  --color-accent-hover: #a78bfa;
+  /* Accent */
+  --color-accent: #a78bfa;
+  --color-accent-hover: #c4b5fd;
 
-  --color-status-new-bg: #172554;
-  --color-status-new-text: #60a5fa;
+  /* Task statuses */
+  --color-status-new-bg: #1b2c50;
+  --color-status-new-text: #93c5fd;
 
-  --color-status-waiting-bg: #3b0764;
+  --color-status-waiting-bg: #35204b;
   --color-status-waiting-text: #d8b4fe;
 
-  --color-status-in-progress-bg: #422006;
-  --color-status-in-progress-text: #fbbf24;
+  --color-status-in-progress-bg: #3d301b;
+  --color-status-in-progress-text: #fcd38d;
 
-  --color-status-completed-bg: #052e16;
-  --color-status-completed-text: #4ade80;
+  --color-status-completed-bg: #193b2b;
+  --color-status-completed-text: #86efac;
 
-  --color-status-cancelled-bg: #450a0a;
-  --color-status-cancelled-text: #f87171;
+  --color-status-cancelled-bg: #452426;
+  --color-status-cancelled-text: #fca5a5;
 
-  --color-toast-success-bg: #002b16;
-  --color-toast-success-border: #064525;
-  --color-toast-success-text: #4ade80;
+  /* Toasts */
+  --color-toast-success-bg: #193b2b;
+  --color-toast-success-border: #326747;
+  --color-toast-success-text: #86efac;
 
-  --color-toast-warning-bg: #422006;
-  --color-toast-warning-border: #713f12;
-  --color-toast-warning-text: #fbbf24;
+  --color-toast-warning-bg: #3d301b;
+  --color-toast-warning-border: #70532b;
+  --color-toast-warning-text: #fcd38d;
 
-  --color-toast-error-bg: #450a0a;
-  --color-toast-error-border: #7f1d1d;
-  --color-toast-error-text: #f87171;
+  --color-toast-error-bg: #452426;
+  --color-toast-error-border: #7c383c;
+  --color-toast-error-text: #fca5a5;
 
-  --color-danger: #f87171;
+  --color-danger: #fca5a5;
 
+  /* shadcn / Tailwind tokens */
   --background: var(--color-background);
   --foreground: var(--color-text-primary);
 
@@ -101,20 +111,23 @@
 
   --radius: 0.75rem;
 
+  /* Sidebar */
   --sidebar: var(--color-surface);
   --sidebar-foreground: var(--color-text-primary);
   --sidebar-primary: var(--color-accent);
-  --sidebar-primary-foreground: #ffffff;
+  --sidebar-primary-foreground: #18181b;
   --sidebar-accent: var(--color-surface-hover);
   --sidebar-accent-foreground: var(--color-text-primary);
   --sidebar-border: var(--color-border);
   --sidebar-ring: var(--color-accent);
 
-  --chart-1: #8b5cf6;
-  --chart-2: #60a5fa;
-  --chart-3: #4ade80;
-  --chart-4: #fbbf24;
-  --chart-5: #f87171;
+  /* Charts */
+  --chart-1: #a78bfa;
+  --chart-2: #93c5fd;
+  --chart-3: #86efac;
+  --chart-4: #fcd38d;
+  --chart-5: #fca5a5;
+
   font-family: Geist, system-ui, sans-serif;
   color-scheme: dark;
   font-synthesis: none;

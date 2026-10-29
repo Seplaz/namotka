@@ -65,57 +65,23 @@ function mapTaskToTask(task: TaskRow): Task {
     assigneeName: task.assignee?.username ?? null,
   };
 }
-
-export async function createTask(data: NewTaskData): Promise<Task> {
-  const {
-    data: { user },
-    error: userError,
-  } = await supabase.auth.getUser();
-
-  if (userError) throw userError;
-
-  if (!user) {
-    throw new Error('Необходимо войти в учётную запись.');
-  }
-
-  const { data: task, error } = await supabase
-    .from('tasks')
-    .insert({
-      inn: data.inn,
-      phone: data.phone,
-      description: data.description,
-      scheduled_at: data.scheduledAt,
-      status: 'new',
-      created_by: user.id,
-
-      assigned_to: data.assignedTo,
-      priority: data.priority,
-      assignment_type: data.assignedTo ? 'direct' : 'open',
-    })
-    .select(TASK_SELECT)
-    .single();
+export async function createTask(data: NewTaskData): Promise<void> {
+  const { error } = await supabase.rpc('create_task', {
+    p_inn: data.inn,
+    p_phone: data.phone,
+    p_description: data.description,
+    p_assigned_to: data.assignedTo ?? undefined,
+    p_priority: data.priority ?? 'medium',
+    p_scheduled_at: data.scheduledAt ?? undefined,
+  });
 
   if (error) throw error;
-
-  return mapTaskToTask(task as TaskRow);
 }
 
 export async function getTasks(): Promise<Task[]> {
-  const {
-    data: { user },
-    error: userError,
-  } = await supabase.auth.getUser();
-
-  if (userError) throw userError;
-
-  if (!user) {
-    throw new Error('Необходимо войти в учётную запись.');
-  }
-
   const { data, error } = await supabase
     .from('tasks')
     .select(TASK_SELECT)
-    .or(`assigned_to.eq.${user.id},assigned_to.is.null`)
     .order('created_at', { ascending: true })
     .order('task_number', { ascending: true });
 
