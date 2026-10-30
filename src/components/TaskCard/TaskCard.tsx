@@ -89,7 +89,7 @@ export function TaskCard({
       console.error('Не удалось начать намотку:', error);
       showToast({
         type: 'error',
-        message: 'Не удалось начать намотку. И слава богу.',
+        message: 'Не удалось начать намотку, и слава богу',
       });
     } finally {
       setIsStarting(false);
@@ -105,13 +105,13 @@ export function TaskCard({
 
       showToast({
         type: 'success',
-        message: 'Намотка возвращена в новые.',
+        message: 'Намотка возвращена',
       });
     } catch (error) {
       console.error('Не удалось вернуть намотку:', error);
       showToast({
         type: 'error',
-        message: 'Не удалось вернуть намотку.',
+        message: 'Не удалось вернуть намотку',
       });
     } finally {
       setIsReturning(false);
@@ -128,14 +128,14 @@ export function TaskCard({
 
       showToast({
         type: 'success',
-        message: 'Намотка завершена и перенесена в архив.',
+        message: 'Намотка завершена и перенесена в архив',
       });
     } catch (error) {
       console.error('Не удалось завершить намотку:', error);
 
       showToast({
         type: 'error',
-        message: 'Не удалось завершить намотку.',
+        message: 'Не удалось завершить намотку',
       });
     } finally {
       setIsCompleting(false);
