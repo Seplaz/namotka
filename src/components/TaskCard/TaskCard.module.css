@@ -37,7 +37,7 @@
 .preview {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 12px;
   min-inline-size: 0;
 }
 
