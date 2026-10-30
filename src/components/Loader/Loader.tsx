@@ -4,7 +4,7 @@ import { LoaderCircle } from 'lucide-react';
 export function Loader() {
   return (
     <div className={styles.loader} role="status" aria-label="Загрузка">
-      <LoaderCircle size={64} aria-hidden="true" />
+      <LoaderCircle size={48} aria-hidden="true" />
     </div>
   );
 }
