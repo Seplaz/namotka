@@ -10,6 +10,7 @@
   color: var(--color-button-text);
   font-size: 16px;
   font-weight: 500;
+  line-height: 1;
   transition:
     background-color 150ms ease,
     color 150ms ease;
@@ -22,12 +23,25 @@
   inline-size: 100%;
 }
 
-.button:hover {
+.loader {
+  flex-shrink: 0;
+  animation: spin 1s linear infinite;
+  inline-size: 16px;
+  block-size: 16px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.button:hover:not(:disabled) {
   background-color: var(--color-button-background-hover);
   color: var(--color-button-text-hover);
 }
 
-.button:active {
+.button:active:not(:disabled) {
   background-color: var(--color-button-background-active);
   color: var(--color-button-text-active);
 }
@@ -38,9 +52,8 @@
   cursor: not-allowed;
 }
 
-/* @media (max-width: 1024px) {
-  .button {
-    padding: 6px 12px;
-    font-size: 12px;
+@media (prefers-reduced-motion: reduce) {
+  .loader {
+    animation: none;
   }
-} */
+}

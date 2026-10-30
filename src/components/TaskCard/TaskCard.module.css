@@ -3,42 +3,70 @@
   flex-direction: column;
   gap: 24px;
   padding: 24px;
+  box-sizing: border-box;
   border-radius: 24px;
   background-color: var(--color-surface);
-  min-inline-size: 345px;
-  max-inline-size: 390px;
+
+  inline-size: 100%;
+  min-inline-size: 0;
 }
 
 .header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: 12px;
+
   padding: 0;
+  box-sizing: border-box;
   border: none;
   background: none;
   text-align: start;
   cursor: pointer;
-  min-inline-size: 0;
+
   inline-size: 100%;
+  min-inline-size: 0;
+}
+
+.header:focus-visible {
+  border-radius: 8px;
+  outline: 2px solid var(--color-accent);
+  outline-offset: 4px;
 }
 
 .preview {
   display: flex;
   align-items: center;
   gap: 24px;
+  min-inline-size: 0;
+}
+
+.expandIcon {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-secondary);
+  transition: color 0.2s ease;
+}
+
+.header:hover .expandIcon {
+  color: var(--color-text-primary);
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
 }
 
 .number {
   color: var(--color-text-primary);
   font-size: 16px;
   font-weight: 600;
-}
-
-.schedule {
-  display: flex;
-  flex-direction: column;
-  color: var(--color-text-secondary);
 }
 
 .title {
@@ -57,14 +85,15 @@
 }
 
 .description {
-  color: var(--color-text-secondary);
+  color: var(--color-text-primary);
   font-size: 16px;
+  font-weight: 600;
 }
 
 .info {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 12px;
 }
 
 .assignee {
@@ -73,22 +102,29 @@
   grid-template-columns: repeat(2, 1fr);
 }
 
+.contacts {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: repeat(2, 1fr);
+}
+
 .field {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  /* gap: 6px; */
 }
 
 .label {
-  font-size: 16px;
-  font-weight: 600;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  font-weight: 400;
 }
 
 .value {
   display: flex;
   align-items: center;
   gap: 12px;
-  color: var(--color-text-secondary);
+  color: var(--color-text-primary);
 }
 
 .copy {
@@ -101,4 +137,21 @@
 .actions {
   display: flex;
   gap: 24px;
+}
+
+@media (max-width: 640px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .preview {
+    flex-wrap: wrap;
+    gap: 8px 16px;
+  }
+
+  .badges {
+    justify-content: flex-start;
+  }
 }

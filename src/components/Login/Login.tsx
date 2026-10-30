@@ -56,18 +56,17 @@ export function Login() {
         if (error.code === 'email_not_confirmed') {
           showToast({
             type: 'warning',
-            message:
-              'Необходимо подтвердить email по ссылке из письма, чтобы войти.',
+            message: 'Необходимо подтвердить электронную почту, чтобы войти.',
           });
         } else if (error.code === 'invalid_credentials') {
           showToast({
             type: 'error',
-            message: 'Неверный email или пароль.',
+            message: 'Неверный email или пароль',
           });
         } else {
           showToast({
             type: 'error',
-            message: 'Не удалось войти. Попробуйте позже.',
+            message: 'Не удалось войти, попробуйте позже',
           });
         }
 
@@ -77,19 +76,19 @@ export function Login() {
       if (!data.user) {
         showToast({
           type: 'error',
-          message: 'Не удалось получить данные пользователя.',
+          message: 'Не удалось получить данные пользователя',
         });
         return;
       }
 
       showToast({
         type: 'success',
-        message: 'Вход выполнен успешно.',
+        message: 'Вход выполнен успешно',
       });
     } catch {
       showToast({
         type: 'error',
-        message: 'Ошибка соединения. Проверьте интернет и попробуйте ещё раз.',
+        message: 'Ошибка соединения, проверьте интернет и попробуйте ещё раз',
       });
     } finally {
       setIsSubmitting(false);
@@ -107,7 +106,7 @@ export function Login() {
         animate="visible"
         onSubmit={handleSubmit}
       >
-        <FormField label="Email" htmlFor="email">
+        <FormField label="Электронная почта" htmlFor="email">
           <Input
             id="email"
             type="email"
@@ -156,8 +155,13 @@ export function Login() {
           </div>
         </FormField>
 
-        <Button type="submit" disabled={!isFormValid || isSubmitting}>
-          {isSubmitting ? 'Входим...' : 'Войти'}
+        <Button
+          type="submit"
+          disabled={!isFormValid}
+          loading={isSubmitting}
+          loadingText="Входим…"
+        >
+          Войти
         </Button>
 
         <Link to="/register">Зарегистрироваться</Link>

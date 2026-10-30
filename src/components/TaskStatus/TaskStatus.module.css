@@ -4,10 +4,13 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-  padding: 6px 10px 6px 6px;
+  padding: 6px 12px 6px 8px;
   border-radius: 24px;
   font-size: 12px;
+  font-weight: 400;
+  line-height: 1;
   white-space: nowrap;
+  inline-size: fit-content;
 }
 
 .status svg {
@@ -31,6 +34,10 @@
   color: var(--color-status-in-progress-text);
 }
 
+.in_progress svg {
+  animation: spin 1s linear infinite;
+}
+
 .completed {
   background-color: var(--color-status-completed-bg);
   color: var(--color-status-completed-text);
@@ -41,12 +48,14 @@
   color: var(--color-status-cancelled-text);
 }
 
-.in_progress svg {
-  animation: spin 0.45s linear infinite;
-}
-
 @keyframes spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .in_progress svg {
+    animation: none;
   }
 }

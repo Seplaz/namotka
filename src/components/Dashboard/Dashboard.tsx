@@ -1,13 +1,21 @@
 import styles from '@/components/Dashboard/Dashboard.module.css';
+
 import { useState } from 'react';
+import { AnimatePresence } from 'motion/react';
+import { Plus } from 'lucide-react';
+
 import type { Task } from '@/types/task';
 import type { NewTaskData } from '@/services/tasksService';
+
 import { TaskColumn } from '@/components/TaskColumn/TaskColumn';
 import { Button } from '@/components/Button/Button';
 import { Modal } from '@/components/Modal/Modal';
 import { NewTask } from '@/components/NewTask/NewTask';
-import { AnimatePresence } from 'motion/react';
-import { Plus } from 'lucide-react';
+
+import {
+  initialTaskDraft,
+  type NewTaskDraft,
+} from '@/components/NewTask/NewTask.types';
 
 type DashboardProps = {
   tasks: Task[];
@@ -26,6 +34,10 @@ export function Dashboard({
 }: DashboardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [expandedTaskId, setExpandedTaskId] = useState<string | null>(null);
+
+  const [taskDraft, setTaskDraft] = useState<NewTaskDraft>({
+    ...initialTaskDraft,
+  });
 
   const newTasks = tasks.filter((task) => task.status === 'new');
 
@@ -50,7 +62,7 @@ export function Dashboard({
   return (
     <main className={styles.dashboard}>
       <TaskColumn
-        title="Новые"
+        title="Список намоток"
         tasks={newColumnTasks}
         emptyMessage="Намотки отсутствуют."
         onStartTask={onStartTask}
@@ -71,14 +83,24 @@ export function Dashboard({
         onToggleTask={handleToggleTask}
       />
 
-      <Button type="button" icon={<Plus size={16} />} onClick={handleOpenModal}>
+      <Button
+        className={styles.button}
+        type="button"
+        icon={<Plus size={16} />}
+        onClick={handleOpenModal}
+      >
         Новая намотка
       </Button>
 
       <AnimatePresence>
         {isModalOpen && (
           <Modal onClose={handleCloseModal} titleId="new-task-title">
-            <NewTask onClose={handleCloseModal} onSubmit={onCreateTask} />
+            <NewTask
+              draft={taskDraft}
+              onDraftChange={setTaskDraft}
+              onClose={handleCloseModal}
+              onSubmit={onCreateTask}
+            />
           </Modal>
         )}
       </AnimatePresence>

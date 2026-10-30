@@ -13,9 +13,12 @@
   flex-direction: column;
   gap: 24px;
   padding: 24px;
+  box-sizing: border-box;
   border-radius: 24px;
   background-color: var(--color-surface);
-  inline-size: 100%;
+  inline-size: min(100%, 480px);
+  /* inline-size: min(100%, 36rem); */
+  min-inline-size: 0;
 }
 
 .header {
@@ -26,27 +29,34 @@
 .title {
   font-size: 20px;
   font-weight: 600;
+  line-height: 1;
 }
 
 .close {
-  padding: 6px;
+  /* padding: 6px; */
   border: none;
   border-radius: 999px;
-  background-color: var(--color-button-background);
-  color: var(--color-button-text);
+  /* background-color: var(--color-button-background); */
+  color: var(--color-button-background);
+  line-height: 1;
   transition:
-    background-color 150ms ease,
-    color 150ms ease;
+    /* background-color 150ms ease, */ color 150ms ease;
 }
 
 .close:hover {
-  background-color: var(--color-button-background-hover);
-  color: var(--color-button-text-hover);
+  /* background-color: var(--color-button-background-hover); */
+  color: var(--color-button-background-hover);
 }
 
 .close:active {
-  background-color: var(--color-button-background-active);
-  color: var(--color-button-text-active);
+  /* background-color: var(--color-button-background-active); */
+  color: var(--color-button-background-active);
+}
+
+.client {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .schedule {
@@ -116,4 +126,11 @@
 .actions {
   display: flex;
   gap: 24px;
+}
+
+@media (max-width: 520px) {
+  .client {
+    gap: 16px;
+    grid-template-columns: 1fr;
+  }
 }

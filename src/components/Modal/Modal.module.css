@@ -3,14 +3,17 @@
   inset: 0;
   z-index: 10;
   display: flex;
+  display: grid;
   align-items: center;
   justify-content: center;
   background-color: rgba(9, 9, 11, 0.75);
   inline-size: 100%;
   block-size: 100%;
+  padding: 24px;
+  box-sizing: border-box;
 }
 
 .modal {
   inline-size: 100%;
-  max-inline-size: 390px;
+  min-inline-size: 0;
 }

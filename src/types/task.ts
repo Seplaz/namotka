@@ -5,6 +5,8 @@ export type TaskStatus =
   | 'waiting'
   | 'cancelled';
 
+export type TaskPriority = 'low' | 'medium' | 'high';
+
 export function isTaskStatus(status: string): status is TaskStatus {
   return (
     status === 'new' ||
@@ -15,6 +17,10 @@ export function isTaskStatus(status: string): status is TaskStatus {
   );
 }
 
+export function isTaskPriority(value: string): value is TaskPriority {
+  return value === 'low' || value === 'medium' || value === 'high';
+}
+
 export type Task = {
   id: string;
   task_number: number;
@@ -22,6 +28,7 @@ export type Task = {
   inn: string;
   phone: string;
   status: TaskStatus;
+  priority: TaskPriority;
   scheduled_at: string | null;
   created_at: string;
   created_by: string;

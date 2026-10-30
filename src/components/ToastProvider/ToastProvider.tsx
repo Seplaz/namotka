@@ -131,5 +131,5 @@ function ToastWithTimer({ toast, onClose }: ToastWithTimerProps) {
     return () => clearTimeout(timerId);
   }, [duration, toast.timerKey, onClose]);
 
-  return <Toast type={toast.type} message={toast.message} onClose={onClose} />;
+  return <Toast type={toast.type} message={toast.message} />;
 }

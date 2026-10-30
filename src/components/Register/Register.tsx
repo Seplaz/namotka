@@ -22,7 +22,7 @@ const formVariants = {
 };
 
 const EMAIL_DOMAIN_ERROR =
-  'Регистрация доступна только с почтой @kontur-irkutsk.ru.';
+  'Регистрация доступна только с почтой @kontur-irkutsk.ru';
 
 function isCorporateEmail(email: string): boolean {
   return /^[^\s@]+@kontur-irkutsk\.ru$/i.test(email.trim());
@@ -84,8 +84,7 @@ export function Register() {
         } else if (error.code === 'over_email_send_rate_limit') {
           showToast({
             type: 'warning',
-            message:
-              'Слишком много попыток отправки письма. Подождите немного и попробуйте позже.',
+            message: 'Слишком много попыток отправки письма, попробуйте позже',
           });
         } else if (
           error.code === 'user_already_exists' ||
@@ -93,12 +92,12 @@ export function Register() {
         ) {
           showToast({
             type: 'error',
-            message: 'Возможно, аккаунт уже существует. Попробуйте войти.',
+            message: 'Возможно, аккаунт уже существует, попробуйте войти',
           });
         } else {
           showToast({
             type: 'error',
-            message: 'Не удалось зарегистрироваться. Попробуйте позже.',
+            message: 'Не удалось зарегистрироваться, попробуйте позже',
           });
         }
 
@@ -108,7 +107,7 @@ export function Register() {
       if (data.user && data.user.identities?.length === 0) {
         showToast({
           type: 'error',
-          message: 'Этот email уже зарегистрирован. Попробуйте войти.',
+          message: 'Этот email уже зарегистрирован, попробуйте войти',
         });
 
         return;
@@ -117,18 +116,18 @@ export function Register() {
       if (data.session) {
         showToast({
           type: 'success',
-          message: 'Регистрация прошла успешно.',
+          message: 'Регистрация прошла успешно',
         });
       } else {
         showToast({
           type: 'warning',
-          message: 'Проверьте почту для подтверждения аккаунта.',
+          message: 'Проверьте электронную почту для подтверждения аккаунта',
         });
       }
     } catch {
       showToast({
         type: 'error',
-        message: 'Ошибка соединения. Проверьте интернет и попробуйте ещё раз.',
+        message: 'Ошибка соединения, проверьте интернет и попробуйте ещё раз',
       });
     } finally {
       setIsSubmitting(false);
@@ -160,7 +159,7 @@ export function Register() {
           />
         </FormField>
 
-        <FormField label="Email" htmlFor="email">
+        <FormField label="Электронная почта" htmlFor="email">
           <Input
             id="email"
             type="email"
@@ -222,8 +221,13 @@ export function Register() {
           </div>
         </FormField>
 
-        <Button type="submit" disabled={!isFormValid || isSubmitting}>
-          {isSubmitting ? 'Регистрируем...' : 'Зарегистрироваться'}
+        <Button
+          type="submit"
+          disabled={!isFormValid}
+          loading={isSubmitting}
+          loadingText="Регистрируем…"
+        >
+          Зарегистрироваться
         </Button>
 
         <Link to="/login">Войти</Link>

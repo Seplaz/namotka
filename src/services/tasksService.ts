@@ -1,6 +1,12 @@
 import { supabase } from '@/lib/supabase';
 import type { Tables } from '@/types/database.types';
-import { isTaskStatus, type Task, type TaskStatus } from '@/types/task';
+import {
+  isTaskStatus,
+  isTaskPriority,
+  type Task,
+  type TaskStatus,
+  type TaskPriority,
+} from '@/types/task';
 
 const TASK_SELECT = `
   id,
@@ -9,6 +15,7 @@ const TASK_SELECT = `
   inn,
   phone,
   status,
+  priority,
   scheduled_at,
   created_at,
   created_by,
@@ -25,6 +32,7 @@ type TaskRow = Pick<
   | 'inn'
   | 'phone'
   | 'status'
+  | 'priority'
   | 'scheduled_at'
   | 'created_at'
   | 'created_by'
@@ -33,8 +41,6 @@ type TaskRow = Pick<
   creator: { username: string } | null;
   assignee: { username: string } | null;
 };
-
-type TaskPriority = 'low' | 'medium' | 'high';
 
 export type NewTaskData = {
   inn: string;
@@ -50,6 +56,10 @@ function mapTaskToTask(task: TaskRow): Task {
     throw new Error(`Неизвестный статус задачи: ${task.status}`);
   }
 
+  if (!isTaskPriority(task.priority)) {
+    throw new Error(`Неизвестный приоритет задачи: ${task.priority}`);
+  }
+
   return {
     id: task.id,
     task_number: task.task_number,
@@ -57,6 +67,7 @@ function mapTaskToTask(task: TaskRow): Task {
     inn: task.inn,
     phone: task.phone,
     status: task.status,
+    priority: task.priority,
     scheduled_at: task.scheduled_at,
     created_at: task.created_at,
     created_by: task.created_by,
@@ -65,6 +76,7 @@ function mapTaskToTask(task: TaskRow): Task {
     assigneeName: task.assignee?.username ?? null,
   };
 }
+
 export async function createTask(data: NewTaskData): Promise<void> {
   const { error } = await supabase.rpc('create_task', {
     p_inn: data.inn,

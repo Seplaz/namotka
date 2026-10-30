@@ -3,6 +3,9 @@
   flex-direction: column;
   gap: 32px;
   overflow: hidden;
+
+  min-inline-size: 0;
+
   min-block-size: 0;
   block-size: 100%;
 }
@@ -17,11 +20,18 @@
   display: flex;
   flex: 1;
   flex-direction: column;
+
+  align-items: stretch;
+
   gap: 16px;
-  overflow-y: scroll;
+  overflow-y: auto;
   inline-size: 100%;
+
+  min-inline-size: 0;
+
   min-block-size: 0;
   block-size: 100%;
+  
   scrollbar-width: none;
   -ms-overflow-style: none;
 }

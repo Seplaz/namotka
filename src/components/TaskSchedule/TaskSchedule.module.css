@@ -1,0 +1,15 @@
+.schedule {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  /* padding: 6px 10px 6px 6px; */
+  padding: 6px 12px 6px 8px;
+  border-radius: 24px;
+  background-color: var(--color-status-in-progress-bg);
+  color: var(--color-status-in-progress-text);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1;
+  inline-size: fit-content;
+}

@@ -1,11 +1,17 @@
 import styles from '@/components/TaskCard/TaskCard.module.css';
 import { useState } from 'react';
 import { useToast } from '@/hooks/useToast';
-import { Check, Copy, Undo2, ArrowRight } from 'lucide-react';
+import { Check, Undo2, ArrowRight, ChevronDown } from 'lucide-react';
+import { TaskSchedule } from '@/components/TaskSchedule/TaskSchedule';
 import { Button } from '../Button/Button';
 import { TaskStatus } from '../TaskStatus/TaskStatus';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
-import type { TaskStatus as TaskStatusValue } from '@/types/task';
+import { TaskPriority } from '@/components/TaskPriority/TaskPriority';
+import type {
+  TaskStatus as TaskStatusValue,
+  TaskPriority as TaskPriorityValue,
+} from '@/types/task';
+import { CopyButton } from '@/components/CopyButton/CopyButton';
 
 type TaskCardProps = {
   id: string;
@@ -14,6 +20,7 @@ type TaskCardProps = {
   inn: string;
   phone: string;
   status: TaskStatusValue;
+  priority: TaskPriorityValue;
   scheduled_at: string | null;
   created_at: string;
   creatorName: string | null;
@@ -37,28 +44,6 @@ const contentVariants = {
   },
 };
 
-function CopyIcon({ copied }: { copied: boolean }) {
-  const shouldReduceMotion = useReducedMotion();
-
-  return (
-    <AnimatePresence mode="wait" initial={false}>
-      <motion.span
-        key={copied ? 'check' : 'copy'}
-        initial={shouldReduceMotion ? false : { opacity: 0, scale: 0.7 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={shouldReduceMotion ? undefined : { opacity: 0, scale: 0.7 }}
-        transition={{
-          duration: shouldReduceMotion ? 0 : 0.1,
-          ease: 'easeOut',
-        }}
-        style={{ display: 'inline-flex' }}
-      >
-        {copied ? <Check size={16} /> : <Copy size={16} />}
-      </motion.span>
-    </AnimatePresence>
-  );
-}
-
 export function TaskCard({
   id,
   task_number,
@@ -66,6 +51,7 @@ export function TaskCard({
   inn,
   phone,
   status,
+  priority,
   scheduled_at,
   creatorName,
   assigneeName,
@@ -76,7 +62,6 @@ export function TaskCard({
   onCompleteTask,
 }: TaskCardProps) {
   const { showToast } = useToast();
-  const [copiedField, setCopiedField] = useState<'inn' | 'phone' | null>(null);
   const [isStarting, setIsStarting] = useState(false);
   const [isReturning, setIsReturning] = useState(false);
   const [isCompleting, setIsCompleting] = useState(false);
@@ -86,19 +71,6 @@ export function TaskCard({
   const isInProgress = status === 'in_progress';
   const hasActions = isNew || isWaiting || isInProgress;
 
-  const handleCopy = async (value: string, field: 'inn' | 'phone') => {
-    try {
-      await navigator.clipboard.writeText(value);
-      setCopiedField(field);
-
-      window.setTimeout(() => {
-        setCopiedField(null);
-      }, 1500);
-    } catch {
-      setCopiedField(null);
-    }
-  };
-
   const shouldReduceMotion = useReducedMotion();
   const transition = shouldReduceMotion
     ? { duration: 0 }
@@ -106,17 +78,6 @@ export function TaskCard({
         height: { duration: 0.2, ease: 'easeInOut' as const },
         opacity: { duration: 0.15, ease: 'easeOut' as const },
       };
-
-  const formattedDate = scheduled_at
-    ? new Intl.DateTimeFormat('ru-RU', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        hourCycle: 'h23',
-      }).format(new Date(scheduled_at))
-    : null;
 
   async function handleStart() {
     if (!onStartTask) return;
@@ -201,22 +162,30 @@ export function TaskCard({
         aria-controls={`task-content-${id}`}
       >
         <div className={styles.preview}>
+          <span className={styles.expandIcon} aria-hidden="true">
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.span
+                className={styles.expandIcon}
+                animate={{ rotate: expanded ? -180 : 0 }}
+                transition={{
+                  duration: shouldReduceMotion ? 0 : 0.25,
+                  ease: 'easeInOut',
+                }}
+                aria-hidden="true"
+              >
+                <ChevronDown size={20} />
+              </motion.span>
+            </AnimatePresence>
+          </span>
+
           <span className={styles.number}># {task_number}</span>
-
-          <div className={styles.schedule}>
-            <span className={styles.title}>Время звонка</span>
-
-            {scheduled_at && formattedDate ? (
-              <time className={styles.text} dateTime={scheduled_at}>
-                {formattedDate}
-              </time>
-            ) : (
-              <span className={styles.text}>Не назначено</span>
-            )}
-          </div>
+          {scheduled_at && <TaskSchedule scheduledAt={scheduled_at} />}
         </div>
 
-        <TaskStatus status={status} />
+        <div className={styles.badges}>
+          <TaskPriority priority={priority} />
+          <TaskStatus status={status} />
+        </div>
       </button>
 
       <AnimatePresence initial={false}>
@@ -253,39 +222,23 @@ export function TaskCard({
                 </div>
               </div>
 
-              <div className={styles.field}>
-                <span className={styles.label}>ИНН</span>
+              <div className={styles.contacts}>
+                <div className={styles.field}>
+                  <span className={styles.label}>ИНН</span>
 
-                <div className={styles.value}>
-                  <span>{inn}</span>
-
-                  <button
-                    type="button"
-                    className={styles.copy}
-                    onClick={() => handleCopy(inn, 'inn')}
-                    aria-label="Скопировать ИНН"
-                    title="Скопировать ИНН"
-                  >
-                    <CopyIcon copied={copiedField === 'inn'} />
-                  </button>
+                  <div className={styles.value}>
+                    <span>{inn}</span>
+                    <CopyButton value={inn} label="ИНН" />
+                  </div>
                 </div>
-              </div>
 
-              <div className={styles.field}>
-                <span className={styles.label}>Номер телефона</span>
+                <div className={styles.field}>
+                  <span className={styles.label}>Номер телефона</span>
 
-                <div className={styles.value}>
-                  <span>{phone}</span>
-
-                  <button
-                    type="button"
-                    className={styles.copy}
-                    onClick={() => handleCopy(phone, 'phone')}
-                    aria-label="Скопировать номер телефона"
-                    title="Скопировать номер телефона"
-                  >
-                    <CopyIcon copied={copiedField === 'phone'} />
-                  </button>
+                  <div className={styles.value}>
+                    <span>{phone}</span>
+                    <CopyButton value={phone} label="номер телефона" />
+                  </div>
                 </div>
               </div>
             </div>
@@ -297,9 +250,10 @@ export function TaskCard({
                     type="button"
                     icon={<ArrowRight size={16} />}
                     onClick={handleStart}
-                    disabled={isStarting}
+                    loading={isStarting}
+                    // loadingText="Идёт намотка..."
                   >
-                    {isStarting ? 'Идёт намотка...' : 'Намотаться'}
+                    Намотаться
                   </Button>
                 )}
 
@@ -309,18 +263,22 @@ export function TaskCard({
                       type="button"
                       icon={<Undo2 size={16} />}
                       onClick={handleReturn}
-                      disabled={isReturning}
+                      loading={isReturning}
+                      // loadingText="Возвращаем..."
+                      disabled={isCompleting}
                     >
-                      {isReturning ? 'Возвращаем...' : 'Вернуть'}
+                      Вернуть
                     </Button>
 
                     <Button
                       type="button"
                       icon={<Check size={16} />}
                       onClick={handleComplete}
-                      disabled={isCompleting || isReturning}
+                      loading={isCompleting}
+                      // loadingText="Завершаем..."
+                      disabled={isReturning}
                     >
-                      {isCompleting ? 'Завершаем...' : 'Завершить'}
+                      Завершить
                     </Button>
                   </>
                 )}

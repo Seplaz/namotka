@@ -61,9 +61,8 @@
 
 .content {
   z-index: 10;
-  /* padding: 12px; */
   box-sizing: border-box;
-  border: 2px solid var(--color-input-border);
+  border: 2px solid var(--color-input-border-hover);
   border-radius: 12px;
   background-color: var(--color-surface-disabled);
   color: var(--color-text-placeholder);
