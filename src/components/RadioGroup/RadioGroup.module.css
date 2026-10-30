@@ -1,45 +1,58 @@
 .group {
-  display: flex;
-  justify-content: space-between;
-  gap: 24px;
+  display: grid;
+  gap: 4px;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  padding: 4px;
+  border: 2px solid var(--color-border);
+  border-radius: 12px;
+  background-color: var(--color-surface-disabled);
   inline-size: 100%;
 }
 
 .option {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
-  padding: 12px;
-  border: 2px solid var(--color-input-border);
-  border-radius: 12px;
-  background-color: var(--color-surface-disabled);
+  padding: 10px 12px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background-color: transparent;
   color: var(--color-text-secondary);
   cursor: pointer;
   user-select: none;
   transition:
-    border-color 150ms ease,
     background-color 150ms ease,
-    color 150ms ease;
-  inline-size: 100%;
+    color 150ms ease,
+    border-color 150ms ease,
+    box-shadow 150ms ease;
+  min-inline-size: 0;
 }
 
-.option:hover:not(.disabled) {
-  border-color: var(--color-input-border-hover);
+.option:hover:not(.disabled):not(.selected) {
+  background-color: var(--color-surface-hover);
   color: var(--color-text-primary);
 }
 
 .selected {
-  border-color: var(--color-accent);
-  color: var(--color-text-primary);
+  border-color: var(--color-button-background-hover);
+  background-color: var(--color-button-background);
+  color: var(--color-button-text);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 20%);
 }
 
 .selected:hover:not(.disabled) {
-  border-color: var(--color-accent);
+  border-color: var(--color-button-background-hover);
+  background-color: var(--color-button-background-hover);
+  color: var(--color-button-text-hover);
 }
 
 .input {
   position: absolute;
+  margin: -1px;
+  padding: 0;
   white-space: nowrap;
   overflow: hidden;
   inline-size: 1px;
@@ -49,32 +62,33 @@
 
 .icon {
   flex-shrink: 0;
-  color: var(--color-text-placeholder);
+  color: inherit;
   transition: color 150ms ease;
-}
-
-.selected .icon {
-  color: var(--color-text-primary);
 }
 
 .label {
   font-size: 16px;
   line-height: 1;
   text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .option:has(.input:focus-visible) {
-  outline: 2px solid var(--ring);
+  z-index: 1;
+  outline: 2px solid var(--color-accent);
   outline-offset: 3px;
 }
 
 .disabled {
-  opacity: 0.45;
+  opacity: 0.4;
   cursor: not-allowed;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .option {
+  .option,
+  .icon {
     transition: none;
   }
 }
