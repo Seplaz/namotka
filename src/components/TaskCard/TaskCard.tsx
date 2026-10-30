@@ -166,7 +166,7 @@ export function TaskCard({
             <AnimatePresence mode="wait" initial={false}>
               <motion.span
                 className={styles.expandIcon}
-                animate={{ rotate: expanded ? -180 : 0 }}
+                animate={{ rotate: expanded ? 180 : 0 }}
                 transition={{
                   duration: shouldReduceMotion ? 0 : 0.25,
                   ease: 'easeInOut',
