@@ -1,7 +1,7 @@
 .group {
   display: flex;
   justify-content: space-between;
-  gap: 12px;
+  gap: 24px;
   inline-size: 100%;
 }
 
