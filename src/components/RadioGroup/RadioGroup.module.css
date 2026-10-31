@@ -20,7 +20,8 @@
   border: 1px solid transparent;
   border-radius: 8px;
   background-color: transparent;
-  color: var(--color-text-secondary);
+  color: var(--color-text-placeholder);
+  font-weight: 400;
   cursor: pointer;
   user-select: none;
   transition:
@@ -33,7 +34,7 @@
 
 .option:hover:not(.disabled):not(.selected) {
   background-color: var(--color-surface-hover);
-  color: var(--color-text-primary);
+  color: var(--color-text-secondary);
 }
 
 .selected {
