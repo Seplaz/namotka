@@ -154,6 +154,7 @@ export function TaskCard({
         },
       }}
     >
+      {/* Header */}
       <button
         type="button"
         className={styles.header}
@@ -161,38 +162,42 @@ export function TaskCard({
         aria-expanded={expanded}
         aria-controls={`task-content-${id}`}
       >
-        <div className={styles.preview}>
-          <span className={styles.expandIcon} aria-hidden="true">
-            <AnimatePresence mode="wait" initial={false}>
-              <motion.span
-                className={styles.expandIcon}
-                animate={{ rotate: expanded ? 180 : 0 }}
-                transition={{
-                  duration: shouldReduceMotion ? 0 : 0.25,
-                  ease: 'easeInOut',
-                }}
-                aria-hidden="true"
-              >
-                <ChevronDown size={20} />
-              </motion.span>
-            </AnimatePresence>
-          </span>
+        <div className={styles.title}>
+          <div className={styles.taskMeta}>
+            <motion.span
+              className={styles.expandIcon}
+              animate={{ rotate: expanded ? 180 : 0 }}
+              transition={{
+                duration: shouldReduceMotion ? 0 : 0.25,
+                ease: 'easeInOut',
+              }}
+              aria-hidden="true"
+            >
+              <ChevronDown size={20} />
+            </motion.span>
 
-          <span className={styles.number}># {task_number}</span>
-          {scheduled_at && <TaskSchedule scheduledAt={scheduled_at} />}
+            <span className={styles.number}># {task_number}</span>
+          </div>
+
+          <TaskStatus status={status} />
         </div>
 
-        <div className={styles.badges}>
+        <div className={styles.task}>
+          <p className={styles.description}>{description}</p>
+        </div>
+
+        <div className={styles.schedule}>
+          {scheduled_at && <TaskSchedule scheduledAt={scheduled_at} />}
           <TaskPriority priority={priority} />
-          <TaskStatus status={status} />
         </div>
       </button>
 
+      {/* Expandable content */}
       <AnimatePresence initial={false}>
         {expanded && (
           <motion.div
             id={`task-content-${id}`}
-            className={styles.content}
+            className={styles.details}
             key="task-content"
             variants={contentVariants}
             initial="collapsed"
@@ -201,31 +206,27 @@ export function TaskCard({
             transition={transition}
             style={{ overflow: 'hidden' }}
           >
-            <p className={styles.description}>{description}</p>
-
+            {/* Info */}
             <div className={styles.info}>
-              <div className={styles.assignee}>
+              <div className={styles.assign}>
                 <div className={styles.field}>
                   <span className={styles.label}>Намотчик</span>
-
-                  <div className={styles.value}>
-                    <span>{creatorName ?? 'Неизвестный пользователь'}</span>
-                  </div>
+                  <span className={styles.value}>
+                    {creatorName ?? 'Неизвестный пользователь'}
+                  </span>
                 </div>
 
                 <div className={styles.field}>
                   <span className={styles.label}>Намотанный</span>
-
-                  <div className={styles.value}>
-                    <span>{assigneeName ?? 'Не назначен'}</span>
-                  </div>
+                  <span className={styles.value}>
+                    {assigneeName ?? 'Не назначен'}
+                  </span>
                 </div>
               </div>
 
               <div className={styles.contacts}>
                 <div className={styles.field}>
                   <span className={styles.label}>ИНН</span>
-
                   <div className={styles.value}>
                     <span>{inn}</span>
                     <CopyButton value={inn} label="ИНН" />
@@ -234,15 +235,20 @@ export function TaskCard({
 
                 <div className={styles.field}>
                   <span className={styles.label}>Номер телефона</span>
-
                   <div className={styles.value}>
                     <span>{phone}</span>
                     <CopyButton value={phone} label="номер телефона" />
                   </div>
                 </div>
               </div>
+
+              {/* Comments */}
+              <div className={styles.comments}>
+                {/* <Comments taskId={id} /> */}
+              </div>
             </div>
 
+            {/* Actions */}
             {hasActions && (
               <div className={styles.actions}>
                 {(isNew || isWaiting) && (
@@ -251,7 +257,6 @@ export function TaskCard({
                     icon={<ArrowRight size={16} />}
                     onClick={handleStart}
                     loading={isStarting}
-                    // loadingText="Идёт намотка..."
                   >
                     Намотаться
                   </Button>
@@ -264,7 +269,6 @@ export function TaskCard({
                       icon={<Undo2 size={16} />}
                       onClick={handleReturn}
                       loading={isReturning}
-                      // loadingText="Возвращаем..."
                       disabled={isCompleting}
                     >
                       Вернуть
@@ -275,7 +279,6 @@ export function TaskCard({
                       icon={<Check size={16} />}
                       onClick={handleComplete}
                       loading={isCompleting}
-                      // loadingText="Завершаем..."
                       disabled={isReturning}
                     >
                       Завершить

@@ -2,7 +2,7 @@ import styles from '@/components/TaskStatus/TaskStatus.module.css';
 import {
   Circle,
   CircleCheck,
-  CircleDashed,
+  CircleArrowLeft,
   CircleX,
   LoaderCircle,
 } from 'lucide-react';
@@ -19,7 +19,7 @@ const statusConfig = {
   },
   waiting: {
     label: 'Возвращена',
-    icon: CircleDashed,
+    icon: CircleArrowLeft,
   },
   in_progress: {
     label: 'В работе',

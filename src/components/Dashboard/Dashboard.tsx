@@ -16,6 +16,7 @@ import {
   initialTaskDraft,
   type NewTaskDraft,
 } from '@/components/NewTask/NewTask.types';
+import { Input } from '@/components/Input/Input';
 
 type DashboardProps = {
   tasks: Task[];
@@ -61,49 +62,54 @@ export function Dashboard({
 
   return (
     <main className={styles.dashboard}>
-      <TaskColumn
-        title="Список намоток"
-        tasks={newColumnTasks}
-        emptyMessage="Намотки отсутствуют."
-        onStartTask={onStartTask}
-        onReturnTask={onReturnTask}
-        onCompleteTask={onCompleteTask}
-        expandedTaskId={expandedTaskId}
-        onToggleTask={handleToggleTask}
-      />
+      <div className={styles.header}>
+        <Input className={styles.search} placeholder="Поиск по намоткам" />
+        <Button
+          className={styles.button}
+          type="button"
+          icon={<Plus size={16} />}
+          onClick={handleOpenModal}
+        >
+          Новая намотка
+        </Button>
+      </div>
 
-      <TaskColumn
-        title="В работе"
-        tasks={inProgressTasks}
-        emptyMessage="Здесь ничего нет, но стоит ли наматываться?"
-        onStartTask={onStartTask}
-        onReturnTask={onReturnTask}
-        onCompleteTask={onCompleteTask}
-        expandedTaskId={expandedTaskId}
-        onToggleTask={handleToggleTask}
-      />
+      <div className={styles.content}>
+        <TaskColumn
+          title="Список намоток"
+          tasks={newColumnTasks}
+          emptyMessage="Намотки отсутствуют."
+          onStartTask={onStartTask}
+          onReturnTask={onReturnTask}
+          onCompleteTask={onCompleteTask}
+          expandedTaskId={expandedTaskId}
+          onToggleTask={handleToggleTask}
+        />
 
-      <Button
-        className={styles.button}
-        type="button"
-        icon={<Plus size={16} />}
-        onClick={handleOpenModal}
-      >
-        Новая намотка
-      </Button>
+        <TaskColumn
+          title="В работе"
+          tasks={inProgressTasks}
+          emptyMessage="Здесь ничего нет, но стоит ли наматываться?"
+          onStartTask={onStartTask}
+          onReturnTask={onReturnTask}
+          onCompleteTask={onCompleteTask}
+          expandedTaskId={expandedTaskId}
+          onToggleTask={handleToggleTask}
+        />
 
-      <AnimatePresence>
-        {isModalOpen && (
-          <Modal onClose={handleCloseModal} titleId="new-task-title">
-            <NewTask
-              draft={taskDraft}
-              onDraftChange={setTaskDraft}
-              onClose={handleCloseModal}
-              onSubmit={onCreateTask}
-            />
-          </Modal>
-        )}
-      </AnimatePresence>
+        <AnimatePresence>
+          {isModalOpen && (
+            <Modal onClose={handleCloseModal} titleId="new-task-title">
+              <NewTask
+                draft={taskDraft}
+                onDraftChange={setTaskDraft}
+                onClose={handleCloseModal}
+                onSubmit={onCreateTask}
+              />
+            </Modal>
+          )}
+        </AnimatePresence>
+      </div>
     </main>
   );
 }

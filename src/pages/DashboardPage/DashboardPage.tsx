@@ -140,12 +140,12 @@ export function DashboardPage() {
   }
 
   return (
-    <Dashboard
-      tasks={tasks}
-      onCreateTask={handleCreateTask}
-      onStartTask={handleStartTask}
-      onReturnTask={handleReturnTask}
-      onCompleteTask={handleCompleteTask}
-    />
+      <Dashboard
+        tasks={tasks}
+        onCreateTask={handleCreateTask}
+        onStartTask={handleStartTask}
+        onReturnTask={handleReturnTask}
+        onCompleteTask={handleCompleteTask}
+      />
   );
 }

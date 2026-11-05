@@ -1,14 +1,16 @@
 .header {
   display: flex;
-  justify-content: space-between;
-  padding: 32px 64px;
+  align-items: center;
+  padding: 24px 48px;
+  gap: 48px;
   background-color: var(--color-surface);
+  border-bottom: 2px solid var(--color-input-border);
 }
 
 .logo {
   display: block;
   user-select: none;
-  block-size: 32px;
+  block-size: 20px;
 }
 
 @media (max-width: 768px) {

@@ -8,22 +8,25 @@
   border-radius: 24px;
   font-size: 12px;
   font-weight: 400;
-  line-height: 1;
+  line-height: normal;
   white-space: nowrap;
   inline-size: fit-content;
 }
 
 .low {
-  background-color: var(--color-status-new-bg);
-  color: var(--color-status-new-text);
+  /* background-color: var(--color-status-new-bg); */
+  /* color: var(--color-status-new-text); */
+  color: var(--color-text-secondary);
 }
 
 .medium {
-  background-color: var(--color-status-in-progress-bg);
-  color: var(--color-status-in-progress-text);
+  /* background-color: var(--color-status-in-progress-bg); */
+  /* color: var(--color-status-in-progress-text); */
+  color: var(--color-text-secondary);
 }
 
 .high {
-  background-color: var(--color-status-cancelled-bg);
-  color: var(--color-status-cancelled-text);
+  /* background-color: var(--color-status-cancelled-bg); */
+  /* color: var(--color-status-cancelled-text); */
+  color: var(--color-text-secondary);
 }
