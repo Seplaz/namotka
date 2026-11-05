@@ -40,13 +40,44 @@ export function Dashboard({
     ...initialTaskDraft,
   });
 
-  const newTasks = tasks.filter((task) => task.status === 'new');
+  const [searchQuery, setSearchQuery] = useState('');
 
-  const waitingTasks = tasks.filter((task) => task.status === 'waiting');
+  // const newTasks = tasks.filter((task) => task.status === 'new');
 
-  const newColumnTasks = [...newTasks, ...waitingTasks];
+  // const waitingTasks = tasks.filter((task) => task.status === 'waiting');
 
-  const inProgressTasks = tasks.filter((task) => task.status === 'in_progress');
+  // const newColumnTasks = [...newTasks, ...waitingTasks];
+
+  // const inProgressTasks = tasks.filter((task) => task.status === 'in_progress');
+
+  const normalizedQuery = searchQuery.trim().toLowerCase();
+
+  const filteredTasks = tasks.filter((task) => {
+    if (!normalizedQuery) return true;
+
+    const searchableFields = [
+      task.task_number,
+      task.description,
+      task.inn,
+      task.phone,
+      task.creatorName,
+      task.assigneeName,
+    ];
+
+    return searchableFields.some((field) =>
+      String(field ?? '')
+        .toLowerCase()
+        .includes(normalizedQuery),
+    );
+  });
+
+  const newColumnTasks = filteredTasks.filter(
+    (task) => task.status === 'new' || task.status === 'waiting',
+  );
+
+  const inProgressTasks = filteredTasks.filter(
+    (task) => task.status === 'in_progress',
+  );
 
   function handleOpenModal() {
     setIsModalOpen(true);
@@ -63,7 +94,13 @@ export function Dashboard({
   return (
     <main className={styles.dashboard}>
       <div className={styles.header}>
-        <Input className={styles.search} placeholder="Поиск по намоткам" />
+        <Input
+          className={styles.search}
+          type="search"
+          value={searchQuery}
+          onChange={(event) => setSearchQuery(event.target.value)}
+          placeholder="Поиск по намоткам"
+        />
         <Button
           className={styles.button}
           type="button"
