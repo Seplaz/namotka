@@ -1,0 +1,114 @@
+.comments {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-inline-size: 0;
+}
+
+.heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.title {
+  color: var(--color-text-primary);
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.count {
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-inline-size: 0;
+}
+
+.comment {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px;
+  background-color: var(--color-surface-disabled);
+  border-radius: 12px;
+}
+
+.commentMeta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px;
+}
+
+.author {
+  color: var(--color-text-primary);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.commentMeta time {
+  color: var(--color-text-placeholder);
+  font-size: 12px;
+}
+
+.commentText {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 16px;
+  line-height: normal;
+  overflow-wrap: anywhere;
+}
+
+.empty {
+  margin: 0;
+  color: var(--color-text-placeholder);
+  font-size: 12px;
+}
+
+.form {
+  position: relative;
+  min-inline-size: 0;
+}
+
+.input {
+  padding-inline-end: 38px;
+}
+
+.submit {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition:
+    color 150ms ease,
+    opacity 150ms ease;
+  transform: translateY(-50%);
+  inset-inline-end: 12px;
+  inset-block-start: 50%;
+}
+
+.submit:hover:not(:disabled) {
+  color: var(--color-text-primary);
+}
+
+.submit:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.submit:focus-visible {
+  border-radius: 4px;
+  outline: 2px solid var(--color-input-border-focus);
+  outline-offset: 2px;
+}

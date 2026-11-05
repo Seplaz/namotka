@@ -1,5 +1,6 @@
 import styles from '@/components/TaskColumn/TaskColumn.module.css';
 import type { Task } from '@/types/task';
+import type { Comment } from '@/types/comment';
 import { TaskCard } from '@/components/TaskCard/TaskCard';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 
@@ -13,6 +14,8 @@ type TaskColumnProps = {
   onStartTask?: (taskId: string) => Promise<void>;
   onReturnTask?: (taskId: string) => Promise<void>;
   onCompleteTask?: (taskId: string) => Promise<void>;
+  commentsByTask: Record<string, Comment[]>;
+  onAddComment: (taskId: string, content: string) => Promise<void>;
 };
 
 export function TaskColumn({
@@ -25,6 +28,8 @@ export function TaskColumn({
   onStartTask,
   onReturnTask,
   onCompleteTask,
+  commentsByTask,
+  onAddComment,
 }: TaskColumnProps) {
   const shouldReduceMotion = useReducedMotion();
 
@@ -68,6 +73,8 @@ export function TaskColumn({
                   onStartTask={onStartTask}
                   onReturnTask={onReturnTask}
                   onCompleteTask={onCompleteTask}
+                  comments={commentsByTask[task.id] ?? []}
+                  onAddComment={(content) => onAddComment(task.id, content)}
                 />
               </motion.div>
             ))}

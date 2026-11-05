@@ -5,6 +5,7 @@ import { AnimatePresence } from 'motion/react';
 import { Plus } from 'lucide-react';
 
 import type { Task } from '@/types/task';
+import type { Comment } from '@/types/comment';
 import type { NewTaskData } from '@/services/tasksService';
 
 import { TaskColumn } from '@/components/TaskColumn/TaskColumn';
@@ -24,6 +25,8 @@ type DashboardProps = {
   onStartTask: (taskId: string) => Promise<void>;
   onReturnTask: (taskId: string) => Promise<void>;
   onCompleteTask: (taskId: string) => Promise<void>;
+  commentsByTask: Record<string, Comment[]>;
+  onAddComment: (taskId: string, content: string) => Promise<void>;
 };
 
 export function Dashboard({
@@ -32,6 +35,8 @@ export function Dashboard({
   onStartTask,
   onReturnTask,
   onCompleteTask,
+  commentsByTask,
+  onAddComment,
 }: DashboardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [expandedTaskId, setExpandedTaskId] = useState<string | null>(null);
@@ -41,14 +46,6 @@ export function Dashboard({
   });
 
   const [searchQuery, setSearchQuery] = useState('');
-
-  // const newTasks = tasks.filter((task) => task.status === 'new');
-
-  // const waitingTasks = tasks.filter((task) => task.status === 'waiting');
-
-  // const newColumnTasks = [...newTasks, ...waitingTasks];
-
-  // const inProgressTasks = tasks.filter((task) => task.status === 'in_progress');
 
   const normalizedQuery = searchQuery.trim().toLowerCase();
 
@@ -101,6 +98,7 @@ export function Dashboard({
           onChange={(event) => setSearchQuery(event.target.value)}
           placeholder="Поиск по намоткам"
         />
+
         <Button
           className={styles.button}
           type="button"
@@ -121,6 +119,8 @@ export function Dashboard({
           onCompleteTask={onCompleteTask}
           expandedTaskId={expandedTaskId}
           onToggleTask={handleToggleTask}
+          commentsByTask={commentsByTask}
+          onAddComment={onAddComment}
         />
 
         <TaskColumn
@@ -132,6 +132,8 @@ export function Dashboard({
           onCompleteTask={onCompleteTask}
           expandedTaskId={expandedTaskId}
           onToggleTask={handleToggleTask}
+          commentsByTask={commentsByTask}
+          onAddComment={onAddComment}
         />
 
         <AnimatePresence>

@@ -12,6 +12,8 @@ import type {
   TaskPriority as TaskPriorityValue,
 } from '@/types/task';
 import { CopyButton } from '@/components/CopyButton/CopyButton';
+import { Comments } from '@/components/Comments/Comments';
+import type { Comment } from '@/types/comment';
 
 type TaskCardProps = {
   id: string;
@@ -31,6 +33,8 @@ type TaskCardProps = {
   onStartTask?: (taskId: string) => Promise<void>;
   onReturnTask?: (taskId: string) => Promise<void>;
   onCompleteTask?: (taskId: string) => Promise<void>;
+  comments?: Comment[];
+  onAddComment: (content: string) => Promise<void>;
 };
 
 const contentVariants = {
@@ -60,6 +64,8 @@ export function TaskCard({
   onStartTask,
   onReturnTask,
   onCompleteTask,
+  comments,
+  onAddComment,
 }: TaskCardProps) {
   const { showToast } = useToast();
   const [isStarting, setIsStarting] = useState(false);
@@ -243,9 +249,11 @@ export function TaskCard({
               </div>
 
               {/* Comments */}
-              <div className={styles.comments}>
-                {/* <Comments taskId={id} /> */}
-              </div>
+              <Comments
+                comments={comments ?? []}
+                onAddComment={onAddComment}
+                canAddComment={status !== 'completed'}
+              />
             </div>
 
             {/* Actions */}

@@ -10,6 +10,20 @@ import {
 } from '@/services/tasksService';
 import type { Task } from '@/types/task';
 import { useToast } from '@/hooks/useToast';
+import type { Comment } from '@/types/comment';
+import { createComment, getComments } from '@/services/commentsService';
+
+function groupCommentsByTask(comments: Comment[]): Record<string, Comment[]> {
+  return comments.reduce<Record<string, Comment[]>>((groups, comment) => {
+    if (!groups[comment.task_id]) {
+      groups[comment.task_id] = [];
+    }
+
+    groups[comment.task_id].push(comment);
+
+    return groups;
+  }, {});
+}
 
 export function DashboardPage() {
   const { showToast } = useToast();
@@ -17,6 +31,10 @@ export function DashboardPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
+
+  const [commentsByTask, setCommentsByTask] = useState<
+    Record<string, Comment[]>
+  >({});
 
   useEffect(() => {
     let isCurrent = true;
@@ -49,10 +67,30 @@ export function DashboardPage() {
       }
     }
 
+    async function loadComments() {
+      try {
+        const loadedComments = await getComments();
+
+        if (isCurrent) {
+          setCommentsByTask(groupCommentsByTask(loadedComments));
+        }
+      } catch (error) {
+        console.error('Не удалось загрузить комментарии:', error);
+
+        if (isCurrent) {
+          showToast({
+            type: 'error',
+            message: 'Не удалось загрузить комментарии',
+          });
+        }
+      }
+    }
+
     void loadTasks();
+    void loadComments();
 
     const channel = supabase
-      .channel('dashboard-tasks')
+      .channel('dashboard-realtime')
       .on(
         'postgres_changes',
         {
@@ -74,8 +112,30 @@ export function DashboardPage() {
           }
         },
       )
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'comments',
+        },
+        async () => {
+          try {
+            const latestComments = await getComments();
+
+            if (isCurrent) {
+              setCommentsByTask(groupCommentsByTask(latestComments));
+            }
+          } catch (error) {
+            console.error(
+              'Не удалось обновить комментарии через Realtime:',
+              error,
+            );
+          }
+        },
+      )
       .subscribe((status) => {
-        console.log('Tasks Realtime status:', status);
+        console.log('Dashboard Realtime status:', status);
       });
 
     return () => {
@@ -124,6 +184,23 @@ export function DashboardPage() {
     );
   }
 
+  async function handleAddComment(taskId: string, content: string) {
+    const newComment = await createComment(taskId, content);
+
+    setCommentsByTask((current) => {
+      const taskComments = current[taskId] ?? [];
+
+      if (taskComments.some((comment) => comment.id === newComment.id)) {
+        return current;
+      }
+
+      return {
+        ...current,
+        [taskId]: [...taskComments, newComment],
+      };
+    });
+  }
+
   if (isLoading) {
     return <Loader />;
   }
@@ -140,12 +217,14 @@ export function DashboardPage() {
   }
 
   return (
-      <Dashboard
-        tasks={tasks}
-        onCreateTask={handleCreateTask}
-        onStartTask={handleStartTask}
-        onReturnTask={handleReturnTask}
-        onCompleteTask={handleCompleteTask}
-      />
+    <Dashboard
+      tasks={tasks}
+      commentsByTask={commentsByTask}
+      onCreateTask={handleCreateTask}
+      onStartTask={handleStartTask}
+      onReturnTask={handleReturnTask}
+      onCompleteTask={handleCompleteTask}
+      onAddComment={handleAddComment}
+    />
   );
 }
