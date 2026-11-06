@@ -22,10 +22,12 @@ const formVariants = {
 };
 
 const EMAIL_DOMAIN_ERROR =
-  'Регистрация доступна только с почтой @kontur-irkutsk.ru';
+  'Регистрация доступна только с почтой @kontur-irkutsk.ru или @kontur-store.ru';
 
 function isCorporateEmail(email: string): boolean {
-  return /^[^\s@]+@kontur-irkutsk\.ru$/i.test(email.trim());
+  return /^[^\s@]+@(?:kontur-irkutsk\.ru|kontur-store\.ru)$/i.test(
+    email.trim(),
+  );
 }
 
 export function Register() {
