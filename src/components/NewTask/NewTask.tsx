@@ -1,5 +1,4 @@
 import styles from '@/components/NewTask/NewTask.module.css';
-
 import { useEffect, useState, type FormEvent } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { Check, X } from 'lucide-react';
@@ -25,7 +24,12 @@ import {
 } from '@/components/RadioGroup/RadioGroup';
 import { Select, type SelectOption } from '@/components/Select/Select';
 import { Button } from '@/components/Button/Button';
-import { AnimatedError } from '@/components/AnimatedError/AnimatedError';
+import {
+  getLocalDate,
+  normalizePhone,
+  validateNewTask,
+  type NewTaskErrors,
+} from '@/components/NewTask/NewTask.validation';
 
 const priorityOptions: RadioOption<TaskPriority>[] = [
   { value: 'low', label: 'Низкий' },
@@ -95,15 +99,16 @@ export function NewTask({
     specialistId,
   } = draft;
 
-  const [innError, setInnError] = useState('');
-  const [phoneError, setPhoneError] = useState('');
-  const [scheduleError, setScheduleError] = useState('');
-
+  const [hasSubmitted, setHasSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [specialists, setSpecialists] = useState<Specialist[]>([]);
   const [isLoadingSpecialists, setIsLoadingSpecialists] = useState(true);
   const [specialistsError, setSpecialistsError] = useState('');
+
+  const validationErrors: NewTaskErrors = hasSubmitted
+    ? validateNewTask(draft)
+    : {};
 
   function updateDraft<K extends keyof NewTaskDraft>(
     field: K,
@@ -114,47 +119,6 @@ export function NewTask({
       [field]: value,
     });
   }
-
-  function normalizePhone(value: string): string | null {
-    const digits = value.replace(/\D/g, '');
-
-    if (digits.length === 10) {
-      return `8${digits}`;
-    }
-
-    if (digits.length === 11 && digits.startsWith('7')) {
-      return `8${digits.slice(1)}`;
-    }
-
-    if (digits.length === 11 && digits.startsWith('8')) {
-      return digits;
-    }
-
-    return null;
-  }
-
-  function getLocalDate(offset = 0): string {
-    const date = new Date();
-    date.setDate(date.getDate() + offset);
-
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-
-    return `${year}-${month}-${day}`;
-  }
-
-  const isScheduleValid =
-    !scheduleCall ||
-    (scheduledDate !== '' &&
-      scheduledTime !== '' &&
-      scheduledDate >= getLocalDate());
-
-  const isFormValid =
-    /^(\d{10}|\d{12})$/.test(inn.trim()) &&
-    normalizePhone(phone) !== null &&
-    description.trim() !== '' &&
-    isScheduleValid;
 
   useEffect(() => {
     let cancelled = false;
@@ -202,8 +166,6 @@ export function NewTask({
       scheduledDate: value,
       scheduledTime: value ? scheduledTime : '',
     });
-
-    setScheduleError('');
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -211,57 +173,35 @@ export function NewTask({
 
     if (isSubmitting) return;
 
-    const normalizedInn = inn.trim();
+    setHasSubmitted(true);
+
+    const errors = validateNewTask(draft);
+
+    if (Object.keys(errors).length > 0) return;
+
     const normalizedPhone = normalizePhone(phone);
-    const normalizedDescription = description.trim();
 
-    const isInnValid = /^(\d{10}|\d{12})$/.test(normalizedInn);
+    if (!normalizedPhone) return;
 
-    setInnError(isInnValid ? '' : 'ИНН должен содержать 10 или 12 цифр');
+    const scheduledAt =
+      scheduleCall && scheduledDate && scheduledTime
+        ? new Date(`${scheduledDate}T${scheduledTime}`).toISOString()
+        : null;
 
-    setPhoneError(normalizedPhone ? '' : 'Введите корректный номер телефона');
-
-    if (!isInnValid || !normalizedPhone || !normalizedDescription) {
-      return;
-    }
-
-    let scheduledAt: string | null = null;
-
-    if (scheduleCall) {
-      if (!scheduledDate || !scheduledTime) {
-        setScheduleError('Укажите дату и время звонка');
-        return;
-      }
-
-      const localDateTime = new Date(`${scheduledDate}T${scheduledTime}`);
-
-      if (Number.isNaN(localDateTime.getTime())) {
-        setScheduleError('Укажите корректную дату и время');
-        return;
-      }
-
-      if (localDateTime.getTime() <= Date.now()) {
-        setScheduleError('Дата и время звонка должны быть в будущем');
-        return;
-      }
-
-      scheduledAt = localDateTime.toISOString();
-    }
-
-    setScheduleError('');
     setIsSubmitting(true);
 
     try {
       await onSubmit({
-        inn: normalizedInn,
+        inn: inn.trim(),
         phone: normalizedPhone,
-        description: normalizedDescription,
+        description: description.trim(),
         scheduledAt,
         assignedTo: specialistId || null,
         priority,
       });
 
       onDraftChange({ ...initialTaskDraft });
+      setHasSubmitted(false);
 
       showToast({
         type: 'success',
@@ -287,6 +227,7 @@ export function NewTask({
   return (
     <div className={styles.new}>
       <motion.form
+        noValidate
         className={styles.form}
         onSubmit={handleSubmit}
         variants={formAnimation}
@@ -309,7 +250,7 @@ export function NewTask({
         </div>
 
         <div className={styles.client}>
-          <FormField label="ИНН" htmlFor="inn">
+          <FormField label="ИНН" htmlFor="inn" error={validationErrors.inn}>
             <Input
               id="inn"
               type="text"
@@ -325,22 +266,18 @@ export function NewTask({
                   .slice(0, 12);
 
                 updateDraft('inn', value);
-
-                setInnError(
-                  value.length > 0 && value.length !== 10 && value.length !== 12
-                    ? 'ИНН должен содержать 10 или 12 цифр'
-                    : '',
-                );
               }}
-              aria-invalid={Boolean(innError)}
-              aria-describedby={innError ? 'inn-error' : undefined}
+              aria-invalid={Boolean(validationErrors.inn)}
+              aria-describedby={validationErrors.inn ? 'inn-error' : undefined}
               required
             />
-
-            <AnimatedError id="inn-error" message={innError} />
           </FormField>
 
-          <FormField label="Телефон" htmlFor="phone">
+          <FormField
+            label="Телефон"
+            htmlFor="phone"
+            error={validationErrors.phone}
+          >
             <Input
               id="phone"
               type="tel"
@@ -349,32 +286,21 @@ export function NewTask({
               autoComplete="tel"
               placeholder="+7 (900) 123-45-67"
               value={phone}
-              onChange={(event) => {
-                const value = event.target.value;
-
-                updateDraft('phone', value);
-
-                if (!value.trim()) {
-                  setPhoneError('');
-                  return;
-                }
-
-                setPhoneError(
-                  normalizePhone(value)
-                    ? ''
-                    : 'Введите номер из 10 или 11 цифр',
-                );
-              }}
-              aria-invalid={Boolean(phoneError)}
-              aria-describedby={phoneError ? 'phone-error' : undefined}
+              onChange={(event) => updateDraft('phone', event.target.value)}
+              aria-invalid={Boolean(validationErrors.phone)}
+              aria-describedby={
+                validationErrors.phone ? 'phone-error' : undefined
+              }
               required
             />
-
-            <AnimatedError id="phone-error" message={phoneError} />
           </FormField>
         </div>
 
-        <FormField label="Суть намотки" htmlFor="description">
+        <FormField
+          label="Суть намотки"
+          htmlFor="description"
+          error={validationErrors.description}
+        >
           <Textarea
             id="description"
             name="description"
@@ -384,6 +310,10 @@ export function NewTask({
             rows={3}
             maxLength={1000}
             showCounter
+            aria-invalid={Boolean(validationErrors.description)}
+            aria-describedby={
+              validationErrors.description ? 'description-error' : undefined
+            }
             required
           />
         </FormField>
@@ -397,7 +327,11 @@ export function NewTask({
           />
         </FormField>
 
-        <FormField label="Кого будем наматывать?" htmlFor="specialist">
+        <FormField
+          label="Кого будем наматывать?"
+          htmlFor="specialist"
+          error={specialistsError}
+        >
           <Select
             id="specialist"
             name="specialist"
@@ -412,7 +346,7 @@ export function NewTask({
                   : 'Никого, общая намотка'
             }
             disabled={isLoadingSpecialists || specialists.length === 0}
-            error={specialistsError || undefined}
+            aria-describedby={specialistsError ? 'specialist-error' : undefined}
           />
         </FormField>
 
@@ -433,10 +367,6 @@ export function NewTask({
                       scheduledTime: '',
                     }),
               });
-
-              if (!checked) {
-                setScheduleError('');
-              }
             }}
           />
 
@@ -460,7 +390,11 @@ export function NewTask({
               }
               style={{ overflow: 'hidden' }}
             >
-              <FormField label="Дата звонка" htmlFor="scheduledDate">
+              <FormField
+                label="Дата звонка"
+                htmlFor="scheduledDate"
+                error={validationErrors.schedule}
+              >
                 <div className={styles.datetime}>
                   <Input
                     className={styles.date}
@@ -471,6 +405,12 @@ export function NewTask({
                     min={getLocalDate()}
                     onChange={(event) => handleDateChange(event.target.value)}
                     aria-label="Дата звонка"
+                    aria-invalid={Boolean(validationErrors.schedule)}
+                    aria-describedby={
+                      validationErrors.schedule
+                        ? 'scheduledDate-error'
+                        : undefined
+                    }
                     required
                   />
 
@@ -480,28 +420,26 @@ export function NewTask({
                     type="time"
                     name="scheduledTime"
                     value={scheduledTime}
-                    onChange={(event) => {
-                      updateDraft('scheduledTime', event.target.value);
-                      setScheduleError('');
-                    }}
+                    onChange={(event) =>
+                      updateDraft('scheduledTime', event.target.value)
+                    }
                     disabled={!scheduledDate}
                     aria-label="Время звонка"
+                    aria-invalid={Boolean(validationErrors.schedule)}
+                    aria-describedby={
+                      validationErrors.schedule
+                        ? 'scheduledDate-error'
+                        : undefined
+                    }
                     required
                   />
                 </div>
-
-                <AnimatedError id="schedule-error" message={scheduleError} />
               </FormField>
             </motion.div>
           )}
         </AnimatePresence>
 
-        <Button
-          type="submit"
-          disabled={!isFormValid}
-          loading={isSubmitting}
-          // loadingText="Отправляем намотку..."
-        >
+        <Button type="submit" disabled={isSubmitting} loading={isSubmitting}>
           Намотать
         </Button>
       </motion.form>

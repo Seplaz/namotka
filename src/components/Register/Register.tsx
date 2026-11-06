@@ -10,7 +10,6 @@ import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { supabase } from '@/lib/supabase';
 import type { FormEvent } from 'react';
 import { useToast } from '@/hooks/useToast';
-import { AnimatedError } from '@/components/AnimatedError/AnimatedError';
 
 const formVariants = {
   hidden: { opacity: 0, scale: 0.7 },
@@ -59,9 +58,7 @@ export function Register() {
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if (!isFormValid || isSubmitting) {
-      return;
-    }
+    if (!isFormValid || isSubmitting) return;
 
     const normalizedFirstName = firstName.trim();
     const normalizedLastName = lastName.trim();
@@ -88,9 +85,7 @@ export function Register() {
       });
 
       if (error) {
-        if (error.message.includes(EMAIL_DOMAIN_ERROR)) {
-          setEmailError(EMAIL_DOMAIN_ERROR);
-        } else if (error.code === 'over_email_send_rate_limit') {
+        if (error.code === 'over_email_send_rate_limit') {
           showToast({
             type: 'warning',
             message: 'Слишком много попыток отправки письма, попробуйте позже',
@@ -182,7 +177,7 @@ export function Register() {
           />
         </FormField>
 
-        <FormField label="Электронная почта" htmlFor="email">
+        <FormField label="Электронная почта" htmlFor="email" error={emailError}>
           <Input
             id="email"
             type="email"
@@ -204,8 +199,6 @@ export function Register() {
             aria-describedby={emailError ? 'email-error' : undefined}
             required
           />
-
-          <AnimatedError id="email-error" message={emailError} />
         </FormField>
 
         <FormField label="Пароль" htmlFor="password">
@@ -246,7 +239,7 @@ export function Register() {
 
         <Button
           type="submit"
-          disabled={!isFormValid}
+          disabled={!isFormValid || isSubmitting}
           loading={isSubmitting}
           loadingText="Регистрируем…"
         >

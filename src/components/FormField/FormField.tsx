@@ -1,4 +1,5 @@
 import styles from '@/components/FormField/FormField.module.css';
+import { AnimatedError } from '@/components/AnimatedError/AnimatedError';
 import type { ReactNode } from 'react';
 
 type FormFieldProps = {
@@ -9,13 +10,15 @@ type FormFieldProps = {
 };
 
 export function FormField({ label, htmlFor, error, children }: FormFieldProps) {
+  const errorId = `${htmlFor}-error`;
+
   return (
     <div className={styles.field}>
       <label className={styles.label} htmlFor={htmlFor}>
         {label}
       </label>
       {children}
-      {error && <span className={styles.error}>{error}</span>}
+      <AnimatedError id={errorId} message={error ?? ''} />
     </div>
   );
 }

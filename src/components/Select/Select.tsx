@@ -20,9 +20,10 @@ type SelectProps<T extends string = string> = {
   onChange: (value: T | '') => void;
   placeholder?: string;
   disabled?: boolean;
-  error?: string;
   id?: string;
   className?: string;
+  'aria-invalid'?: boolean;
+  'aria-describedby'?: string;
 };
 
 const EMPTY_VALUE = '__select_unassigned__';
@@ -34,18 +35,14 @@ export function Select<T extends string = string>({
   onChange,
   placeholder = 'Кого намотать?',
   disabled = false,
-  error,
   id,
   className,
+  'aria-invalid': ariaInvalid,
+  'aria-describedby': ariaDescribedBy,
 }: SelectProps<T>) {
   const selectId = id ?? name;
 
-  const rootClassName = [
-    styles.root,
-    error && styles.hasError,
-    disabled && styles.disabled,
-    className,
-  ]
+  const rootClassName = [styles.root, disabled && styles.disabled, className]
     .filter(Boolean)
     .join(' ');
 
@@ -74,7 +71,8 @@ export function Select<T extends string = string>({
         <SelectTrigger
           id={selectId}
           className={styles.trigger}
-          aria-invalid={Boolean(error)}
+          aria-invalid={ariaInvalid}
+          aria-describedby={ariaDescribedBy}
         >
           <SelectValue>{selectedLabel}</SelectValue>
         </SelectTrigger>
@@ -102,12 +100,6 @@ export function Select<T extends string = string>({
           ))}
         </SelectContent>
       </ShadcnSelect>
-
-      {error && (
-        <p className={styles.error} role="alert">
-          {error}
-        </p>
-      )}
     </div>
   );
 }
