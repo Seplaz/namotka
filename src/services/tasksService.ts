@@ -20,9 +20,14 @@ const TASK_SELECT = `
   created_at,
   created_by,
   assigned_to,
-  creator:profiles!tasks_created_by_fkey(username),
-  assignee:profiles!tasks_assigned_to_fkey(username)
+  creator:profiles!tasks_created_by_fkey(first_name, last_name),
+  assignee:profiles!tasks_assigned_to_fkey(first_name, last_name)
 `;
+
+type ProfileName = {
+  first_name: string | null;
+  last_name: string | null;
+};
 
 type TaskRow = Pick<
   Tables<'tasks'>,
@@ -38,8 +43,8 @@ type TaskRow = Pick<
   | 'created_by'
   | 'assigned_to'
 > & {
-  creator: { username: string } | null;
-  assignee: { username: string } | null;
+  creator: ProfileName | null;
+  assignee: ProfileName | null;
 };
 
 export type NewTaskData = {
@@ -50,6 +55,17 @@ export type NewTaskData = {
   assignedTo: string | null;
   priority: TaskPriority;
 };
+
+function formatFullName(profile: ProfileName | null): string | null {
+  if (!profile) return null;
+
+  const fullName = [profile.first_name, profile.last_name]
+    .filter(Boolean)
+    .join(' ')
+    .trim();
+
+  return fullName || null;
+}
 
 function mapTaskToTask(task: TaskRow): Task {
   if (!isTaskStatus(task.status)) {
@@ -72,8 +88,8 @@ function mapTaskToTask(task: TaskRow): Task {
     created_at: task.created_at,
     created_by: task.created_by,
     assigned_to: task.assigned_to,
-    creatorName: task.creator?.username ?? null,
-    assigneeName: task.assignee?.username ?? null,
+    creatorName: formatFullName(task.creator),
+    assigneeName: formatFullName(task.assignee),
   };
 }
 

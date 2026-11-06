@@ -33,7 +33,8 @@ function isCorporateEmail(email: string): boolean {
 export function Register() {
   const { showToast } = useToast();
 
-  const [name, setName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -41,8 +42,10 @@ export function Register() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const isFormValid =
-    name.trim().length >= 2 &&
-    name.trim().length <= 60 &&
+    firstName.trim().length >= 2 &&
+    firstName.trim().length <= 60 &&
+    lastName.trim().length >= 2 &&
+    lastName.trim().length <= 60 &&
     isCorporateEmail(email) &&
     password.length >= 8 &&
     password.length <= 128;
@@ -60,7 +63,8 @@ export function Register() {
       return;
     }
 
-    const normalizedName = name.trim();
+    const normalizedFirstName = firstName.trim();
+    const normalizedLastName = lastName.trim();
     const normalizedEmail = email.trim();
 
     if (!isCorporateEmail(normalizedEmail)) {
@@ -76,7 +80,10 @@ export function Register() {
         email: normalizedEmail,
         password,
         options: {
-          data: { name: normalizedName },
+          data: {
+            first_name: normalizedFirstName,
+            last_name: normalizedLastName,
+          },
         },
       });
 
@@ -147,14 +154,28 @@ export function Register() {
         animate="visible"
         onSubmit={handleSubmit}
       >
-        <FormField label="Имя" htmlFor="name">
+        <FormField label="Имя" htmlFor="first-name">
           <Input
-            id="name"
+            id="first-name"
             type="text"
-            name="name"
-            autoComplete="name"
-            value={name}
-            onChange={(event) => setName(event.target.value)}
+            name="given-name"
+            autoComplete="given-name"
+            value={firstName}
+            onChange={(event) => setFirstName(event.target.value)}
+            required
+            minLength={2}
+            maxLength={60}
+          />
+        </FormField>
+
+        <FormField label="Фамилия" htmlFor="last-name">
+          <Input
+            id="last-name"
+            type="text"
+            name="family-name"
+            autoComplete="family-name"
+            value={lastName}
+            onChange={(event) => setLastName(event.target.value)}
             required
             minLength={2}
             maxLength={60}

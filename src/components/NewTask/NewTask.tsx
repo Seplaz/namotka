@@ -190,7 +190,9 @@ export function NewTask({
   const specialistOptions: SelectOption<string>[] = specialists.map(
     (specialist) => ({
       value: specialist.id,
-      label: specialist.username,
+      label: [specialist.first_name, specialist.last_name]
+        .filter(Boolean)
+        .join(' '),
     }),
   );
 

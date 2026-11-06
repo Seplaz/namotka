@@ -8,26 +8,33 @@ const COMMENT_SELECT = `
   content,
   created_at,
   created_by,
-  author:profiles!comments_created_by_fkey(username)
+  author:profiles!comments_created_by_fkey(first_name, last_name)
 `;
 
 type CommentRow = Pick<
   Tables<'comments'>,
   'id' | 'task_id' | 'content' | 'created_at' | 'created_by'
 > & {
-  author: { username: string } | null;
+  author: {
+    first_name: string | null;
+    last_name: string | null;
+  } | null;
 };
 
 const MAX_COMMENT_LENGTH = 1000;
 
 function mapCommentToComment(comment: CommentRow): Comment {
+  const authorName = [comment.author?.first_name, comment.author?.last_name]
+    .filter(Boolean)
+    .join(' ');
+
   return {
     id: comment.id,
     task_id: comment.task_id,
     content: comment.content,
     created_at: comment.created_at,
     created_by: comment.created_by,
-    authorName: comment.author?.username ?? null,
+    authorName: authorName || null,
   };
 }
 
