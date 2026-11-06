@@ -3,11 +3,11 @@ import { Link } from '@/components/Link/Link';
 import { LogOut } from 'lucide-react';
 
 type NavigationProps = {
-  username: string;
+  fullName: string;
   onLogout: () => void;
 };
 
-export function Navigation({ username, onLogout }: NavigationProps) {
+export function Navigation({ fullName, onLogout }: NavigationProps) {
   return (
     <nav className={styles.navigation}>
       <div className={styles.pages}>
@@ -21,7 +21,7 @@ export function Navigation({ username, onLogout }: NavigationProps) {
       </div>
 
       <div className={styles.account}>
-        <span className={styles.username}>{username}</span>
+        <span className={styles.username}>{fullName}</span>
         <button className={styles.logout} type="button" onClick={onLogout}>
           <LogOut size={16} />
           Выйти

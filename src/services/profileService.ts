@@ -6,6 +6,11 @@ export type Specialist = Pick<
   'id' | 'first_name' | 'last_name'
 >;
 
+export type UserProfile = Pick<
+  Tables<'profiles'>,
+  'id' | 'first_name' | 'last_name'
+>;
+
 export async function getSpecialists(): Promise<Specialist[]> {
   const { data, error } = await supabase
     .from('profiles')
@@ -15,9 +20,25 @@ export async function getSpecialists(): Promise<Specialist[]> {
     .order('last_name', { ascending: true })
     .order('first_name', { ascending: true });
 
-  if (error) {
-    throw error;
-  }
+  if (error) throw error;
 
   return data ?? [];
+}
+
+export async function getUserProfile(userId: string): Promise<UserProfile> {
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('id, first_name, last_name')
+    .eq('id', userId)
+    .single();
+
+  if (error) throw error;
+
+  return data;
+}
+
+export function formatFullName(
+  profile: Pick<UserProfile, 'first_name' | 'last_name'>,
+): string {
+  return [profile.first_name, profile.last_name].filter(Boolean).join(' ');
 }

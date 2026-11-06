@@ -5,13 +5,13 @@ import { Navigation } from '@/components/Navigation/Navigation';
 
 type HeaderProps = {
   isAuthenticated: boolean;
-  username?: string;
+  fullName?: string;
   onLogout: () => void;
 };
 
 export function Header({
   isAuthenticated,
-  username = '',
+  fullName = '',
   onLogout,
 }: HeaderProps) {
   return (
@@ -21,7 +21,7 @@ export function Header({
       </Link>
 
       {isAuthenticated && (
-        <Navigation username={username} onLogout={onLogout} />
+        <Navigation fullName={fullName} onLogout={onLogout} />
       )}
     </header>
   );
