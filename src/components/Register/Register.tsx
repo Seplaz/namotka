@@ -20,6 +20,30 @@ const formVariants = {
   },
 };
 
+const NAME_PATTERN =
+  /^[\p{Script_Extensions=Latin}\p{Script_Extensions=Cyrillic}]+(?:[ '\u2019-][\p{Script_Extensions=Latin}\p{Script_Extensions=Cyrillic}]+)*$/u;
+
+const NAME_ERROR =
+  'Используйте русские или латинские буквы; пробел, дефис и апостроф допустимы';
+
+function isValidName(value: string): boolean {
+  const name = value.trim().normalize('NFC');
+
+  return name.length >= 2 && name.length <= 60 && NAME_PATTERN.test(name);
+}
+
+function getNameError(value: string): string {
+  const name = value.trim().normalize('NFC');
+
+  if (!name) return '';
+  if (name.length < 2 || name.length > 60) {
+    return 'Имя должно содержать от 2 до 60 символов';
+  }
+  if (!NAME_PATTERN.test(name)) return NAME_ERROR;
+
+  return '';
+}
+
 const EMAIL_DOMAIN_ERROR =
   'Регистрация доступна только с почтой @kontur-irkutsk.ru или @kontur-store.ru';
 
@@ -34,17 +58,17 @@ export function Register() {
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
+  const [firstNameError, setFirstNameError] = useState('');
+  const [lastNameError, setLastNameError] = useState('');
   const [email, setEmail] = useState('');
+  const [emailError, setEmailError] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [emailError, setEmailError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const isFormValid =
-    firstName.trim().length >= 2 &&
-    firstName.trim().length <= 60 &&
-    lastName.trim().length >= 2 &&
-    lastName.trim().length <= 60 &&
+    isValidName(firstName) &&
+    isValidName(lastName) &&
     isCorporateEmail(email) &&
     password.length >= 8 &&
     password.length <= 128;
@@ -149,28 +173,40 @@ export function Register() {
         animate="visible"
         onSubmit={handleSubmit}
       >
-        <FormField label="Имя" htmlFor="first-name">
+        <FormField label="Имя" htmlFor="first-name" error={firstNameError}>
           <Input
             id="first-name"
             type="text"
             name="given-name"
             autoComplete="given-name"
             value={firstName}
-            onChange={(event) => setFirstName(event.target.value)}
+            onChange={(event) => {
+              const value = event.target.value;
+              setFirstName(value);
+              setFirstNameError(getNameError(value));
+            }}
+            aria-invalid={Boolean(firstNameError)}
+            aria-describedby={firstNameError ? 'first-name-error' : undefined}
             required
             minLength={2}
             maxLength={60}
           />
         </FormField>
 
-        <FormField label="Фамилия" htmlFor="last-name">
+        <FormField label="Фамилия" htmlFor="last-name" error={lastNameError}>
           <Input
             id="last-name"
             type="text"
             name="family-name"
             autoComplete="family-name"
             value={lastName}
-            onChange={(event) => setLastName(event.target.value)}
+            onChange={(event) => {
+              const value = event.target.value;
+              setLastName(value);
+              setLastNameError(getNameError(value));
+            }}
+            aria-invalid={Boolean(lastNameError)}
+            aria-describedby={lastNameError ? 'last-name-error' : undefined}
             required
             minLength={2}
             maxLength={60}
