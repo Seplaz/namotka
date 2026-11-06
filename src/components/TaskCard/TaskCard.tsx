@@ -34,7 +34,7 @@ type TaskCardProps = {
   onReturnTask?: (taskId: string) => Promise<void>;
   onCompleteTask?: (taskId: string) => Promise<void>;
   comments?: Comment[];
-  onAddComment: (content: string) => Promise<void>;
+  onAddComment?: (content: string) => Promise<void>;
 };
 
 const contentVariants = {

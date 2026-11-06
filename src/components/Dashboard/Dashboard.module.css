@@ -1,9 +1,11 @@
 .dashboard {
   display: flex;
   flex-direction: column;
+  flex: 1;
   gap: 24px;
-  padding: 24px 48px;
+  padding: 24px 48px 0 48px;
   min-block-size: 0;
+  overflow: hidden;
 }
 
 .header {
@@ -11,6 +13,7 @@
   align-items: center;
   gap: 24px;
   inline-size: 100%;
+  flex: 0 0 auto;
 }
 
 .search {
@@ -26,8 +29,12 @@
 
 .content {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  flex: 1;
+  min-block-size: 0;
+  /* grid-template-columns: repeat(2, minmax(0, 1fr)); */
+  grid-template-columns: repeat(2, minmax(0, 520px));
   gap: 24px;
+  overflow: hidden;
 }
 
 @media (max-width: 768px) {
@@ -38,7 +45,7 @@
   .content {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto;
+    grid-template-rows: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -54,6 +61,6 @@
   .content {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto;
+    grid-template-rows: repeat(2, minmax(0, 1fr));
   }
 }

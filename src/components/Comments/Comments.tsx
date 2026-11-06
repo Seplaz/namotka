@@ -1,16 +1,35 @@
+import styles from './Comments.module.css';
 import { useState } from 'react';
 import { CornerRightUp } from 'lucide-react';
 import { Input } from '@/components/Input/Input';
 import { useToast } from '@/hooks/useToast';
 import type { Comment } from '@/types/comment';
-import styles from './Comments.module.css';
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 
 const MAX_COMMENT_LENGTH = 1000;
 
 type CommentsProps = {
   comments?: Comment[];
-  onAddComment: (content: string) => Promise<void>;
+  onAddComment?: (content: string) => Promise<void>;
   canAddComment?: boolean;
+};
+
+const commentVariants = {
+  hidden: {
+    opacity: 0,
+    y: 8,
+    height: 0,
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    height: 'auto',
+  },
+  exit: {
+    opacity: 0,
+    y: -4,
+    height: 0,
+  },
 };
 
 export function Comments({
@@ -28,7 +47,7 @@ export function Comments({
   const isTooLong = trimmedContent.length > MAX_COMMENT_LENGTH;
 
   async function handleSubmit() {
-    if (!hasContent || isTooLong || isSending) return;
+    if (!hasContent || isTooLong || isSending || !onAddComment) return;
 
     try {
       setIsSending(true);
@@ -48,6 +67,13 @@ export function Comments({
     }
   }
 
+  const shouldReduceMotion = useReducedMotion();
+
+  const commentTransition = {
+    duration: shouldReduceMotion ? 0 : 0.2,
+    ease: [0.22, 1, 0.36, 1] as const,
+  };
+
   return (
     <section className={styles.comments}>
       <div className={styles.heading}>
@@ -56,33 +82,54 @@ export function Comments({
       </div>
 
       <div className={styles.list}>
-        {comments.length > 0 ? (
-          comments.map((comment) => (
-            <article key={comment.id} className={styles.comment}>
-              <div className={styles.commentMeta}>
-                <span className={styles.author}>
-                  {comment.authorName ?? 'Неизвестный пользователь'}
-                </span>
+        <AnimatePresence initial={false} mode="popLayout">
+          {comments.length > 0 ? (
+            comments.map((comment) => (
+              <motion.article
+                key={comment.id}
+                className={styles.comment}
+                variants={commentVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                transition={commentTransition}
+                layout="position"
+                style={{ overflow: 'hidden' }}
+              >
+                <div className={styles.commentMeta}>
+                  <span className={styles.author}>
+                    {comment.authorName ?? 'Неизвестный пользователь'}
+                  </span>
 
-                <time dateTime={comment.created_at}>
-                  {new Date(comment.created_at).toLocaleString('ru-RU', {
-                    day: 'numeric',
-                    month: 'short',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                  })}
-                </time>
-              </div>
+                  <time dateTime={comment.created_at}>
+                    {new Date(comment.created_at).toLocaleString('ru-RU', {
+                      day: 'numeric',
+                      month: 'short',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })}
+                  </time>
+                </div>
 
-              <p className={styles.commentText}>{comment.content}</p>
-            </article>
-          ))
-        ) : (
-          <p className={styles.empty}>Пока нет комментариев</p>
-        )}
+                <p className={styles.commentText}>{comment.content}</p>
+              </motion.article>
+            ))
+          ) : (
+            <motion.p
+              key="empty"
+              className={styles.empty}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={commentTransition}
+            >
+              Пока нет комментариев
+            </motion.p>
+          )}
+        </AnimatePresence>
       </div>
 
-      {canAddComment && (
+      {canAddComment && onAddComment && (
         <form
           className={styles.form}
           onSubmit={(event) => {

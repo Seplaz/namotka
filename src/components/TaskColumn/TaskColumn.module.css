@@ -5,9 +5,11 @@
   min-inline-size: 0;
   min-block-size: 0;
   block-size: 100%;
+  overflow: hidden;
 }
 
 .title {
+  flex: 0 0 auto;
   color: var(--color-text-primary);
   font-size: 20px;
   font-weight: 400;
@@ -20,10 +22,10 @@
   align-items: stretch;
   gap: 12px;
   overflow-y: auto;
+  overflow-x: hidden;
   inline-size: 100%;
   min-inline-size: 0;
   min-block-size: 0;
-  block-size: 100%;
   scrollbar-width: none;
   -ms-overflow-style: none;
 }

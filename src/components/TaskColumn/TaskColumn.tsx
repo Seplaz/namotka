@@ -14,8 +14,8 @@ type TaskColumnProps = {
   onStartTask?: (taskId: string) => Promise<void>;
   onReturnTask?: (taskId: string) => Promise<void>;
   onCompleteTask?: (taskId: string) => Promise<void>;
-  commentsByTask: Record<string, Comment[]>;
-  onAddComment: (taskId: string, content: string) => Promise<void>;
+  commentsByTask?: Record<string, Comment[]>;
+  onAddComment?: (taskId: string, content: string) => Promise<void>;
 };
 
 export function TaskColumn({
@@ -73,8 +73,12 @@ export function TaskColumn({
                   onStartTask={onStartTask}
                   onReturnTask={onReturnTask}
                   onCompleteTask={onCompleteTask}
-                  comments={commentsByTask[task.id] ?? []}
-                  onAddComment={(content) => onAddComment(task.id, content)}
+                  comments={commentsByTask?.[task.id] ?? []}
+                  onAddComment={
+                    onAddComment
+                      ? (content) => onAddComment(task.id, content)
+                      : undefined
+                  }
                 />
               </motion.div>
             ))}

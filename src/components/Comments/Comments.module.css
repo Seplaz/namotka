@@ -50,12 +50,13 @@
 .author {
   color: var(--color-text-primary);
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 400;
 }
 
 .commentMeta time {
   color: var(--color-text-placeholder);
   font-size: 12px;
+  font-weight: 400;
 }
 
 .commentText {
