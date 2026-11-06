@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Dashboard } from '@/components/Dashboard/Dashboard';
 import { Loader } from '@/components/Loader/Loader';
 import { supabase } from '@/lib/supabase';
@@ -12,6 +12,8 @@ import type { Task } from '@/types/task';
 import { useToast } from '@/hooks/useToast';
 import type { Comment } from '@/types/comment';
 import { createComment, getComments } from '@/services/commentsService';
+
+const DASHBOARD_STATUSES = ['new', 'waiting', 'in_progress'] as const;
 
 function groupCommentsByTask(comments: Comment[]): Record<string, Comment[]> {
   return comments.reduce<Record<string, Comment[]>>((groups, comment) => {
@@ -31,23 +33,56 @@ export function DashboardPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
-
   const [commentsByTask, setCommentsByTask] = useState<
     Record<string, Comment[]>
   >({});
 
+  const tasksRef = useRef<Task[]>([]);
+
   useEffect(() => {
     let isCurrent = true;
 
-    async function loadTasks() {
-      try {
-        setLoadError(null);
+    async function refreshComments(taskIds: readonly string[]) {
+      if (taskIds.length === 0) {
+        if (isCurrent) {
+          setCommentsByTask({});
+        }
+        return;
+      }
 
-        const loadedTasks = await getTasks();
+      try {
+        const loadedComments = await getComments(taskIds);
 
         if (isCurrent) {
-          setTasks(loadedTasks);
+          setCommentsByTask(groupCommentsByTask(loadedComments));
         }
+      } catch (error) {
+        console.error('Не удалось загрузить комментарии:', error);
+
+        if (isCurrent) {
+          showToast({
+            type: 'error',
+            message: 'Не удалось загрузить комментарии',
+          });
+        }
+      }
+    }
+
+    async function refreshTasks() {
+      const loadedTasks = await getTasks(DASHBOARD_STATUSES);
+
+      if (!isCurrent) return;
+
+      tasksRef.current = loadedTasks;
+      setTasks(loadedTasks);
+
+      await refreshComments(loadedTasks.map((task) => task.id));
+    }
+
+    async function loadInitialData() {
+      try {
+        setLoadError(null);
+        await refreshTasks();
       } catch (error) {
         console.error('Не удалось загрузить намотки:', error);
 
@@ -67,27 +102,7 @@ export function DashboardPage() {
       }
     }
 
-    async function loadComments() {
-      try {
-        const loadedComments = await getComments();
-
-        if (isCurrent) {
-          setCommentsByTask(groupCommentsByTask(loadedComments));
-        }
-      } catch (error) {
-        console.error('Не удалось загрузить комментарии:', error);
-
-        if (isCurrent) {
-          showToast({
-            type: 'error',
-            message: 'Не удалось загрузить комментарии',
-          });
-        }
-      }
-    }
-
-    void loadTasks();
-    void loadComments();
+    void loadInitialData();
 
     const channel = supabase
       .channel('dashboard-realtime')
@@ -98,15 +113,9 @@ export function DashboardPage() {
           schema: 'public',
           table: 'tasks',
         },
-        async (payload) => {
-          console.log('Realtime task event:', payload);
-
+        async () => {
           try {
-            const latestTasks = await getTasks();
-
-            if (isCurrent) {
-              setTasks(latestTasks);
-            }
+            await refreshTasks();
           } catch (error) {
             console.error('Не удалось обновить задачи через Realtime:', error);
           }
@@ -120,18 +129,8 @@ export function DashboardPage() {
           table: 'comments',
         },
         async () => {
-          try {
-            const latestComments = await getComments();
-
-            if (isCurrent) {
-              setCommentsByTask(groupCommentsByTask(latestComments));
-            }
-          } catch (error) {
-            console.error(
-              'Не удалось обновить комментарии через Realtime:',
-              error,
-            );
-          }
+          const taskIds = tasksRef.current.map((task) => task.id);
+          await refreshComments(taskIds);
         },
       )
       .subscribe((status) => {
@@ -148,7 +147,9 @@ export function DashboardPage() {
     await createTask(data);
 
     try {
-      const latestTasks = await getTasks();
+      const latestTasks = await getTasks(DASHBOARD_STATUSES);
+
+      tasksRef.current = latestTasks;
       setTasks(latestTasks);
     } catch (error) {
       console.error('Намотка создана, но не удалось обновить список:', error);
@@ -160,28 +161,39 @@ export function DashboardPage() {
     }
   }
 
+  function applyUpdatedTask(updatedTask: Task) {
+    const nextTasks = tasksRef.current.map((task) =>
+      task.id === updatedTask.id ? updatedTask : task,
+    );
+
+    tasksRef.current = nextTasks;
+    setTasks(nextTasks);
+
+    if (
+      updatedTask.status === 'completed' ||
+      updatedTask.status === 'cancelled'
+    ) {
+      setCommentsByTask((current) => {
+        const next = { ...current };
+        delete next[updatedTask.id];
+        return next;
+      });
+    }
+  }
+
   async function handleStartTask(taskId: string) {
     const updatedTask = await updateTaskStatus(taskId, 'in_progress');
-
-    setTasks((currentTasks) =>
-      currentTasks.map((task) => (task.id === taskId ? updatedTask : task)),
-    );
+    applyUpdatedTask(updatedTask);
   }
 
   async function handleReturnTask(taskId: string) {
     const updatedTask = await updateTaskStatus(taskId, 'waiting');
-
-    setTasks((currentTasks) =>
-      currentTasks.map((task) => (task.id === taskId ? updatedTask : task)),
-    );
+    applyUpdatedTask(updatedTask);
   }
 
   async function handleCompleteTask(taskId: string) {
     const updatedTask = await updateTaskStatus(taskId, 'completed');
-
-    setTasks((currentTasks) =>
-      currentTasks.map((task) => (task.id === taskId ? updatedTask : task)),
-    );
+    applyUpdatedTask(updatedTask);
   }
 
   async function handleAddComment(taskId: string, content: string) {

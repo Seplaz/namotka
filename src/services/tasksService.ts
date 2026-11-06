@@ -106,10 +106,16 @@ export async function createTask(data: NewTaskData): Promise<void> {
   if (error) throw error;
 }
 
-export async function getTasks(): Promise<Task[]> {
-  const { data, error } = await supabase
-    .from('tasks')
-    .select(TASK_SELECT)
+export async function getTasks(
+  statuses?: readonly TaskStatus[],
+): Promise<Task[]> {
+  let query = supabase.from('tasks').select(TASK_SELECT);
+
+  if (statuses?.length) {
+    query = query.in('status', [...statuses]);
+  }
+
+  const { data, error } = await query
     .order('created_at', { ascending: true })
     .order('task_number', { ascending: true });
 
@@ -127,18 +133,15 @@ export async function updateTaskStatus(
     p_new_status: status,
   });
 
-  if (error) {
-    throw error;
-  }
+  if (error) throw error;
 
-  const tasks = await getTasks();
-  const updatedTask = tasks.find((task) => task.id === taskId);
+  const { data, error: taskError } = await supabase
+    .from('tasks')
+    .select(TASK_SELECT)
+    .eq('id', taskId)
+    .single();
 
-  if (!updatedTask) {
-    throw new Error(
-      'Статус изменён, но не удалось загрузить обновлённую задачу.',
-    );
-  }
+  if (taskError) throw taskError;
 
-  return updatedTask;
+  return mapTaskToTask(data as TaskRow);
 }

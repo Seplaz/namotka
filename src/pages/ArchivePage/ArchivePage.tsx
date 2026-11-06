@@ -27,46 +27,23 @@ export function ArchivePage() {
   const [commentsByTask, setCommentsByTask] = useState<
     Record<string, Comment[]>
   >({});
-
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
 
   useEffect(() => {
     let isCurrent = true;
+    let archivedTaskIds: string[] = [];
 
-    async function loadTasks() {
-      try {
-        setIsLoading(true);
-        setLoadError(null);
-
-        const loadedTasks = await getTasks();
-
+    async function loadComments(taskIds: readonly string[]) {
+      if (taskIds.length === 0) {
         if (isCurrent) {
-          setTasks(loadedTasks);
+          setCommentsByTask({});
         }
-      } catch (error) {
-        console.error('Не удалось загрузить намотки:', error);
-
-        if (isCurrent) {
-          setLoadError(
-            'Не удалось загрузить архив. Попробуйте обновить страницу.',
-          );
-
-          showToast({
-            type: 'error',
-            message: 'Не удалось загрузить архив.',
-          });
-        }
-      } finally {
-        if (isCurrent) {
-          setIsLoading(false);
-        }
+        return;
       }
-    }
 
-    async function loadComments() {
       try {
-        const loadedComments = await getComments();
+        const loadedComments = await getComments(taskIds);
 
         if (isCurrent) {
           setCommentsByTask(groupCommentsByTask(loadedComments));
@@ -83,8 +60,41 @@ export function ArchivePage() {
       }
     }
 
-    void loadTasks();
-    void loadComments();
+    async function refreshArchive() {
+      const loadedTasks = await getTasks(['completed']);
+
+      if (!isCurrent) return;
+
+      archivedTaskIds = loadedTasks.map((task) => task.id);
+      setTasks(loadedTasks);
+
+      await loadComments(archivedTaskIds);
+    }
+
+    async function loadInitialArchive() {
+      try {
+        setLoadError(null);
+        await refreshArchive();
+      } catch (error) {
+        console.error('Не удалось загрузить архив:', error);
+
+        if (isCurrent) {
+          setLoadError(
+            'Не удалось загрузить архив. Попробуйте обновить страницу.',
+          );
+          showToast({
+            type: 'error',
+            message: 'Не удалось загрузить архив.',
+          });
+        }
+      } finally {
+        if (isCurrent) {
+          setIsLoading(false);
+        }
+      }
+    }
+
+    void loadInitialArchive();
 
     const channel = supabase
       .channel('archive-realtime')
@@ -93,21 +103,25 @@ export function ArchivePage() {
         {
           event: '*',
           schema: 'public',
-          table: 'comments',
+          table: 'tasks',
         },
         async () => {
           try {
-            const latestComments = await getComments();
-
-            if (isCurrent) {
-              setCommentsByTask(groupCommentsByTask(latestComments));
-            }
+            await refreshArchive();
           } catch (error) {
-            console.error(
-              'Не удалось обновить комментарии через Realtime:',
-              error,
-            );
+            console.error('Не удалось обновить архив через Realtime:', error);
           }
+        },
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'comments',
+        },
+        async () => {
+          await loadComments(archivedTaskIds);
         },
       )
       .subscribe((status) => {

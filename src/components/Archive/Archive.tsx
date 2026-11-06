@@ -16,9 +16,7 @@ export function Archive({ tasks, commentsByTask }: ArchiveProps) {
 
   const normalizedQuery = searchQuery.trim().toLowerCase();
 
-  const completedTasks = tasks.filter((task) => {
-    if (task.status !== 'completed') return false;
-
+  const filteredTasks = tasks.filter((task) => {
     if (!normalizedQuery) return true;
 
     const searchableFields = [
@@ -55,7 +53,7 @@ export function Archive({ tasks, commentsByTask }: ArchiveProps) {
 
       <TaskColumn
         title="Завершённые"
-        tasks={completedTasks}
+        tasks={filteredTasks}
         emptyMessage={
           normalizedQuery
             ? 'По вашему запросу ничего не найдено.'

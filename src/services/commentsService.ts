@@ -38,10 +38,15 @@ function mapCommentToComment(comment: CommentRow): Comment {
   };
 }
 
-export async function getComments(): Promise<Comment[]> {
+export async function getComments(
+  taskIds: readonly string[],
+): Promise<Comment[]> {
+  if (taskIds.length === 0) return [];
+
   const { data, error } = await supabase
     .from('comments')
     .select(COMMENT_SELECT)
+    .in('task_id', [...taskIds])
     .order('created_at', { ascending: true })
     .order('id', { ascending: true });
 
