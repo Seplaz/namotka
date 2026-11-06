@@ -5,13 +5,13 @@
   background-color: var(--color-surface-disabled);
   color: var(--color-text-primary);
   font-size: 16px;
+  line-height: normal;
   outline: none;
   transition:
     border-color 150ms ease,
     background-color 150ms ease;
   inline-size: 100%;
   min-inline-size: 0;
-  line-height: normal;
 }
 
 .input::placeholder {

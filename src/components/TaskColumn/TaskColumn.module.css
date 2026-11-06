@@ -2,10 +2,10 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+  overflow: hidden;
   min-inline-size: 0;
   min-block-size: 0;
   block-size: 100%;
-  overflow: hidden;
 }
 
 .title {
@@ -21,8 +21,8 @@
   flex-direction: column;
   align-items: stretch;
   gap: 12px;
-  overflow-y: auto;
   overflow-x: hidden;
+  overflow-y: auto;
   inline-size: 100%;
   min-inline-size: 0;
   min-block-size: 0;

@@ -35,15 +35,15 @@
   flex-direction: column;
   gap: 6px;
   padding: 12px;
-  background-color: var(--color-surface-disabled);
   border-radius: 12px;
+  background-color: var(--color-surface-disabled);
 }
 
 .commentMeta {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   gap: 6px;
 }
 

@@ -11,7 +11,7 @@ import { Toast } from '@/components/Toast/Toast';
 import { ToastContext, type ToastOptions } from '@/contexts/ToastContext';
 
 const MAX_TOASTS = 3;
-const DEFAULT_DURATION = 5000;
+const DEFAULT_DURATION = 7000;
 
 type ToastItem = ToastOptions & {
   id: number;

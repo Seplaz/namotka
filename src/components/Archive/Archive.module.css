@@ -1,19 +1,19 @@
 .archive {
   display: flex;
-  flex-direction: column;
   flex: 1;
+  flex-direction: column;
   gap: 24px;
   padding: 24px 48px 0 48px;
-  min-block-size: 0;
   overflow: hidden;
+  min-block-size: 0;
 }
 
 .header {
   display: flex;
+  flex: 0 0 auto;
   align-items: center;
   gap: 24px;
   inline-size: 100%;
-  flex: 0 0 auto;
 }
 
 .search {

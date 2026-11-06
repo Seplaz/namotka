@@ -6,11 +6,11 @@
   display: grid;
   align-items: center;
   justify-content: center;
+  padding: 24px;
+  box-sizing: border-box;
   background-color: rgba(9, 9, 11, 0.75);
   inline-size: 100%;
   block-size: 100%;
-  padding: 24px;
-  box-sizing: border-box;
 }
 
 .modal {

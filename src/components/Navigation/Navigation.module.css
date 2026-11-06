@@ -1,7 +1,7 @@
 .navigation {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   inline-size: 100%;
 }
 
@@ -21,8 +21,8 @@
 
 .logout {
   display: flex;
-  gap: 6px;
   align-items: center;
+  gap: 6px;
   padding: 0;
   border: none;
   background: none;

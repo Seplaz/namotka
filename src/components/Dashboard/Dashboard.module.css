@@ -1,19 +1,19 @@
 .dashboard {
   display: flex;
-  flex-direction: column;
   flex: 1;
+  flex-direction: column;
   gap: 24px;
   padding: 24px 48px 0 48px;
-  min-block-size: 0;
   overflow: hidden;
+  min-block-size: 0;
 }
 
 .header {
   display: flex;
+  flex: 0 0 auto;
   align-items: center;
   gap: 24px;
   inline-size: 100%;
-  flex: 0 0 auto;
 }
 
 .search {
@@ -23,18 +23,18 @@
 
 .button {
   flex: 0 0 auto;
-  inline-size: fit-content;
   white-space: nowrap;
+  inline-size: fit-content;
 }
 
 .content {
   display: grid;
   flex: 1;
-  min-block-size: 0;
+  gap: 24px;
   /* grid-template-columns: repeat(2, minmax(0, 1fr)); */
   grid-template-columns: repeat(2, minmax(0, 520px));
-  gap: 24px;
   overflow: hidden;
+  min-block-size: 0;
 }
 
 @media (max-width: 768px) {

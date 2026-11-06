@@ -8,7 +8,7 @@ export type Specialist = Pick<
 
 export type UserProfile = Pick<
   Tables<'profiles'>,
-  'id' | 'first_name' | 'last_name'
+  'id' | 'first_name' | 'last_name' | 'role' | 'status'
 >;
 
 export async function getSpecialists(): Promise<Specialist[]> {
@@ -28,7 +28,7 @@ export async function getSpecialists(): Promise<Specialist[]> {
 export async function getUserProfile(userId: string): Promise<UserProfile> {
   const { data, error } = await supabase
     .from('profiles')
-    .select('id, first_name, last_name')
+    .select('id, first_name, last_name, role, status')
     .eq('id', userId)
     .single();
 
@@ -41,4 +41,11 @@ export function formatFullName(
   profile: Pick<UserProfile, 'first_name' | 'last_name'>,
 ): string {
   return [profile.first_name, profile.last_name].filter(Boolean).join(' ');
+}
+
+export function hasActiveAccess(profile: UserProfile): boolean {
+  return (
+    profile.status === 'active' &&
+    (profile.role === 'manager' || profile.role === 'technical_specialist')
+  );
 }
