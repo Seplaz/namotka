@@ -1,6 +1,5 @@
-import styles from './AccessRestrictedPage.module.css';
-import { ShieldAlert, LogOut } from 'lucide-react';
-import { Button } from '@/components/Button/Button';
+import { ShieldAlert } from 'lucide-react';
+import { PageState } from '@/components/PageState/PageState';
 
 type AccessRestrictedPageProps = {
   message: string;
@@ -12,23 +11,13 @@ export function AccessRestrictedPage({
   onLogout,
 }: AccessRestrictedPageProps) {
   return (
-    <main className={styles.page}>
-      <div className={styles.content}>
-        <div className={styles.icon}>
-          <ShieldAlert size={24} />
-        </div>
-
-        <h1 className={styles.title}>Доступ ограничен</h1>
-
-        <p className={styles.message} role="alert">
-          {message}
-        </p>
-
-        <Button onClick={onLogout}>
-          <LogOut size={16} />
-          Выйти из аккаунта
-        </Button>
-      </div>
-    </main>
+    <PageState
+      icon={<ShieldAlert size={28} />}
+      title="Доступ ограничен"
+      description={message}
+      actionLabel="Выйти из аккаунта"
+      onAction={onLogout}
+      variant="warning"
+    />
   );
 }

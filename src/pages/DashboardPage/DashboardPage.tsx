@@ -12,6 +12,8 @@ import type { Task } from '@/types/task';
 import { useToast } from '@/hooks/useToast';
 import type { Comment } from '@/types/comment';
 import { createComment, getComments } from '@/services/commentsService';
+import { PageState } from '@/components/PageState/PageState';
+import { AlertCircle } from 'lucide-react';
 
 const DASHBOARD_STATUSES = ['new', 'waiting', 'in_progress'] as const;
 
@@ -36,6 +38,13 @@ export function DashboardPage() {
   const [commentsByTask, setCommentsByTask] = useState<
     Record<string, Comment[]>
   >({});
+
+  const [retryKey, setRetryKey] = useState(0);
+  function handleRetry() {
+    setIsLoading(true);
+    setLoadError(null);
+    setRetryKey((current) => current + 1);
+  }
 
   const tasksRef = useRef<Task[]>([]);
 
@@ -81,18 +90,18 @@ export function DashboardPage() {
 
     async function loadInitialData() {
       try {
-        setLoadError(null);
         await refreshTasks();
       } catch (error) {
         console.error('Не удалось загрузить намотки:', error);
 
         if (isCurrent) {
           setLoadError(
-            'Не удалось загрузить задачи. Попробуйте обновить страницу.',
+            'Не удалось загрузить задачи. Попробуйте повторить попытку.',
           );
+
           showToast({
             type: 'error',
-            message: 'Не удалось загрузить намотки. И не надо.',
+            message: 'Не удалось загрузить намотки',
           });
         }
       } finally {
@@ -141,7 +150,7 @@ export function DashboardPage() {
       isCurrent = false;
       void supabase.removeChannel(channel);
     };
-  }, [showToast]);
+  }, [showToast, retryKey]);
 
   async function handleCreateTask(data: NewTaskData) {
     await createTask(data);
@@ -219,12 +228,14 @@ export function DashboardPage() {
 
   if (loadError) {
     return (
-      <div>
-        <p role="alert">{loadError}</p>
-        <button type="button" onClick={() => window.location.reload()}>
-          Обновить страницу
-        </button>
-      </div>
+      <PageState
+        icon={<AlertCircle size={28} />}
+        title="Не удалось загрузить задачи"
+        description={loadError}
+        actionLabel="Повторить попытку"
+        onAction={handleRetry}
+        variant="danger"
+      />
     );
   }
 
