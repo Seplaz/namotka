@@ -15,6 +15,7 @@ import { LoginPage } from '@/pages/LoginPage/LoginPage';
 import { RegisterPage } from '@/pages/RegisterPage/RegisterPage';
 import { DashboardPage } from '@/pages/DashboardPage/DashboardPage';
 import { ArchivePage } from '@/pages/ArchivePage/ArchivePage';
+import { AccessRestrictedPage } from '@/pages/AccessRestrictedPage/AccessRestrictedPage';
 import { Loader } from './components/Loader/Loader';
 
 function App() {
@@ -163,13 +164,7 @@ function App() {
       {loading ? (
         <Loader />
       ) : session && !hasAccess ? (
-        <main>
-          <p role="alert">{accessMessage}</p>
-
-          <button type="button" onClick={handleLogout}>
-            Выйти
-          </button>
-        </main>
+        <AccessRestrictedPage message={accessMessage} onLogout={handleLogout} />
       ) : (
         <Routes>
           <Route
