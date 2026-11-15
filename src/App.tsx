@@ -26,16 +26,20 @@ function App() {
 
   const requestId = useRef(0);
   const authEventVersion = useRef(0);
+  const loadedProfileUserId = useRef<string | null>(null);
 
   useEffect(() => {
     let isCurrent = true;
 
     async function loadProfile(userId: string) {
+      const shouldBlockApp = loadedProfileUserId.current !== userId;
       const currentRequestId = ++requestId.current;
 
-      setProfile(null);
-      setProfileError(false);
-      setLoading(true);
+      if (shouldBlockApp) {
+        setProfile(null);
+        setProfileError(false);
+        setLoading(true);
+      }
 
       try {
         const loadedProfile = await getUserProfile(userId);
@@ -44,7 +48,9 @@ function App() {
           return;
         }
 
+        loadedProfileUserId.current = userId;
         setProfile(loadedProfile);
+        setProfileError(false);
       } catch (error) {
         console.error('Ошибка загрузки профиля:', error);
 
@@ -52,9 +58,15 @@ function App() {
           return;
         }
 
-        setProfileError(true);
+        if (shouldBlockApp) {
+          setProfileError(true);
+        }
       } finally {
-        if (isCurrent && currentRequestId === requestId.current) {
+        if (
+          isCurrent &&
+          currentRequestId === requestId.current &&
+          shouldBlockApp
+        ) {
           setLoading(false);
         }
       }
@@ -101,6 +113,7 @@ function App() {
       requestId.current += 1;
 
       if (!newSession) {
+        loadedProfileUserId.current = null;
         setProfile(null);
         setProfileError(false);
         setLoading(false);
