@@ -24,18 +24,19 @@ function App() {
   const [profileError, setProfileError] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  const requestId = useRef(0);
-  const authEventVersion = useRef(0);
-  const loadedProfileUserId = useRef<string | null>(null);
+  const profileRequestId = useRef(0);
+  const authEventId = useRef(0);
+  const currentProfileUserId = useRef<string | null>(null);
 
   useEffect(() => {
-    let isCurrent = true;
+    let isMounted = true;
 
     async function loadProfile(userId: string) {
-      const shouldBlockApp = loadedProfileUserId.current !== userId;
-      const currentRequestId = ++requestId.current;
+      const isInitialProfileLoad = currentProfileUserId.current !== userId;
 
-      if (shouldBlockApp) {
+      const requestIdAtStart = ++profileRequestId.current;
+
+      if (isInitialProfileLoad) {
         setProfile(null);
         setProfileError(false);
         setLoading(true);
@@ -44,43 +45,44 @@ function App() {
       try {
         const loadedProfile = await getUserProfile(userId);
 
-        if (!isCurrent || currentRequestId !== requestId.current) {
-          return;
-        }
+        const isCurrentRequest =
+          isMounted && requestIdAtStart === profileRequestId.current;
 
-        loadedProfileUserId.current = userId;
+        if (!isCurrentRequest) return;
+
+        currentProfileUserId.current = userId;
         setProfile(loadedProfile);
         setProfileError(false);
       } catch (error) {
         console.error('Ошибка загрузки профиля:', error);
 
-        if (!isCurrent || currentRequestId !== requestId.current) {
-          return;
-        }
+        const isCurrentRequest =
+          isMounted && requestIdAtStart === profileRequestId.current;
 
-        if (shouldBlockApp) {
+        if (!isCurrentRequest) return;
+
+        if (isInitialProfileLoad) {
           setProfileError(true);
         }
       } finally {
-        if (
-          isCurrent &&
-          currentRequestId === requestId.current &&
-          shouldBlockApp
-        ) {
+        const isCurrentRequest =
+          isMounted && requestIdAtStart === profileRequestId.current;
+
+        if (isCurrentRequest && isInitialProfileLoad) {
           setLoading(false);
         }
       }
     }
 
     async function initializeSession() {
-      const currentAuthVersion = authEventVersion.current;
+      const authEventIdAtStart = authEventId.current;
 
       try {
         const { data, error } = await supabase.auth.getSession();
 
         if (error) throw error;
 
-        if (!isCurrent || currentAuthVersion !== authEventVersion.current) {
+        if (!isMounted || authEventIdAtStart !== authEventId.current) {
           return;
         }
 
@@ -94,7 +96,7 @@ function App() {
       } catch (error) {
         console.error('Ошибка проверки сессии:', error);
 
-        if (isCurrent && currentAuthVersion === authEventVersion.current) {
+        if (isMounted && authEventIdAtStart === authEventId.current) {
           setLoading(false);
         }
       }
@@ -105,15 +107,14 @@ function App() {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, newSession) => {
-      authEventVersion.current += 1;
-      const currentAuthVersion = authEventVersion.current;
+      authEventId.current += 1;
+      const currentAuthEventId = authEventId.current;
 
       setSession(newSession);
-
-      requestId.current += 1;
+      profileRequestId.current += 1;
 
       if (!newSession) {
-        loadedProfileUserId.current = null;
+        currentProfileUserId.current = null;
         setProfile(null);
         setProfileError(false);
         setLoading(false);
@@ -126,7 +127,7 @@ function App() {
         event === 'USER_UPDATED'
       ) {
         queueMicrotask(() => {
-          if (!isCurrent || currentAuthVersion !== authEventVersion.current) {
+          if (!isMounted || currentAuthEventId !== authEventId.current) {
             return;
           }
 
@@ -136,8 +137,8 @@ function App() {
     });
 
     return () => {
-      isCurrent = false;
-      requestId.current += 1;
+      isMounted = false;
+      profileRequestId.current += 1;
       subscription.unsubscribe();
     };
   }, []);
