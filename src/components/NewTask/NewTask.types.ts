@@ -1,7 +1,12 @@
 import type { TaskPriority } from '@/types/task';
 
 export type NewTaskDraft = {
-  inn: string;
+  clientQuery: string;
+  clientId: string;
+  clientInn: string;
+  clientKpp: string;
+  clientName: string;
+  contactName: string;
   phone: string;
   description: string;
   priority: TaskPriority;
@@ -12,7 +17,12 @@ export type NewTaskDraft = {
 };
 
 export const initialTaskDraft: NewTaskDraft = {
-  inn: '',
+  clientQuery: '',
+  clientId: '',
+  clientInn: '',
+  clientKpp: '',
+  clientName: '',
+  contactName: '',
   phone: '',
   description: '',
   priority: 'medium',

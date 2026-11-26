@@ -1,17 +1,31 @@
+
 import type { NewTaskDraft } from './NewTask.types';
 
 export type NewTaskErrors = Partial<
-  Record<'inn' | 'phone' | 'description' | 'schedule', string>
+  Record<
+    | 'client'
+    | 'inn'
+    | 'kpp'
+    | 'clientName'
+    | 'phone'
+    | 'description'
+    | 'schedule',
+    string
+  >
 >;
 
 export function normalizePhone(value: string): string | null {
   const digits = value.replace(/\D/g, '');
 
   if (digits.length === 10) return `8${digits}`;
+
   if (digits.length === 11 && digits.startsWith('7')) {
     return `8${digits.slice(1)}`;
   }
-  if (digits.length === 11 && digits.startsWith('8')) return digits;
+
+  if (digits.length === 11 && digits.startsWith('8')) {
+    return digits;
+  }
 
   return null;
 }
@@ -31,8 +45,24 @@ export function validateNewTask(
 ): NewTaskErrors {
   const errors: NewTaskErrors = {};
 
-  if (!/^(\d{10}|\d{12})$/.test(draft.inn.trim())) {
-    errors.inn = 'ИНН должен содержать 10 или 12 цифр';
+  if (!draft.clientId) {
+    if (!/^(\d{10}|\d{12})$/.test(draft.clientInn.trim())) {
+      errors.inn = 'ИНН должен содержать 10 или 12 цифр';
+    }
+
+    if (
+      draft.clientKpp.trim() &&
+      !/^\d{9}$/.test(draft.clientKpp.trim())
+    ) {
+      errors.kpp = 'КПП должен содержать 9 цифр';
+    }
+
+    if (
+      draft.clientName.trim().length < 2 ||
+      draft.clientName.trim().length > 255
+    ) {
+      errors.clientName = 'Название должно содержать от 2 до 255 символов';
+    }
   }
 
   if (!normalizePhone(draft.phone)) {

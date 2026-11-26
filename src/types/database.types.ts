@@ -14,6 +14,44 @@ export type Database = {
   }
   public: {
     Tables: {
+      clients: {
+        Row: {
+          created_at: string
+          created_by: string
+          id: string
+          inn: string
+          kpp: string | null
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string
+          id?: string
+          inn: string
+          kpp?: string | null
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          id?: string
+          inn?: string
+          kpp?: string | null
+          name?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clients_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       comments: {
         Row: {
           content: string
@@ -85,6 +123,8 @@ export type Database = {
           assigned_to: string | null
           assignment_origin: string | null
           assignment_type: string
+          client_id: string | null
+          contact_name: string | null
           created_at: string
           created_by: string
           description: string
@@ -101,6 +141,8 @@ export type Database = {
           assigned_to?: string | null
           assignment_origin?: string | null
           assignment_type?: string
+          client_id?: string | null
+          contact_name?: string | null
           created_at?: string
           created_by: string
           description: string
@@ -117,6 +159,8 @@ export type Database = {
           assigned_to?: string | null
           assignment_origin?: string | null
           assignment_type?: string
+          client_id?: string | null
+          contact_name?: string | null
           created_at?: string
           created_by?: string
           description?: string
@@ -135,6 +179,13 @@ export type Database = {
             columns: ["assigned_to"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tasks_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
             referencedColumns: ["id"]
           },
           {
@@ -157,6 +208,8 @@ export type Database = {
           assigned_to: string | null
           assignment_origin: string | null
           assignment_type: string
+          client_id: string | null
+          contact_name: string | null
           created_at: string
           created_by: string
           description: string
@@ -180,13 +233,33 @@ export type Database = {
       create_task: {
         Args: {
           p_assigned_to?: string
+          p_client_id: string
+          p_contact_name?: string
           p_description: string
-          p_inn: string
           p_phone: string
           p_priority?: string
           p_scheduled_at?: string
         }
         Returns: Json
+      }
+      find_or_create_client: {
+        Args: { p_inn: string; p_kpp: string; p_name: string }
+        Returns: {
+          id: string
+          inn: string
+          kpp: string
+          name: string
+          was_created: boolean
+        }[]
+      }
+      search_clients: {
+        Args: { p_query: string }
+        Returns: {
+          id: string
+          inn: string
+          kpp: string
+          name: string
+        }[]
       }
     }
     Enums: {
