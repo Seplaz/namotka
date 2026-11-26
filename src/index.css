@@ -10,6 +10,8 @@
   --color-background: #101013;
   --color-surface: #202024;
   --color-surface-hover: #29292f;
+  --color-surface-selected: #292633;
+  --color-surface-selected-hover: #302b3b;
   --color-surface-disabled: #18181c;
 
   /* Text */
