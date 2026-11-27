@@ -33,11 +33,11 @@ type DashboardProps = {
 export function Dashboard({
   tasks,
   onCreateTask,
-  onStartTask,
-  onReturnTask,
-  onCompleteTask,
-  commentsByTask,
-  onAddComment,
+  // onStartTask,
+  // onReturnTask,
+  // onCompleteTask,
+  // commentsByTask,
+  // onAddComment,
 }: DashboardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 

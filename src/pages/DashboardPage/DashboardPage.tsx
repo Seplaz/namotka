@@ -96,7 +96,7 @@ export function DashboardPage() {
 
         if (isCurrent) {
           setLoadError(
-            'Не удалось загрузить задачи. Попробуйте повторить попытку.',
+            'Не удалось загрузить намотки. Попробуйте повторить попытку.',
           );
 
           showToast({
@@ -126,7 +126,7 @@ export function DashboardPage() {
           try {
             await refreshTasks();
           } catch (error) {
-            console.error('Не удалось обновить задачи через Realtime:', error);
+            console.error('Не удалось обновить намотки через Realtime:', error);
           }
         },
       )
@@ -232,8 +232,8 @@ export function DashboardPage() {
   if (loadError) {
     return (
       <PageState
-        icon={<AlertCircle size={28} />}
-        title="Не удалось загрузить задачи"
+        icon={<AlertCircle size={24} />}
+        title="Не удалось загрузить намотки"
         description={loadError}
         actionLabel="Повторить попытку"
         onAction={handleRetry}
