@@ -27,6 +27,6 @@
 
 .high {
   /* background-color: var(--color-status-cancelled-bg); */
-  /* color: var(--color-status-cancelled-text); */
-  color: var(--color-text-secondary);
+  color: var(--color-status-cancelled-text);
+  /* color: var(--color-text-secondary); */
 }

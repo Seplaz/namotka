@@ -5,7 +5,7 @@ import type { Task } from '@/types/task';
 import { TaskStatus } from '@/components/TaskStatus/TaskStatus';
 import { TaskPriority } from '@/components/TaskPriority/TaskPriority';
 import { TaskSchedule } from '@/components/TaskSchedule/TaskSchedule';
-import { ArrowRight } from 'lucide-react';
+import { MoveRight } from 'lucide-react';
 
 type TaskListItemProps = {
   task: Task;
@@ -28,11 +28,11 @@ export function TaskListItem({
       onClick={() => onSelect(task.id)}
     >
       <span className={styles.header}>
-        <TaskPriority priority={task.priority} />
-        <span className={styles.number}># {task.task_number}</span>
-
-        <span className={styles.description}>{task.description}</span>
-
+        <span className={styles.summary}>
+          <span className={styles.number}># {task.task_number}</span>
+          <span className={styles.description}>{task.description}</span>
+        </span>
+        
         <TaskStatus status={task.status} />
       </span>
 
@@ -45,7 +45,7 @@ export function TaskListItem({
           <span className={styles.creator}>
             {task.creatorName ?? 'Неизвестно'}
           </span>
-          <ArrowRight size={16} />
+          <MoveRight size={16} />
           <span className={styles.assignee}>
             {task.assigneeName ?? 'Не назначен'}
           </span>
@@ -55,6 +55,7 @@ export function TaskListItem({
           {task.scheduled_at && (
             <TaskSchedule scheduledAt={task.scheduled_at} />
           )}
+          <TaskPriority priority={task.priority} />
         </span>
       </span>
     </button>

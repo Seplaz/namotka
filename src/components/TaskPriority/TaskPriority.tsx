@@ -8,17 +8,17 @@ type TaskPriorityProps = {
 
 const priorityConfig = {
   low: {
-    label: 'Низкий',
+    label: 'Низкий приоритет',
     className: styles.low,
     Icon: ArrowDown,
   },
   medium: {
-    label: 'Средний',
+    label: 'Средний приоритет',
     className: styles.medium,
     Icon: Minus,
   },
   high: {
-    label: 'Высокий',
+    label: 'Высокий приоритет',
     className: styles.high,
     Icon: ArrowUp,
   },
