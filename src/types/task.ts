@@ -24,9 +24,10 @@ export function isTaskPriority(value: string): value is TaskPriority {
 export type Task = {
   id: string;
   task_number: number;
-  description: string;
-  inn: string;
+  client: TaskClient;
+  contactName: string | null;
   phone: string;
+  description: string;
   status: TaskStatus;
   priority: TaskPriority;
   scheduled_at: string | null;
@@ -35,4 +36,11 @@ export type Task = {
   assigned_to: string | null;
   creatorName: string | null;
   assigneeName: string | null;
+};
+
+export type TaskClient = {
+  id: string;
+  inn: string;
+  kpp: string | null;
+  name: string;
 };

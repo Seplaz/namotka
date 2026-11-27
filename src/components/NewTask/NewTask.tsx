@@ -1,20 +1,20 @@
 import styles from '@/components/NewTask/NewTask.module.css';
-import { useEffect, useState, type FormEvent } from 'react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { Check, X } from 'lucide-react';
-
 import { useToast } from '@/hooks/useToast';
-
 import type { NewTaskData } from '@/services/tasksService';
 import { getSpecialists, type Specialist } from '@/services/profileService';
-
+import {
+  searchClients,
+  findOrCreateClient,
+  type Client,
+} from '@/services/clientsService';
 import type { TaskPriority } from '@/types/task';
-
 import {
   initialTaskDraft,
   type NewTaskDraft,
 } from '@/components/NewTask/NewTask.types';
-
 import { FormField } from '@/components/FormField/FormField';
 import { Input } from '@/components/Input/Input';
 import { Textarea } from '@/components/Textarea/Textarea';
@@ -24,9 +24,11 @@ import {
 } from '@/components/RadioGroup/RadioGroup';
 import { Select, type SelectOption } from '@/components/Select/Select';
 import { Button } from '@/components/Button/Button';
+import { AnimatedError } from '@/components/AnimatedError/AnimatedError';
 import {
   getLocalDate,
   normalizePhone,
+  parseClientQuery,
   validateNewTask,
   type NewTaskErrors,
 } from '@/components/NewTask/NewTask.validation';
@@ -43,6 +45,8 @@ type NewTaskProps = {
   draft: NewTaskDraft;
   onDraftChange: (draft: NewTaskDraft) => void;
 };
+
+type ClientSearchStatus = 'idle' | 'searching' | 'not-found' | 'error';
 
 const formVariants = {
   hidden: { opacity: 0, scale: 0.7 },
@@ -75,6 +79,12 @@ const scheduleTransition = {
   },
 };
 
+function formatClientQuery(client: Client): string {
+  const requisites = client.kpp ? `${client.inn}-${client.kpp}` : client.inn;
+
+  return `${requisites} ${client.name}`;
+}
+
 export function NewTask({
   onClose,
   onSubmit,
@@ -89,7 +99,7 @@ export function NewTask({
     : formVariants;
 
   const {
-    inn,
+    clientQuery,
     phone,
     description,
     priority,
@@ -106,9 +116,35 @@ export function NewTask({
   const [isLoadingSpecialists, setIsLoadingSpecialists] = useState(true);
   const [specialistsError, setSpecialistsError] = useState('');
 
+  const [clientSuggestions, setClientSuggestions] = useState<Client[]>([]);
+  const [selectedClient, setSelectedClient] = useState<Client | null>(null);
+  const [clientSearchStatus, setClientSearchStatus] =
+    useState<ClientSearchStatus>('idle');
+  const [isClientMenuOpen, setIsClientMenuOpen] = useState(false);
+
+  const clientSectionRef = useRef<HTMLDivElement>(null);
+
   const validationErrors: NewTaskErrors = hasSubmitted
     ? validateNewTask(draft)
     : {};
+
+  const clientStatusMessage = selectedClient
+    ? 'Клиент выбран'
+    : clientQuery.trim().length < 2
+      ? ''
+      : clientSearchStatus === 'searching'
+        ? 'Ищем совпадения...'
+        : clientSearchStatus === 'not-found'
+          ? 'Совпадений не найдено. Если клиент новый, он будет создан при создании намотки.'
+          : clientSearchStatus === 'error'
+            ? 'Не удалось выполнить поиск. При отправке формы система повторно проверит клиента и создаст его при необходимости.'
+            : '';
+
+  const clientStatusVariant = selectedClient
+    ? 'success'
+    : clientSearchStatus === 'error'
+      ? 'error'
+      : 'info';
 
   function updateDraft<K extends keyof NewTaskDraft>(
     field: K,
@@ -120,6 +156,64 @@ export function NewTask({
     });
   }
 
+  // Поиск клиентов по неполному ИНН, КПП или названию.
+  // Изменений в базе данных здесь не происходит.
+  useEffect(() => {
+    const query = clientQuery.trim();
+
+    if (query.length < 2 || selectedClient) {
+      return;
+    }
+
+    let cancelled = false;
+
+    const timeoutId = window.setTimeout(async () => {
+      setClientSearchStatus('searching');
+
+      try {
+        const results = await searchClients(query);
+
+        if (cancelled) return;
+
+        setClientSuggestions(results);
+        setClientSearchStatus(results.length > 0 ? 'idle' : 'not-found');
+        setIsClientMenuOpen(true);
+      } catch (error) {
+        console.error('Ошибка поиска клиентов:', error);
+
+        if (!cancelled) {
+          setClientSuggestions([]);
+          setClientSearchStatus('error');
+          setIsClientMenuOpen(false);
+        }
+      }
+    }, 300);
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timeoutId);
+    };
+  }, [clientQuery, selectedClient]);
+
+  // Закрытие списка при клике за пределами поля клиента.
+  useEffect(() => {
+    function handleOutsideClick(event: PointerEvent) {
+      if (
+        clientSectionRef.current &&
+        !clientSectionRef.current.contains(event.target as Node)
+      ) {
+        setIsClientMenuOpen(false);
+      }
+    }
+
+    document.addEventListener('pointerdown', handleOutsideClick);
+
+    return () => {
+      document.removeEventListener('pointerdown', handleOutsideClick);
+    };
+  }, []);
+
+  // Загрузка доступных специалистов.
   useEffect(() => {
     let cancelled = false;
 
@@ -160,6 +254,24 @@ export function NewTask({
     }),
   );
 
+  function handleClientQueryChange(value: string) {
+    updateDraft('clientQuery', value);
+
+    setSelectedClient(null);
+    setClientSuggestions([]);
+    setClientSearchStatus('idle');
+    setIsClientMenuOpen(false);
+  }
+
+  function handleSelectClient(client: Client) {
+    setSelectedClient(client);
+    setClientSuggestions([]);
+    setClientSearchStatus('idle');
+    setIsClientMenuOpen(false);
+
+    updateDraft('clientQuery', formatClientQuery(client));
+  }
+
   function handleDateChange(value: string) {
     onDraftChange({
       ...draft,
@@ -179,6 +291,7 @@ export function NewTask({
 
     if (Object.keys(errors).length > 0) return;
 
+    const parsedClient = parseClientQuery(clientQuery);
     const normalizedPhone = normalizePhone(phone);
 
     if (!normalizedPhone) return;
@@ -191,8 +304,17 @@ export function NewTask({
     setIsSubmitting(true);
 
     try {
+      // Ищем существующего клиента или создаём нового.
+      const clientResult = await findOrCreateClient(
+        parsedClient.inn,
+        parsedClient.kpp || null,
+        parsedClient.name,
+      );
+
+      // Создаём намотку с полученным client_id.
       await onSubmit({
-        inn: inn.trim(),
+        clientId: clientResult.client.id,
+        contactName: '',
         phone: normalizedPhone,
         description: description.trim(),
         scheduledAt,
@@ -202,22 +324,24 @@ export function NewTask({
 
       onDraftChange({ ...initialTaskDraft });
       setHasSubmitted(false);
+      setSelectedClient(null);
+      setClientSuggestions([]);
+      setClientSearchStatus('idle');
+      setIsClientMenuOpen(false);
 
       showToast({
         type: 'success',
-        message: 'Опять работать? Минус вайб...',
+        message: 'Намотка успешно создана.',
       });
 
       onClose();
     } catch (error) {
-      console.error(
-        'Поделом, намотка не удалась. А может и не надо? Ошибка:',
-        error,
-      );
+      console.error('Ошибка создания намотки:', error);
 
       showToast({
         type: 'error',
-        message: 'Поделом, намотка не удалась. А может и не надо?',
+        message:
+          'Не удалось создать намотку. Проверьте данные и повторите попытку.',
       });
     } finally {
       setIsSubmitting(false);
@@ -244,57 +368,107 @@ export function NewTask({
             className={styles.close}
             onClick={onClose}
             aria-label="Закрыть окно"
+            disabled={isSubmitting}
           >
             <X size={20} aria-hidden="true" />
           </button>
         </div>
 
-        <div className={styles.client}>
-          <FormField label="ИНН" htmlFor="inn" error={validationErrors.inn}>
+        {/* Клиент */}
+        <FormField
+          label="Клиент"
+          htmlFor="clientQuery"
+          error={validationErrors.client}
+        >
+          <div className={styles.clientInputWrapper} ref={clientSectionRef}>
             <Input
-              id="inn"
+              id="clientQuery"
               type="text"
-              name="inn"
-              inputMode="numeric"
+              name="clientQuery"
               autoComplete="off"
-              placeholder="10 или 12 цифр"
-              value={inn}
-              maxLength={12}
-              onChange={(event) => {
-                const value = event.target.value
-                  .replace(/\D/g, '')
-                  .slice(0, 12);
-
-                updateDraft('inn', value);
+              placeholder="Введите ИНН, КПП или название организации"
+              value={clientQuery}
+              onChange={(event) => handleClientQueryChange(event.target.value)}
+              onFocus={() => {
+                if (clientSuggestions.length > 0) {
+                  setIsClientMenuOpen(true);
+                }
               }}
-              aria-invalid={Boolean(validationErrors.inn)}
-              aria-describedby={validationErrors.inn ? 'inn-error' : undefined}
-              required
-            />
-          </FormField>
-
-          <FormField
-            label="Телефон"
-            htmlFor="phone"
-            error={validationErrors.phone}
-          >
-            <Input
-              id="phone"
-              type="tel"
-              name="phone"
-              inputMode="tel"
-              autoComplete="tel"
-              placeholder="+7 (900) 123-45-67"
-              value={phone}
-              onChange={(event) => updateDraft('phone', event.target.value)}
-              aria-invalid={Boolean(validationErrors.phone)}
+              aria-invalid={Boolean(validationErrors.client)}
               aria-describedby={
-                validationErrors.phone ? 'phone-error' : undefined
+                clientStatusMessage ? 'client-status' : undefined
               }
-              required
+              aria-expanded={isClientMenuOpen}
+              aria-controls="client-suggestions"
+              role="combobox"
+              disabled={isSubmitting}
             />
-          </FormField>
-        </div>
+
+            <AnimatePresence>
+              {isClientMenuOpen && clientSuggestions.length > 0 && (
+                <motion.div
+                  id="client-suggestions"
+                  className={styles.clientResults}
+                  role="listbox"
+                  initial={shouldReduceMotion ? false : { opacity: 0, y: -4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={shouldReduceMotion ? undefined : { opacity: 0, y: -4 }}
+                  transition={{ duration: shouldReduceMotion ? 0 : 0.12 }}
+                >
+                  {clientSuggestions.map((client) => (
+                    <button
+                      key={client.id}
+                      type="button"
+                      role="option"
+                      aria-selected={selectedClient?.id === client.id}
+                      className={styles.clientResult}
+                      onPointerDown={(event) => event.preventDefault()}
+                      onClick={() => handleSelectClient(client)}
+                    >
+                      <span className={styles.clientResultName}>
+                        {client.name}
+                      </span>
+
+                      <span className={styles.clientResultMeta}>
+                        ИНН: {client.inn}
+                        {client.kpp ? ` · КПП: ${client.kpp}` : ''}
+                      </span>
+                    </button>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+          <AnimatedError
+            id="client-status"
+            variant={clientStatusVariant}
+            message={clientStatusMessage}
+          />
+        </FormField>
+
+        {/* Телефон */}
+        <FormField
+          label="Телефон"
+          htmlFor="phone"
+          error={validationErrors.phone}
+        >
+          <Input
+            id="phone"
+            type="tel"
+            name="phone"
+            inputMode="tel"
+            autoComplete="tel"
+            placeholder="+7 (900) 123-45-67"
+            value={phone}
+            onChange={(event) => updateDraft('phone', event.target.value)}
+            aria-invalid={Boolean(validationErrors.phone)}
+            aria-describedby={
+              validationErrors.phone ? 'phone-error' : undefined
+            }
+            required
+            disabled={isSubmitting}
+          />
+        </FormField>
 
         <FormField
           label="Суть намотки"
@@ -315,6 +489,7 @@ export function NewTask({
               validationErrors.description ? 'description-error' : undefined
             }
             required
+            disabled={isSubmitting}
           />
         </FormField>
 
@@ -345,7 +520,9 @@ export function NewTask({
                   ? 'Нет доступных намотантов'
                   : 'Никого, общая намотка'
             }
-            disabled={isLoadingSpecialists || specialists.length === 0}
+            disabled={
+              isSubmitting || isLoadingSpecialists || specialists.length === 0
+            }
             aria-describedby={specialistsError ? 'specialist-error' : undefined}
           />
         </FormField>
@@ -354,6 +531,7 @@ export function NewTask({
           <input
             type="checkbox"
             checked={scheduleCall}
+            disabled={isSubmitting}
             onChange={(event) => {
               const checked = event.target.checked;
 
@@ -412,6 +590,7 @@ export function NewTask({
                         : undefined
                     }
                     required
+                    disabled={isSubmitting}
                   />
 
                   <Input
@@ -423,7 +602,7 @@ export function NewTask({
                     onChange={(event) =>
                       updateDraft('scheduledTime', event.target.value)
                     }
-                    disabled={!scheduledDate}
+                    disabled={!scheduledDate || isSubmitting}
                     aria-label="Время звонка"
                     aria-invalid={Boolean(validationErrors.schedule)}
                     aria-describedby={

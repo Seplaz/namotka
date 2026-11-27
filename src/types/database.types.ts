@@ -123,13 +123,12 @@ export type Database = {
           assigned_to: string | null
           assignment_origin: string | null
           assignment_type: string
-          client_id: string | null
+          client_id: string
           contact_name: string | null
           created_at: string
           created_by: string
           description: string
           id: string
-          inn: string
           phone: string
           priority: string
           scheduled_at: string | null
@@ -141,13 +140,12 @@ export type Database = {
           assigned_to?: string | null
           assignment_origin?: string | null
           assignment_type?: string
-          client_id?: string | null
+          client_id: string
           contact_name?: string | null
           created_at?: string
           created_by: string
           description: string
           id?: string
-          inn: string
           phone: string
           priority?: string
           scheduled_at?: string | null
@@ -159,13 +157,12 @@ export type Database = {
           assigned_to?: string | null
           assignment_origin?: string | null
           assignment_type?: string
-          client_id?: string | null
+          client_id?: string
           contact_name?: string | null
           created_at?: string
           created_by?: string
           description?: string
           id?: string
-          inn?: string
           phone?: string
           priority?: string
           scheduled_at?: string | null
@@ -208,13 +205,12 @@ export type Database = {
           assigned_to: string | null
           assignment_origin: string | null
           assignment_type: string
-          client_id: string | null
+          client_id: string
           contact_name: string | null
           created_at: string
           created_by: string
           description: string
           id: string
-          inn: string
           phone: string
           priority: string
           scheduled_at: string | null

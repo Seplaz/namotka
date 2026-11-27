@@ -1,3 +1,5 @@
+/* Основная форма */
+
 .new {
   display: flex;
   flex-direction: column;
@@ -12,17 +14,19 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
-  padding: 24px;
   box-sizing: border-box;
+  inline-size: min(100%, 480px);
+  min-inline-size: 0;
+  padding: 24px;
   border-radius: 24px;
   background-color: var(--color-surface);
-  inline-size: min(100%, 480px);
-  /* inline-size: min(100%, 36rem); */
-  min-inline-size: 0;
 }
+
+/* Заголовок и кнопка закрытия */
 
 .header {
   display: flex;
+  align-items: center;
   justify-content: space-between;
 }
 
@@ -33,53 +37,141 @@
 }
 
 .close {
-  /* padding: 6px; */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
   border: none;
   border-radius: 999px;
-  /* background-color: var(--color-button-background); */
-  color: var(--color-button-background);
+  background: transparent;
+  color: var(--color-text-secondary);
   line-height: 1;
+  cursor: pointer;
   transition:
-    /* background-color 150ms ease, */ color 150ms ease;
+    color 150ms ease,
+    background-color 150ms ease;
 }
 
 .close:hover {
-  /* background-color: var(--color-button-background-hover); */
-  color: var(--color-button-background-hover);
+  background-color: var(--color-surface-hover);
+  color: var(--color-text-primary);
 }
 
-.close:active {
-  /* background-color: var(--color-button-background-active); */
-  color: var(--color-button-background-active);
+.close:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
 }
 
-.client {
-  display: grid;
-  gap: 24px;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+.close:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
+
+/* Поле клиента и автодополнение */
+
+.clientInputWrapper {
+  position: relative;
+  inline-size: 100%;
+  min-inline-size: 0;
+}
+
+.clientResults {
+  position: absolute;
+  inset-block-start: calc(100% + 6px);
+  inset-inline: 0;
+  z-index: 20;
+
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  box-sizing: border-box;
+  max-block-size: 240px;
+  padding: 6px;
+
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+
+  border: 2px solid var(--color-input-border-hover);
+  border-radius: 12px;
+  background-color: var(--color-surface-disabled);
+  box-shadow:
+    0 8px 24px rgb(0 0 0 / 25%),
+    0 2px 6px rgb(0 0 0 / 15%);
+}
+
+.clientResult {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+
+  inline-size: 100%;
+  min-inline-size: 0;
+  padding: 12px;
+
+  border: none;
+  border-radius: 6px;
+  background-color: transparent;
+  color: var(--color-text-primary);
+  text-align: start;
+
+  cursor: pointer;
+  transition: background-color 120ms ease;
+}
+
+.clientResult:hover,
+.clientResult:focus-visible {
+  background-color: var(--color-surface-hover);
+}
+
+.clientResult:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: -2px;
+}
+
+.clientResultName {
+  color: var(--color-text-primary);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.clientResultMeta {
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+/* Планирование звонка */
 
 .schedule {
   display: flex;
   align-items: center;
   gap: 12px;
+
   color: var(--color-text-primary);
   font-size: 16px;
   font-weight: 600;
+  cursor: pointer;
 }
 
 .schedule input {
   position: absolute;
-  margin: -1px;
-  padding: 0;
-  border: none;
-  background-color: var(--color-surface-disabled);
-  white-space: nowrap;
-  overflow: hidden;
-  cursor: pointer;
   inline-size: 1px;
   block-size: 1px;
+  margin: -1px;
+  padding: 0;
+
+  overflow: hidden;
   clip-path: inset(50%);
+  white-space: nowrap;
+
+  border: 0;
 }
 
 .checkbox {
@@ -87,12 +179,15 @@
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
+
+  inline-size: 24px;
+  block-size: 24px;
+
   border: 2px solid var(--color-input-border);
   border-radius: 5px;
   background-color: var(--color-surface-disabled);
   color: var(--color-text-primary);
+
   transition:
     background-color 150ms ease,
     border-color 150ms ease,
@@ -115,7 +210,10 @@
 
 .schedule input:disabled + .checkbox {
   opacity: 0.5;
+  cursor: not-allowed;
 }
+
+/* Дата и время звонка */
 
 .datetime {
   display: flex;
@@ -123,14 +221,33 @@
   inline-size: 100%;
 }
 
+/* Действия формы */
+
 .actions {
   display: flex;
   gap: 24px;
 }
 
+/* Адаптивность */
+
 @media (max-width: 520px) {
-  .client {
+  .form {
+    padding: 20px;
+    border-radius: 20px;
+  }
+
+  .datetime,
+  .actions {
     gap: 16px;
-    grid-template-columns: 1fr;
+  }
+}
+
+/* Уменьшение анимации */
+
+@media (prefers-reduced-motion: reduce) {
+  .clientResult,
+  .close,
+  .checkbox {
+    transition: none;
   }
 }

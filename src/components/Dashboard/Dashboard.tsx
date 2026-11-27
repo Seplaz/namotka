@@ -8,16 +8,17 @@ import type { Task } from '@/types/task';
 import type { Comment } from '@/types/comment';
 import type { NewTaskData } from '@/services/tasksService';
 
-import { TaskColumn } from '@/components/TaskColumn/TaskColumn';
+import { TaskList } from '@/components/TaskList/TaskList';
+// import { TaskDetails } from '@/components/TaskDetails/TaskDetails';
 import { Button } from '@/components/Button/Button';
 import { Modal } from '@/components/Modal/Modal';
 import { NewTask } from '@/components/NewTask/NewTask';
+import { Input } from '@/components/Input/Input';
 
 import {
   initialTaskDraft,
   type NewTaskDraft,
 } from '@/components/NewTask/NewTask.types';
-import { Input } from '@/components/Input/Input';
 
 type DashboardProps = {
   tasks: Task[];
@@ -39,7 +40,8 @@ export function Dashboard({
   onAddComment,
 }: DashboardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [expandedTaskId, setExpandedTaskId] = useState<string | null>(null);
+
+  const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
 
   const [taskDraft, setTaskDraft] = useState<NewTaskDraft>({
     ...initialTaskDraft,
@@ -49,14 +51,24 @@ export function Dashboard({
 
   const normalizedQuery = searchQuery.trim().toLowerCase();
 
-  const filteredTasks = tasks.filter((task) => {
+  const activeTasks = tasks.filter(
+    (task) =>
+      task.status === 'new' ||
+      task.status === 'waiting' ||
+      task.status === 'in_progress',
+  );
+
+  const filteredTasks = activeTasks.filter((task) => {
     if (!normalizedQuery) return true;
 
     const searchableFields = [
       task.task_number,
       task.description,
-      task.inn,
+      task.client?.name,
+      task.client?.inn,
+      task.client?.kpp,
       task.phone,
+      task.contactName,
       task.creatorName,
       task.assigneeName,
     ];
@@ -68,13 +80,14 @@ export function Dashboard({
     );
   });
 
-  const newColumnTasks = filteredTasks.filter(
-    (task) => task.status === 'new' || task.status === 'waiting',
-  );
+  const selectedTask =
+    filteredTasks.find((task) => task.id === selectedTaskId) ??
+    filteredTasks[0] ??
+    null;
 
-  const inProgressTasks = filteredTasks.filter(
-    (task) => task.status === 'in_progress',
-  );
+  function handleSelectTask(taskId: string) {
+    setSelectedTaskId(taskId);
+  }
 
   function handleOpenModal() {
     setIsModalOpen(true);
@@ -84,12 +97,9 @@ export function Dashboard({
     setIsModalOpen(false);
   }
 
-  function handleToggleTask(taskId: string) {
-    setExpandedTaskId((currentId) => (currentId === taskId ? null : taskId));
-  }
-
   return (
     <main className={styles.dashboard}>
+      {/* Верхняя панель */}
       <div className={styles.header}>
         <Input
           className={styles.search}
@@ -109,46 +119,38 @@ export function Dashboard({
         </Button>
       </div>
 
+      {/* Основная область */}
       <div className={styles.content}>
-        <TaskColumn
-          title="Список намоток"
-          tasks={newColumnTasks}
+        <TaskList
+          tasks={filteredTasks}
+          selectedTaskId={selectedTask?.id ?? null}
+          onSelectTask={handleSelectTask}
           emptyMessage="Намотки отсутствуют."
+        />
+        {/*
+        <TaskDetails
+          task={selectedTask}
+          comments={selectedTask ? (commentsByTask[selectedTask.id] ?? []) : []}
           onStartTask={onStartTask}
           onReturnTask={onReturnTask}
           onCompleteTask={onCompleteTask}
-          expandedTaskId={expandedTaskId}
-          onToggleTask={handleToggleTask}
-          commentsByTask={commentsByTask}
           onAddComment={onAddComment}
-        />
-
-        <TaskColumn
-          title="В работе"
-          tasks={inProgressTasks}
-          emptyMessage="Здесь ничего нет, но стоит ли наматываться?"
-          onStartTask={onStartTask}
-          onReturnTask={onReturnTask}
-          onCompleteTask={onCompleteTask}
-          expandedTaskId={expandedTaskId}
-          onToggleTask={handleToggleTask}
-          commentsByTask={commentsByTask}
-          onAddComment={onAddComment}
-        />
-
-        <AnimatePresence>
-          {isModalOpen && (
-            <Modal onClose={handleCloseModal} titleId="new-task-title">
-              <NewTask
-                draft={taskDraft}
-                onDraftChange={setTaskDraft}
-                onClose={handleCloseModal}
-                onSubmit={onCreateTask}
-              />
-            </Modal>
-          )}
-        </AnimatePresence>
+        /> */}
       </div>
+
+      {/* Модальное окно находится вне grid с двумя колонками */}
+      <AnimatePresence>
+        {isModalOpen && (
+          <Modal onClose={handleCloseModal} titleId="new-task-title">
+            <NewTask
+              draft={taskDraft}
+              onDraftChange={setTaskDraft}
+              onClose={handleCloseModal}
+              onSubmit={onCreateTask}
+            />
+          </Modal>
+        )}
+      </AnimatePresence>
     </main>
   );
 }

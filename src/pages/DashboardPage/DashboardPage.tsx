@@ -171,17 +171,20 @@ export function DashboardPage() {
   }
 
   function applyUpdatedTask(updatedTask: Task) {
-    const nextTasks = tasksRef.current.map((task) =>
-      task.id === updatedTask.id ? updatedTask : task,
+    const isDashboardTask = DASHBOARD_STATUSES.some(
+      (status) => status === updatedTask.status,
     );
+
+    const nextTasks = isDashboardTask
+      ? tasksRef.current.map((task) =>
+          task.id === updatedTask.id ? updatedTask : task,
+        )
+      : tasksRef.current.filter((task) => task.id !== updatedTask.id);
 
     tasksRef.current = nextTasks;
     setTasks(nextTasks);
 
-    if (
-      updatedTask.status === 'completed' ||
-      updatedTask.status === 'cancelled'
-    ) {
+    if (!isDashboardTask) {
       setCommentsByTask((current) => {
         const next = { ...current };
         delete next[updatedTask.id];

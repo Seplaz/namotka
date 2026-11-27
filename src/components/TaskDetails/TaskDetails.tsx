@@ -1,0 +1,1 @@
+import styles from '@/components/TaskDetails/TaskDetails.module.css';

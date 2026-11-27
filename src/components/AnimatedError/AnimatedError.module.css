@@ -1,5 +1,17 @@
-.error {
-  color: var(--color-danger);
+.message {
   font-size: 12px;
   font-weight: 400;
+  line-height: 1.4;
+}
+
+.error {
+  color: var(--color-danger);
+}
+
+.info {
+  color: var(--color-text-secondary);
+}
+
+.success {
+  color: var(--color-success, #4ade80);
 }

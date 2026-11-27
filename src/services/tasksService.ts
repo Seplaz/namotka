@@ -1,27 +1,41 @@
 import { supabase } from '@/lib/supabase';
 import type { Tables } from '@/types/database.types';
+
 import {
   isTaskStatus,
   isTaskPriority,
   type Task,
   type TaskStatus,
   type TaskPriority,
+  type TaskClient,
 } from '@/types/task';
 
 const TASK_SELECT = `
   id,
   task_number,
   description,
-  inn,
   phone,
+  contact_name,
   status,
   priority,
   scheduled_at,
   created_at,
   created_by,
   assigned_to,
-  creator:profiles!tasks_created_by_fkey(first_name, last_name),
-  assignee:profiles!tasks_assigned_to_fkey(first_name, last_name)
+  client:clients!tasks_client_id_fkey(
+    id,
+    inn,
+    kpp,
+    name
+  ),
+  creator:profiles!tasks_created_by_fkey(
+    first_name,
+    last_name
+  ),
+  assignee:profiles!tasks_assigned_to_fkey(
+    first_name,
+    last_name
+  )
 `;
 
 type ProfileName = {
@@ -34,8 +48,8 @@ type TaskRow = Pick<
   | 'id'
   | 'task_number'
   | 'description'
-  | 'inn'
   | 'phone'
+  | 'contact_name'
   | 'status'
   | 'priority'
   | 'scheduled_at'
@@ -43,12 +57,14 @@ type TaskRow = Pick<
   | 'created_by'
   | 'assigned_to'
 > & {
+  client: TaskClient;
   creator: ProfileName | null;
   assignee: ProfileName | null;
 };
 
 export type NewTaskData = {
-  inn: string;
+  clientId: string;
+  contactName: string;
   phone: string;
   description: string;
   scheduledAt: string | null;
@@ -76,12 +92,17 @@ function mapTaskToTask(task: TaskRow): Task {
     throw new Error(`Неизвестный приоритет задачи: ${task.priority}`);
   }
 
+  if (!task.client) {
+    throw new Error(`У задачи ${task.id} не найден клиент.`);
+  }
+
   return {
     id: task.id,
     task_number: task.task_number,
-    description: task.description,
-    inn: task.inn,
+    client: task.client,
+    contactName: task.contact_name,
     phone: task.phone,
+    description: task.description,
     status: task.status,
     priority: task.priority,
     scheduled_at: task.scheduled_at,
@@ -95,11 +116,12 @@ function mapTaskToTask(task: TaskRow): Task {
 
 export async function createTask(data: NewTaskData): Promise<void> {
   const { error } = await supabase.rpc('create_task', {
-    p_inn: data.inn,
+    p_client_id: data.clientId,
+    p_contact_name: data.contactName.trim() || undefined,
     p_phone: data.phone,
     p_description: data.description,
     p_assigned_to: data.assignedTo ?? undefined,
-    p_priority: data.priority ?? 'medium',
+    p_priority: data.priority,
     p_scheduled_at: data.scheduledAt ?? undefined,
   });
 
@@ -121,7 +143,7 @@ export async function getTasks(
 
   if (error) throw error;
 
-  return (data ?? []).map((task) => mapTaskToTask(task as TaskRow));
+  return (data ?? []).map((task) => mapTaskToTask(task as unknown as TaskRow));
 }
 
 export async function updateTaskStatus(
@@ -143,5 +165,5 @@ export async function updateTaskStatus(
 
   if (taskError) throw taskError;
 
-  return mapTaskToTask(data as TaskRow);
+  return mapTaskToTask(data as unknown as TaskRow);
 }

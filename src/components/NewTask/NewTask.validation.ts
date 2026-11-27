@@ -1,18 +1,45 @@
-
 import type { NewTaskDraft } from './NewTask.types';
 
 export type NewTaskErrors = Partial<
-  Record<
-    | 'client'
-    | 'inn'
-    | 'kpp'
-    | 'clientName'
-    | 'phone'
-    | 'description'
-    | 'schedule',
-    string
-  >
+  Record<'client' | 'phone' | 'description' | 'schedule', string>
 >;
+
+export type ParsedClient = {
+  inn: string;
+  kpp: string;
+  name: string;
+};
+
+export function parseClientQuery(value: string): ParsedClient {
+  const query = value.trim();
+
+  const match = query.match(/^(\d{10}|\d{12})(?:\s*[-–—]\s*(\d{9}))?\s+(.+)$/u);
+
+  if (!match) {
+    return {
+      inn: '',
+      kpp: '',
+      name: '',
+    };
+  }
+
+  return {
+    inn: match[1],
+    kpp: match[2] ?? '',
+    name: match[3].trim(),
+  };
+}
+
+export function isValidClientQuery(value: string): boolean {
+  const client = parseClientQuery(value);
+
+  return (
+    /^(\d{10}|\d{12})$/.test(client.inn) &&
+    (!client.kpp || /^\d{9}$/.test(client.kpp)) &&
+    client.name.length >= 2 &&
+    client.name.length <= 255
+  );
+}
 
 export function normalizePhone(value: string): string | null {
   const digits = value.replace(/\D/g, '');
@@ -45,32 +72,19 @@ export function validateNewTask(
 ): NewTaskErrors {
   const errors: NewTaskErrors = {};
 
-  if (!draft.clientId) {
-    if (!/^(\d{10}|\d{12})$/.test(draft.clientInn.trim())) {
-      errors.inn = 'ИНН должен содержать 10 или 12 цифр';
-    }
-
-    if (
-      draft.clientKpp.trim() &&
-      !/^\d{9}$/.test(draft.clientKpp.trim())
-    ) {
-      errors.kpp = 'КПП должен содержать 9 цифр';
-    }
-
-    if (
-      draft.clientName.trim().length < 2 ||
-      draft.clientName.trim().length > 255
-    ) {
-      errors.clientName = 'Название должно содержать от 2 до 255 символов';
-    }
+  if (!isValidClientQuery(draft.clientQuery)) {
+    errors.client =
+      'Введите ИНН, необязательный КПП и название организации. Например: 3810336910-384901001 ООО "СБ-ГРУПП"';
   }
 
   if (!normalizePhone(draft.phone)) {
     errors.phone = 'Введите номер из 10 или 11 цифр';
   }
 
-  if (!draft.description.trim()) {
-    errors.description = 'Укажите суть намотки';
+  const descriptionLength = draft.description.trim().length;
+
+  if (descriptionLength < 1 || descriptionLength > 1000) {
+    errors.description = 'Описание должно содержать от 1 до 1000 символов';
   }
 
   if (draft.scheduleCall) {
