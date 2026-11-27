@@ -55,13 +55,8 @@
 }
 
 .footer {
-  display: grid;
-  grid-template-columns: 
-  minmax(0, 1fr)
-  minmax(0, 1fr)
-  minmax(0, 1fr)
-  minmax(0, 1fr);
-
+  display: flex;
+  justify-content: space-between;
   align-items: center;
   gap: 12px;
   inline-size: 100%;
@@ -115,4 +110,8 @@
   align-items: center;
   justify-content: end;
   white-space: nowrap;
+}
+
+.priority svg {
+  flex: 0 0 auto;
 }

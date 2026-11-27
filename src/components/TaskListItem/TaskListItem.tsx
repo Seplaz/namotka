@@ -51,11 +51,11 @@ export function TaskListItem({
             </span>
           </span>
 
-          <span className={styles.schedule}>
-            {task.scheduled_at && (
+          {task.scheduled_at && (
+            <span className={styles.schedule}>
               <TaskSchedule scheduledAt={task.scheduled_at} />
-            )}
-          </span>
+            </span>
+          )}
 
           <span className={styles.priority}>
             <TaskPriority priority={task.priority} />
