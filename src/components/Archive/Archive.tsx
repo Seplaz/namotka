@@ -2,7 +2,7 @@ import styles from '@/components/Archive/Archive.module.css';
 import { useState } from 'react';
 import type { Task } from '@/types/task';
 import type { Comment } from '@/types/comment';
-import { TaskColumn } from '@/components/TaskColumn/TaskColumn';
+// import { TaskColumn } from '@/components/TaskColumn/TaskColumn';
 import { Input } from '@/components/Input/Input';
 
 type ArchiveProps = {
@@ -22,7 +22,7 @@ export function Archive({ tasks, commentsByTask }: ArchiveProps) {
     const searchableFields = [
       task.task_number,
       task.description,
-      task.inn,
+      // task.inn,
       task.phone,
       task.creatorName,
       task.assigneeName,
@@ -51,7 +51,7 @@ export function Archive({ tasks, commentsByTask }: ArchiveProps) {
         />
       </div>
 
-      <TaskColumn
+      {/* <TaskColumn
         title="Завершённые"
         tasks={filteredTasks}
         emptyMessage={
@@ -62,7 +62,7 @@ export function Archive({ tasks, commentsByTask }: ArchiveProps) {
         expandedTaskId={expandedTaskId}
         onToggleTask={handleToggleTask}
         commentsByTask={commentsByTask}
-      />
+      /> */}
     </main>
   );
 }
