@@ -37,26 +37,29 @@ export function TaskListItem({
       </span>
 
       <span className={styles.footer}>
-        <span className={styles.client}>
-          {task.client.name ?? 'Клиент не указан'}
-        </span>
-
-        <span className={styles.people}>
-          <span className={styles.creator}>
-            {task.creatorName ?? 'Неизвестно'}
+          <span className={styles.client}>
+            {task.client.name ?? 'Клиент не указан'}
           </span>
-          <MoveRight size={16} />
-          <span className={styles.assignee}>
-            {task.assigneeName ?? 'Не назначен'}
-          </span>
-        </span>
 
-        <span className={styles.meta}>
-          {task.scheduled_at && (
-            <TaskSchedule scheduledAt={task.scheduled_at} />
-          )}
-          <TaskPriority priority={task.priority} />
-        </span>
+          <span className={styles.people}>
+            <span className={styles.creator}>
+              {task.creatorName ?? 'Неизвестно'}
+            </span>
+            <MoveRight size={16} />
+            <span className={styles.assignee}>
+              {task.assigneeName ?? 'Не назначен'}
+            </span>
+          </span>
+
+          <span className={styles.schedule}>
+            {task.scheduled_at && (
+              <TaskSchedule scheduledAt={task.scheduled_at} />
+            )}
+          </span>
+
+          <span className={styles.priority}>
+            <TaskPriority priority={task.priority} />
+          </span>
       </span>
     </button>
   );

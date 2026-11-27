@@ -54,31 +54,65 @@
   overflow-wrap: anywhere;
 }
 
-.client {
-  font-size: 12px;
-  color: var(--color-text-secondary);
-  overflow-wrap: anywhere;
+.footer {
+  display: grid;
+  grid-template-columns: 
+  minmax(0, 1fr)
+  minmax(0, 1fr)
+  minmax(0, 1fr)
+  minmax(0, 1fr);
+
+  align-items: center;
+  gap: 12px;
+  inline-size: 100%;
+  min-inline-size: 0;
 }
 
-.footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 12px;
+.client {
+  justify-self: start;
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+  color: var(--color-text-secondary);
 }
 
 .people {
   display: flex;
+  align-items: center;
   flex-direction: row;
   gap: 12px;
   min-inline-size: 0;
   font-size: 12px;
   color: var(--color-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
 }
 
-.meta {
+.creator,
+.assignee {
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.people svg {
+  flex: 0 0 auto;
+}
+
+.schedule {
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: start;
+  min-inline-size: 0;
+  white-space: nowrap;
+}
+
+.priority {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  white-space: nowrap;
 }
