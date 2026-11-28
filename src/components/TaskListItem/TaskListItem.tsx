@@ -28,11 +28,11 @@ export function TaskListItem({
       onClick={() => onSelect(task.id)}
     >
       <span className={styles.header}>
-        <span className={styles.summary}>
+        <span className={styles.heading}>
           <span className={styles.number}># {task.task_number}</span>
           <span className={styles.description}>{task.description}</span>
         </span>
-        
+
         <TaskStatus status={task.status} />
       </span>
 

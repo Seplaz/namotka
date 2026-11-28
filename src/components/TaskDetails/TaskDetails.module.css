@@ -1,0 +1,183 @@
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 24px;
+  border-radius: 24px;
+  background-color: var(--color-surface);
+  inline-size: 100%;
+  min-inline-size: 0;
+  block-size: fit-content;
+}
+
+/* Пустое состояние */
+
+.empty {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-secondary);
+  text-align: center;
+  min-block-size: 200px;
+}
+
+/* Шапка */
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-inline-size: 0;
+}
+
+.heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-inline-size: 0;
+}
+
+.number {
+  color: var(--color-text-secondary);
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.description {
+  font-size: 16px;
+  font-weight: 500;
+  text-align: start;
+  overflow-wrap: anywhere;
+}
+
+/* Дополнительная информация */
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.people {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  min-inline-size: 0;
+}
+
+.creator,
+.assignee {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  min-inline-size: 0;
+}
+
+.people svg {
+  flex: 0 0 auto;
+}
+
+.schedule {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: start;
+  white-space: nowrap;
+  min-inline-size: 0;
+}
+
+/* Разделитель */
+
+.divider {
+  flex: 0 0 auto;
+  background-color: var(--color-border);
+  inline-size: 100%;
+  block-size: 2px;
+}
+
+/* Информация о клиенте */
+
+.client {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+
+  min-inline-size: 0;
+}
+
+.clientField {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  min-inline-size: 0;
+}
+
+.label {
+  color: var(--color-text-secondary);
+  font-size: 12px;
+}
+
+.value {
+  font-size: 13px;
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+.copyValue {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+
+  min-inline-size: 0;
+}
+
+.copyValue > span {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+/* Комментарии */
+
+.comments {
+  min-inline-size: 0;
+}
+
+/* Кнопки действий */
+
+.actions {
+  display: flex;
+  gap: 12px;
+}
+
+.actions > * {
+  flex: 1;
+  min-inline-size: 0;
+}
+
+/* Адаптивность */
+
+@media (max-width: 1100px) {
+  .clientSection {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 520px) {
+  .clientSection {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+}

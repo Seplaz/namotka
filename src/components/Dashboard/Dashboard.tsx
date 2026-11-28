@@ -9,7 +9,7 @@ import type { Comment } from '@/types/comment';
 import type { NewTaskData } from '@/services/tasksService';
 
 import { TaskList } from '@/components/TaskList/TaskList';
-// import { TaskDetails } from '@/components/TaskDetails/TaskDetails';
+import { TaskDetails } from '@/components/TaskDetails/TaskDetails';
 import { Button } from '@/components/Button/Button';
 import { Modal } from '@/components/Modal/Modal';
 import { NewTask } from '@/components/NewTask/NewTask';
@@ -33,11 +33,11 @@ type DashboardProps = {
 export function Dashboard({
   tasks,
   onCreateTask,
-  // onStartTask,
-  // onReturnTask,
-  // onCompleteTask,
-  // commentsByTask,
-  // onAddComment,
+  onStartTask,
+  onReturnTask,
+  onCompleteTask,
+  commentsByTask,
+  onAddComment,
 }: DashboardProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -127,7 +127,7 @@ export function Dashboard({
           onSelectTask={handleSelectTask}
           emptyMessage="Намотки отсутствуют."
         />
-        {/*
+        
         <TaskDetails
           task={selectedTask}
           comments={selectedTask ? (commentsByTask[selectedTask.id] ?? []) : []}
@@ -135,7 +135,7 @@ export function Dashboard({
           onReturnTask={onReturnTask}
           onCompleteTask={onCompleteTask}
           onAddComment={onAddComment}
-        /> */}
+        />
       </div>
 
       {/* Модальное окно находится вне grid с двумя колонками */}
