@@ -32,24 +32,22 @@
   min-inline-size: 0;
 }
 
-.heading {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  min-inline-size: 0;
-}
-
 .number {
   color: var(--color-text-secondary);
   font-size: 16px;
   font-weight: 400;
+  white-space: nowrap;
 }
 
 .description {
+  margin: 0;
   font-size: 16px;
   font-weight: 500;
+  line-height: 1.4;
   text-align: start;
+  white-space: pre-wrap;
   overflow-wrap: anywhere;
+  min-inline-size: 0;
 }
 
 /* Дополнительная информация */
@@ -109,15 +107,13 @@
   display: grid;
   gap: 16px;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-
   min-inline-size: 0;
 }
 
-.clientField {
+.field {
   display: flex;
   flex-direction: column;
   gap: 6px;
-
   min-inline-size: 0;
 }
 
@@ -127,32 +123,27 @@
 }
 
 .value {
-  font-size: 13px;
+  font-size: 12px;
   min-inline-size: 0;
   overflow-wrap: anywhere;
 }
 
-.copyValue {
+.copy {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 13px;
-
+  gap: 12px;
+  font-size: 12px;
   min-inline-size: 0;
 }
 
-.copyValue > span {
+.copy > span {
   min-inline-size: 0;
   overflow-wrap: anywhere;
 }
-
-/* Комментарии */
 
 .comments {
   min-inline-size: 0;
 }
-
-/* Кнопки действий */
 
 .actions {
   display: flex;
@@ -162,22 +153,4 @@
 .actions > * {
   flex: 1;
   min-inline-size: 0;
-}
-
-/* Адаптивность */
-
-@media (max-width: 1100px) {
-  .clientSection {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 520px) {
-  .clientSection {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .actions {
-    flex-direction: column;
-  }
 }

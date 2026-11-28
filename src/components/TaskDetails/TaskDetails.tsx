@@ -120,18 +120,14 @@ export function TaskDetails({
 
   return (
     <section className={styles.details}>
-      {/* Шапка */}
       <header className={styles.header}>
-        <div className={styles.heading}>
-          <span className={styles.number}>#{task.task_number}</span>
-
-          <h2 className={styles.description}>{task.description}</h2>
-        </div>
+        <span className={styles.number}># {task.task_number}</span>
 
         <TaskStatus status={task.status} />
       </header>
 
-      {/* Дополнительная информация */}
+      <h2 className={styles.description}>{task.description}</h2>
+
       <div className={styles.meta}>
         <div className={styles.people}>
           <span className={styles.creator}>
@@ -156,9 +152,8 @@ export function TaskDetails({
 
       <div className={styles.divider} />
 
-      {/* Информация о клиенте */}
-      <section className={styles.client} aria-label="Информация о клиенте">
-        <div className={styles.clientField}>
+      <section className={styles.client}>
+        <div className={styles.field}>
           <span className={styles.label}>Название</span>
 
           <span className={styles.value} title={clientName}>
@@ -166,30 +161,30 @@ export function TaskDetails({
           </span>
         </div>
 
-        <div className={styles.clientField}>
+        <div className={styles.field}>
           <span className={styles.label}>ИНН</span>
 
-          <div className={styles.copyValue}>
+          <div className={styles.copy}>
             <span>{inn || '—'}</span>
 
             {inn && <CopyButton value={inn} label="ИНН" />}
           </div>
         </div>
 
-        <div className={styles.clientField}>
+        <div className={styles.field}>
           <span className={styles.label}>КПП</span>
 
-          <div className={styles.copyValue}>
+          <div className={styles.copy}>
             <span>{kpp || '—'}</span>
 
             {kpp && <CopyButton value={kpp} label="КПП" />}
           </div>
         </div>
 
-        <div className={styles.clientField}>
+        <div className={styles.field}>
           <span className={styles.label}>Телефон</span>
 
-          <div className={styles.copyValue}>
+          <div className={styles.copy}>
             <span>{task.phone}</span>
 
             <CopyButton value={task.phone} label="номер телефона" />
@@ -198,10 +193,6 @@ export function TaskDetails({
       </section>
 
       <div className={styles.divider} />
-
-      {/* <h2 className={styles.description}>{task.description}</h2>
-
-      <div className={styles.divider} /> */}
 
       {/* Комментарии */}
       <div className={styles.comments}>

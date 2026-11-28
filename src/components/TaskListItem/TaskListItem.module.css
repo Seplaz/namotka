@@ -38,21 +38,29 @@
 
 .heading {
   display: flex;
+  flex: 1 1 0;
   align-items: center;
   gap: 12px;
   min-inline-size: 0;
 }
 
 .number {
+  flex: 0 0 auto;
   color: var(--color-text-secondary);
   font-size: 16px;
   font-weight: 400;
+  white-space: nowrap;
 }
 
 .description {
-  text-align: start;
+  flex: 1 1 auto;
   font-size: 16px;
   font-weight: 500;
+  text-align: start;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  min-inline-size: 0;
   overflow-wrap: anywhere;
 }
 
